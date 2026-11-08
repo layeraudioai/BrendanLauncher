@@ -1,0 +1,21 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "youtube",
+  "name": "YouTube (VacuumTube)",
+  "version": "2.0.1",
+  "description": "YouTube TV client and media streaming for Switch 2 HBL framework",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/text.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  },
+  "sdk": {
+    "version": 1,
+    "capabilities": [],
+    "services": []
+  }
+}

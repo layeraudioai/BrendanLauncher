@@ -1,0 +1,53 @@
+#version 450
+#extension GL_GOOGLE_include_directive : require
+layout(local_size_x=1) in;
+#include "abi.glsl"
+#include "hb.glsl"
+#include "text.glsl"
+
+void main(){
+    uint buttons = hbPressed();
+    c.state.z++;
+    c.transition.x = max(0.0, c.transition.x - 1.0 / 15.0);
+
+    uint itemCount = uint(max(NUM_YOUTUBE_ITEMS, 1));
+    c.game.x = min(c.game.x, itemCount - 1u);
+
+    if (NUM_YOUTUBE_ITEMS > 0 && (buttons & HB_UP) != 0u) {
+        c.game.x = (c.game.x + itemCount - 1u) % itemCount;
+    }
+    if (NUM_YOUTUBE_ITEMS > 0 && (buttons & HB_DOWN) != 0u) {
+        c.game.x = (c.game.x + 1u) % itemCount;
+    }
+    // A button: Play / Open selected feed or item
+    if (NUM_YOUTUBE_ITEMS > 0 && (buttons & HB_A) != 0u) {
+        c.game.y = 1u;
+        c.game.z = c.game.x;
+        c.motion.x = 0.0;
+        hbSound(c.game.x + 1u);
+    }
+    // X button: Toggle AdBlock state stored in game.w (uint)
+    if ((buttons & HB_X) != 0u) {
+        c.game.w = (c.game.w == 0u) ? 1u : 0u;
+    }
+    // Y button: Toggle SponsorBlock (motion.y float)
+    if ((buttons & HB_Y) != 0u) {
+        c.motion.y = (c.motion.y == 0.0) ? 1.0 : 0.0;
+    }
+    // B or Minus button: Stop playback or exit
+    if (hbConnected() && (buttons & (HB_B | HB_MINUS)) != 0u) {
+        if (c.game.y == 1u) {
+            c.game.y = 0u;
+        } else {
+            hbExit();
+        }
+    }
+
+    if (c.game.y == 1u) {
+        c.motion.x += 1.0 / 60.0;
+        c.piece.y = int(c.motion.x * 60.0) % 600;
+        c.piece.w = int(c.game.z);
+    }
+
+    hbEndFrame();
+}

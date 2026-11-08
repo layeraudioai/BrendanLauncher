@@ -123,6 +123,18 @@ int main(void) {
     tap(HBX_A);
     EXPECT(state.mode == LAUNCHER_MODE_LIBRARY);
 
+    /* X opens the in-launcher NRO companion guidance panel. It is informational,
+     * not a launch request; A/B return to the native app library. */
+    reset(2);
+    tap(HBX_X);
+    EXPECT(state.mode == LAUNCHER_MODE_NRO_INFO);
+    EXPECT(state.last_index == 0);
+    tap(HBX_B);
+    EXPECT(state.mode == LAUNCHER_MODE_LIBRARY);
+    tap(HBX_X);
+    tap(HBX_A);
+    EXPECT(state.mode == LAUNCHER_MODE_LIBRARY);
+
     /* The error panel also closes on B. */
     reset(2);
     state.mode = LAUNCHER_MODE_ERROR;

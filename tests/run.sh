@@ -22,6 +22,27 @@ echo "== hardware probe (mock backend) =="
 echo "== host lifecycle =="
 "$NODE" tests/host/lifecycle.test.cjs
 
+echo "== read-only mac2jb SD-browser adapter =="
+"$NODE" tests/sd-browser.test.cjs
+
+echo "== system monitor source and safety contract =="
+"$NODE" tests/system-monitor.test.cjs
+
+echo "== non-destructive NRO profile manager =="
+"$NODE" tests/nro-profile-manager.test.cjs
+
+echo "== read-only boot-file inventory =="
+"$NODE" tests/boot-file-catalog.test.cjs
+
+echo "== NRO format inspector bounds checks =="
+"$NODE" tests/nro-inspect.test.cjs
+
+echo "== separate libnx-ounce NRO companion contract =="
+"$NODE" tests/nro-companion.test.cjs
+
+echo "== host-side Node.js web apps =="
+"$NODE" tests/web-apps.test.cjs tests/web-app-panel.test.cjs tests/web-apps-build.test.cjs tests/web-apps-static.test.cjs tests/webport.test.cjs
+
 echo "== launcher navigation logic =="
 mkdir -p build/tests
 gcc -std=gnu11 -O2 -D_GNU_SOURCE -Wall -Wextra -Werror \
@@ -29,9 +50,11 @@ gcc -std=gnu11 -O2 -D_GNU_SOURCE -Wall -Wextra -Werror \
   tests/ui/logic.test.c launcher/src/launcher_logic.c sdk/src/hbx_app.c \
   -o build/tests/logic_test
 ./build/tests/logic_test
+"$NODE" tests/ui/nro-panel.test.cjs
 
 echo "== UI geometry + real Vulkan render =="
 sh tests/preview/build.sh
 "$NODE" tests/ui/ui.test.cjs
+"$NODE" tests/ui/nro-panel-visual.test.cjs
 
 echo "all offline tests passed"

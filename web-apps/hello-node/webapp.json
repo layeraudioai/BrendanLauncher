@@ -1,0 +1,10 @@
+{
+  "format": "brendan.webapp",
+  "apiVersion": 1,
+  "id": "hello-node",
+  "name": "Hello Node web app",
+  "version": "1.0.0",
+  "description": "A minimal local Node.js HTTP app demonstrating the PORT/HOST contract.",
+  "entry": "server.js",
+  "path": "/"
+}

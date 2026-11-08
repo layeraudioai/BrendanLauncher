@@ -62,6 +62,8 @@ void launcher_handle_input(struct launcher_state *state, const struct hbx_input_
             state->transition = 0.0f;
         } else if (input->pressed & HBX_PLUS) {
             state->mode = LAUNCHER_MODE_ABOUT;
+        } else if (input->pressed & HBX_X) {
+            state->mode = LAUNCHER_MODE_NRO_INFO;
         }
         /* Y asks the host to rescan the catalog.  The request stays latched
          * (and the emblem spins) until launcher_main sees the catalog block
@@ -97,7 +99,8 @@ void launcher_handle_input(struct launcher_state *state, const struct hbx_input_
                 }
             }
         }
-    } else if (state->mode == LAUNCHER_MODE_ABOUT || state->mode == LAUNCHER_MODE_ERROR) {
+    } else if (state->mode == LAUNCHER_MODE_ABOUT || state->mode == LAUNCHER_MODE_ERROR ||
+               state->mode == LAUNCHER_MODE_NRO_INFO) {
         if (cancel || confirm) {
             state->mode = LAUNCHER_MODE_LIBRARY;
             state->transition = 0.0f;

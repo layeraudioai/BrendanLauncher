@@ -1,0 +1,16 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "standalone-installer",
+  "name": "Standalone Client Installer",
+  "version": "1.0.0",
+  "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/text.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  }
+}

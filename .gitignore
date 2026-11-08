@@ -10,6 +10,7 @@ __pycache__/
 *.bin.tmp
 *.log
 tests/preview/out/
+tests/preview/out-nro/
 release/
 
 # Local state and external checkouts
@@ -21,7 +22,21 @@ run/
 saves/
 reference/
 
+# NRO companion build artifacts are ignored under its local .gitignore.
+
+# User-installed web apps. Keep only the safe demonstration app in source archives.
+web-apps/*
+!web-apps/hello-node/
+!web-apps/hello-node/**
+!web-apps/hello-vite/
+!web-apps/hello-vite/**
+web-apps/*/node_modules/
+web-apps/*/dist/
+
 # App payloads and user-supplied media
+payloads/
+nros/
+data/nro-profiles/
 apps/*/code.bin
 apps/*/data.bin
 apps/*/assets/

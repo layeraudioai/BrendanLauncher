@@ -6,7 +6,7 @@
  * a PPM per frame.  It is the offline visual regression harness; it is not
  * part of the console image.
  *
- * Usage: preview <output-dir> [frames]
+ * Usage: preview <output-dir> [frames] [library|nro]
  */
 #include <dlfcn.h>
 #include <stdio.h>
@@ -326,6 +326,10 @@ int main(int argc, char **argv) {
                           state->row_highlight[1] = 1.0f;
                           state->row_highlight[2] = 0.0f; }
 
+        /* Explicit NRO mode is for visual review of the informational panel;
+         * it never performs a launch or accesses a device. */
+        if (argc > 3 && strcmp(argv[3], "nro") == 0)
+            state->mode = LAUNCHER_MODE_NRO_INFO;
         hbx_ui_engine_begin(impl, 0xfffcf9f9u);
         hbx_launcher_draw(impl, state);
         printf("frame %d: %u vertices%s\n", frame, hbx_ui_engine_vertex_count(impl),

@@ -1,0 +1,30 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "sphaira",
+  "name": "Sphaira",
+  "version": "1.0.0",
+  "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/text.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  },
+  "sdk": {
+    "version": 1,
+    "capabilities": ["vibration", "nfc"],
+    "services": []
+  },
+  "audio": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "format": "s16le",
+    "effects": {
+      "1": "assets/audio_1.pcm",
+      "2": "assets/audio_2.pcm"
+    }
+  }
+}

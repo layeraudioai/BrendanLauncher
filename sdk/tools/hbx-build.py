@@ -29,6 +29,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+dkp_bin = Path("C:/dkp/devkitA64/bin")
+if dkp_bin.exists():
+    os.environ["PATH"] = str(dkp_bin) + os.pathsep + os.environ.get("PATH", "")
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 SDK = ROOT / "sdk"
 CFLAGS = [
@@ -70,11 +74,11 @@ def fail(message, code=1):
 
 
 def tool(name):
-    for prefix in ("aarch64-linux-gnu-", ""):
+    for prefix in ("aarch64-none-elf-", "aarch64-linux-gnu-", ""):
         candidate = shutil.which(prefix + name)
         if candidate:
             return candidate
-    fail(f"missing toolchain program: {name} (install gcc-aarch64-linux-gnu)")
+    fail(f"missing toolchain program: {name} (install aarch64-none-elf or gcc-aarch64-linux-gnu)")
     return None
 
 

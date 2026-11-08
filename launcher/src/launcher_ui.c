@@ -245,7 +245,7 @@ static void draw_emblem(struct hbx_ui_impl *impl, float time, float spin) {
 static void draw_header(struct hbx_ui_impl *impl, const struct launcher_state *state) {
     hbx_ui_engine_text(impl, 164.0f, 66.0f, HBX_FONT_TINY,
                        "N I N T E N D O   S W I T C H   2", C(207, 245, 255));
-    hbx_ui_engine_text(impl, 158.0f, 126.0f, HBX_FONT_TITLE, "HBLauncher", C(255, 255, 255));
+    hbx_ui_engine_text(impl, 158.0f, 126.0f, HBX_FONT_TITLE, "BrendanLauncher", C(255, 255, 255));
     hbx_ui_engine_text(impl, 164.0f, 250.0f, HBX_FONT_BODY, "v.1.0.0", C(217, 247, 255));
     draw_emblem(impl, state->time, state->refresh_spin);
     if (state->refreshing) {
@@ -447,13 +447,13 @@ static void draw_footer(struct hbx_ui_impl *impl, const struct launcher_state *s
     /* Button hints, right-aligned to the card edge (x = 1620) with an even
      * 36 px gutter.  The Y hint dims while a rescan is pending. */
     {
-        static const char *const keys[3] = { "A", "B", "Y" };
-        static const char *const labels[3] = { "Open", "Back", "Refresh" };
-        float widths[3];
-        float total = 72.0f;   /* two 36 px gutters */
+        static const char *const keys[4] = { "A", "B", "Y", "X" };
+        static const char *const labels[4] = { "Open", "Back", "Refresh", "NRO info" };
+        float widths[4];
+        float total = 108.0f;   /* three 36 px gutters */
         float x;
         uint32_t i;
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < 4; i++) {
             widths[i] = 40.0f + hbx_ui_engine_text_width(HBX_FONT_BODY, labels[i]);
             total += widths[i];
         }
@@ -465,6 +465,8 @@ static void draw_footer(struct hbx_ui_impl *impl, const struct launcher_state *s
         draw_hint(impl, x, keys[2], labels[2],
                   state->refreshing ? COLOR_LABEL : COLOR_BLUE,
                   state->refreshing ? COLOR_LABEL : COLOR_INK);
+        x += widths[2] + 36.0f;
+        draw_hint(impl, x, keys[3], labels[3], COLOR_BLUE, COLOR_INK);
     }
 
     hbx_ui_engine_text(impl, 36.0f, 1016.0f, HBX_FONT_TINY,
@@ -483,7 +485,7 @@ static void draw_footer(struct hbx_ui_impl *impl, const struct launcher_state *s
 static void draw_overlay(struct hbx_ui_impl *impl, const struct launcher_state *state) {
     float t = state->transition;
     if (t <= 0.001f && state->mode != LAUNCHER_MODE_ABOUT &&
-        state->mode != LAUNCHER_MODE_ERROR)
+        state->mode != LAUNCHER_MODE_ERROR && state->mode != LAUNCHER_MODE_NRO_INFO)
         return;
     if (t > 0.001f) {
         hbx_ui_engine_rect(impl, 0.0f, 0.0f, W, H, 0.0f, with_alpha(C(15, 59, 94), 0.30f * t));
@@ -535,18 +537,37 @@ static void draw_overlay(struct hbx_ui_impl *impl, const struct launcher_state *
                                   state->error_text, with_alpha(COLOR_INK, t));
         hbx_ui_engine_text_center(impl, 960.0f, y + 170.0f, HBX_FONT_SMALL,
                                   "Press B to return", with_alpha(COLOR_BLUE, t));
+    } else if (state->mode == LAUNCHER_MODE_NRO_INFO) {
+        float panel_w = 1080.0f, panel_h = 500.0f;
+        float x = 960.0f - panel_w * 0.5f, y = 540.0f - panel_h * 0.5f;
+        hbx_ui_engine_rect(impl, x, y, panel_w, panel_h, 24.0f, COLOR_CARD);
+        hbx_ui_engine_stroke(impl, x, y, panel_w, panel_h, 24.0f, 1.5f, C(191, 230, 245));
+        hbx_ui_engine_text_center(impl, 960.0f, y + 54.0f, HBX_FONT_H1,
+                                  "NRO companion", COLOR_INK);
+        hbx_ui_engine_text_center(impl, 960.0f, y + 112.0f, HBX_FONT_SMALL,
+                                  "Separate Horizon homebrew app - not a BrendanLauncher app package.", C(64, 105, 132));
+        hbx_ui_engine_text_center(impl, 960.0f, y + 166.0f, HBX_FONT_SMALL,
+                                  "To use: build BrendanNroLauncher.nro with libnx-ounce and launch it from a compatible loader.", COLOR_INK);
+        hbx_ui_engine_text_center(impl, 960.0f, y + 210.0f, HBX_FONT_SMALL,
+                                  "It lists validated NROs in SD:/switch and requests loader-provided NextLoadPath handoff.", COLOR_INK);
+        hbx_ui_engine_text_center(impl, 960.0f, y + 254.0f, HBX_FONT_SMALL,
+                                  "No compatible handoff = no launch. This menu cannot load NROs or browse the console SD.", C(150, 68, 54));
+        hbx_ui_engine_text_center(impl, 960.0f, y + 308.0f, HBX_FONT_SMALL,
+                                  "BrendanLauncher native and GPU packages remain available in Your library.", C(64, 105, 132));
+        hbx_ui_engine_text_center(impl, 960.0f, y + 394.0f, HBX_FONT_SMALL,
+                                  "Press B or A to return", COLOR_BLUE);
     } else if (state->mode == LAUNCHER_MODE_ABOUT) {
         float panel_w = 780.0f, panel_h = 308.0f;
         float x = 960.0f - panel_w * 0.5f, y = 540.0f - panel_h * 0.5f;
         hbx_ui_engine_rect(impl, x, y, panel_w, panel_h, 24.0f, COLOR_CARD);
         hbx_ui_engine_stroke(impl, x, y, panel_w, panel_h, 24.0f, 1.0f, C(191, 230, 245));
-        hbx_ui_engine_text_center(impl, 960.0f, y + 50.0f, HBX_FONT_H1, "HBLauncher",
+        hbx_ui_engine_text_center(impl, 960.0f, y + 50.0f, HBX_FONT_H1, "BrendanLauncher",
                                   COLOR_INK);
         hbx_ui_engine_text_center(impl, 960.0f, y + 110.0f, HBX_FONT_SMALL,
-                                  "CPU layout and animation, real Vulkan GPU drawing.",
+                                  "CPU, GPU-memory, and IZ apps in one library.",
                                   C(94, 135, 161));
         hbx_ui_engine_text_center(impl, 960.0f, y + 146.0f, HBX_FONT_SMALL,
-                                  "Apps load from apps/<id>/manifest.json.", C(94, 135, 161));
+                                  "Native, GPU, and IZ packages share apps/.", C(94, 135, 161));
         hbx_ui_engine_text_center(impl, 960.0f, y + 210.0f, HBX_FONT_SMALL,
                                   "Press B to return", COLOR_BLUE);
     }

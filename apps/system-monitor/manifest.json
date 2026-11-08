@@ -1,0 +1,10 @@
+{
+  "id": "system-monitor",
+  "name": "System Monitor",
+  "description": "Read-only telemetry status and a bounded CPU benchmark",
+  "version": "1.0.0",
+  "abi": 3,
+  "kind": "native",
+  "assets": [],
+  "limits": {"heap_bytes": 1048576, "stack_bytes": 1048576, "frames": 3600}
+}

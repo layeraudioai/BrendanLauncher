@@ -1,0 +1,31 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "gb2ns2",
+  "name": "GB2NS2",
+  "version": "0.1.0",
+  "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/text.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  },
+  "computeSequence": {
+    "repeat": 512,
+    "begin": "app.begin.spv",
+    "after": "app.after.spv"
+  },
+  "memory": {
+    "bytes": 18874368,
+    "initial": "assets/memory.bin",
+    "encoding": "deflate"
+  },
+  "sdk": {
+    "version": 1,
+    "capabilities": [],
+    "services": []
+  }
+}

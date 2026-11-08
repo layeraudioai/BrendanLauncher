@@ -78,7 +78,26 @@ the host every 12 seconds or when you pick a title.
 Controls: **D-pad / left stick** move, **A** open, **B** back, **+** about,
 **−** exit the launcher session, **touch** a row to select, tap again to open.
 
-## 4. Build your own app
+## 4. Browse the Switch SD card from the host
+
+With a verified held FS-RPC run active, start the mac2jb-style read-only SD
+browser from the project root:
+
+```sh
+./hbl-sd-browser --host 192.168.1.20
+# or choose the run explicitly
+./hbl-sd-browser --ns2jb "$HBL_NS2JB" \\
+  --run "$HBL_NS2JB/runs/switch2-SESSION" --host 192.168.1.20
+```
+
+The browser verifies the session proof, exposes only `/sd`, and provides a
+localhost-bound browser panel plus read-only FTP. Press **Ctrl+C** to stop both
+services before using another RPC tool. This is a host utility, not an app on
+the console; uploads, rename, and delete are not supported. See
+[`tools/mac2jb-sd-browser/README.md`](../tools/mac2jb-sd-browser/README.md) for
+network and safety notes.
+
+## 5. Build your own app
 
 ```sh
 python3 sdk/tools/hbx-new.py apps/my-app "My App" "One line about it"
@@ -91,7 +110,7 @@ Full SDK guide: [`SDK.md`](SDK.md).  Start from `apps/hello-cpu` for CPU logic,
 `apps/gpu-triangle` for GPU geometry, `sdk/examples/raw-vulkan` for an
 app-owned pipeline.
 
-## 5. Reading the result
+## 6. Reading the result
 
 | file | contents |
 | --- | --- |
@@ -103,7 +122,7 @@ If an entry fails, the log names the stage (`instance`, `vi-surface`,
 `swapchain`, `ui-init`, ...) and the VkResult.  That is the first thing to put
 in a bug report.
 
-## 6. After a session
+## 7. After a session
 
 The launcher is **resident** for the SmileBASIC session: code, data, display
 and shared blocks stay mapped so a later `hbl-start` reuses them instead of

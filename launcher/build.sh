@@ -44,12 +44,12 @@ echo "[launcher] code.bin $code_bytes bytes, data.bin $data_bytes bytes"
 $NM "$OUT/launcher.elf" | grep -E ' _start$| hbx_app_main$| hbx_launcher_draw$| hbx_ui_init$| launcher_display_create$' || true
 $SIZE "$OUT/launcher.elf"
 
-python3 - "$OUT" <<'PY'
-import json, sys, subprocess, hashlib, pathlib
+${PYTHON:-python3} - "$OUT" <<'PY'
+import json, sys, subprocess, hashlib, pathlib, os
 out = pathlib.Path(sys.argv[1])
 elf = out / "launcher.elf"
 symbols = {}
-for line in subprocess.run(["aarch64-linux-gnu-nm", str(elf)], capture_output=True, text=True).stdout.splitlines():
+for line in subprocess.run([os.environ.get("NM", "aarch64-linux-gnu-nm"), str(elf)], capture_output=True, text=True).stdout.splitlines():
     parts = line.split()
     if len(parts) == 3:
         symbols[parts[2]] = int(parts[0], 16)

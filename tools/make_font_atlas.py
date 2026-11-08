@@ -16,6 +16,7 @@ Usage: python3 tools/make_font_atlas.py [--font-dir DIR] [--check]
 """
 import argparse
 import hashlib
+import os
 import sys
 from pathlib import Path
 
@@ -41,14 +42,30 @@ def find_font(directory: Path, name: str) -> Path:
     candidate = directory / name
     if candidate.exists():
         return candidate
-    for base in (
-        Path("/usr/share/fonts/truetype/dejavu"),
-        Path("/usr/share/fonts/TTF"),
-        Path("/usr/share/fonts"),
-    ):
+    bases = [Path("/usr/share/fonts/truetype/dejavu"), Path("/usr/share/fonts/TTF"), Path("/usr/share/fonts")]
+    windows = Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts"
+    if windows.is_dir():
+        bases.append(windows)
+    for base in bases:
+        if not base.is_dir():
+            continue
         for found in base.rglob(name):
             return found
-    raise SystemExit(f"font not found: {name} (pass --font-dir)")
+    # Arial is a Windows system font; use its matching faces only when the
+    # preferred DejaVu family is not installed. Build output remains local.
+    windows_face = {
+        "DejaVuSans.ttf": "arial.ttf",
+        "DejaVuSans-Bold.ttf": "arialbd.ttf",
+        "DejaVuSans-Oblique.ttf": "ariali.ttf",
+        "DejaVuSans-BoldOblique.ttf": "arialbi.ttf",
+        "DejaVuSansMono.ttf": "consola.ttf",
+    }.get(name)
+    if windows_face:
+        for base in [directory, windows]:
+            candidate = base / windows_face
+            if candidate.is_file():
+                return candidate
+    raise SystemExit(f"font not found: {name}; install DejaVu Sans or pass --font-dir")
 
 
 def main() -> int:

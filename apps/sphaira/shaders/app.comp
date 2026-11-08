@@ -1,0 +1,88 @@
+#version 450
+#extension GL_GOOGLE_include_directive : require
+layout(local_size_x=1) in;
+#include "abi.glsl"
+#include "hb.glsl"
+#include "text.glsl"
+
+void main(){
+    uint buttons = hbPressed();
+    c.state.z++;
+    c.transition.x = max(0.0, c.transition.x - 1.0 / 15.0);
+
+    uint activeTab = c.game.y;
+    uint itemIndex = c.game.x;
+    uint browserMode = c.game.z; // 0 = Root Browser, 1 = RomFS Sub-Browser / Contents View
+
+    // Left / Right: Switch Tabs (0..3)
+    if ((buttons & HB_LEFT) != 0u) {
+        c.game.y = (activeTab + 4u - 1u) % 4u;
+        c.game.x = 0u; // Reset selection on tab change
+        c.game.z = 0u; // Reset browser sub-mode
+        hbSound(1u);
+    }
+    if ((buttons & HB_RIGHT) != 0u) {
+        c.game.y = (activeTab + 1u) % 4u;
+        c.game.x = 0u;
+        c.game.z = 0u;
+        hbSound(1u);
+    }
+
+    uint maxItems = 5u;
+    if (c.game.y == 0u) maxItems = uint(NUM_APPS);
+    else if (c.game.y == 1u) maxItems = (browserMode == 0u) ? uint(NUM_BROWSER_ROOT) : uint(NUM_BROWSER_SUB);
+    else if (c.game.y == 2u) maxItems = uint(NUM_STORE);
+    else if (c.game.y == 3u) maxItems = uint(NUM_TOOLS);
+
+    maxItems = max(maxItems, 1u);
+    c.game.x = min(c.game.x, maxItems - 1u);
+
+    // Up / Down: Navigate items
+    if ((buttons & HB_UP) != 0u) {
+        c.game.x = (c.game.x + maxItems - 1u) % maxItems;
+        hbSound(2u);
+    }
+    if ((buttons & HB_DOWN) != 0u) {
+        c.game.x = (c.game.x + 1u) % maxItems;
+        hbSound(2u);
+    }
+
+    // A button: Select / Enter directory / action
+    if ((buttons & HB_A) != 0u) {
+        if (c.game.y == 1u) {
+            if (browserMode == 0u && (c.game.x == 1u || c.game.x == 2u)) {
+                // Enter RomFS / Contents sub-browser view
+                c.game.z = 1u;
+                c.game.x = 0u;
+                hbSound(3u);
+            } else if (browserMode == 1u && c.game.x == 0u) {
+                // Return to root browser view
+                c.game.z = 0u;
+                c.game.x = 0u;
+                hbSound(1u);
+            } else {
+                hbSound(1u);
+            }
+        } else {
+            hbSound(1u);
+        }
+    }
+
+    // X button: Refresh / trigger action
+    if ((buttons & HB_X) != 0u) {
+        c.motion.x += 1.0;
+    }
+
+    // B or Minus: Back or Exit app
+    if (hbConnected() && ((buttons & HB_B) != 0u || (buttons & HB_MINUS) != 0u)) {
+        if (c.game.y == 1u && c.game.z == 1u) {
+            c.game.z = 0u;
+            c.game.x = 0u;
+            hbSound(2u);
+        } else {
+            hbExit();
+        }
+    }
+
+    hbEndFrame();
+}

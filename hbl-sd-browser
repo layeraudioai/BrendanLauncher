@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+NODE=${HBL_NODE:-node}
+exec "$NODE" "$ROOT/host/sd-browser.cjs" "$@"

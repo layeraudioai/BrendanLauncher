@@ -16,6 +16,7 @@
 #define LAUNCHER_MODE_ABOUT   1u
 #define LAUNCHER_MODE_LAUNCH  2u
 #define LAUNCHER_MODE_ERROR   3u
+#define LAUNCHER_MODE_NRO_INFO 4u
 
 /* Control-page flags the launcher writes (the SDK header owns bit 0; the
  * launcher must never clear it because it is the host's stop request). */

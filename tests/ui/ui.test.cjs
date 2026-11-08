@@ -16,8 +16,10 @@ if (!fs.existsSync(BIN)) {
   process.exit(2);
 }
 fs.mkdirSync(OUT, {recursive: true});
+const lavapipe = ['/usr/share/vulkan/icd.d/lvp_icd.json', '/usr/share/vulkan/icd.d/lvp_icd.x86_64.json']
+  .find(candidate => fs.existsSync(candidate));
 const env = Object.assign({}, process.env, {
-  VK_ICD_FILENAMES: process.env.VK_ICD_FILENAMES || '/usr/share/vulkan/icd.d/lvp_icd.json'
+  VK_ICD_FILENAMES: process.env.VK_ICD_FILENAMES || lavapipe || ''
 });
 const stdout = execFileSync(BIN, [OUT, String(FRAMES)], {env, encoding: 'utf8'});
 const lines = stdout.split('\n').filter(line => line.startsWith('frame '));

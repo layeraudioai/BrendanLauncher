@@ -1,0 +1,14 @@
+{
+  "id": "hello-vite-native",
+  "name": "Hello TypeScript web app",
+  "description": "Native Switch UI port of Hello TypeScript web app (WebPort v1)",
+  "version": "1.0.0",
+  "abi": 3,
+  "kind": "native",
+  "assets": [],
+  "limits": {
+    "heap_bytes": 4194304,
+    "stack_bytes": 1048576,
+    "frames": 0
+  }
+}
