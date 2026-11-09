@@ -4,17 +4,17 @@
 #include "hbx_sdk.h"
 #include "hbx_vk.h"
 
-#define FIELD(name) printf("    \"%s\": %zu,\n", #name, offsetof(struct hbx_ctx, name))
-#define GFIELD(name) printf("    \"%s\": %zu,\n", #name, offsetof(struct hbx_gpu, name))
+#define FIELD(name) printf("    \"%s\": %llu,\n", #name, (unsigned long long)offsetof(struct hbx_ctx, name))
+#define GFIELD(name) printf("    \"%s\": %llu,\n", #name, (unsigned long long)offsetof(struct hbx_gpu, name))
 
 int main(void) {
     printf("{\n");
     printf("  \"magic\": %u,\n", (unsigned)HBX_ABI_MAGIC);
     printf("  \"abiVersion\": %u,\n", (unsigned)HBX_ABI_VERSION);
-    printf("  \"ctxSize\": %zu,\n", sizeof(struct hbx_ctx));
-    printf("  \"gpuSize\": %zu,\n", sizeof(struct hbx_gpu));
-    printf("  \"vkDispatchFields\": %zu,\n", sizeof(struct hbx_vk_dispatch) / sizeof(void *));
-    printf("  \"vkDispatchBytes\": %zu,\n", sizeof(struct hbx_vk_dispatch));
+    printf("  \"ctxSize\": %llu,\n", (unsigned long long)sizeof(struct hbx_ctx));
+    printf("  \"gpuSize\": %llu,\n", (unsigned long long)sizeof(struct hbx_gpu));
+    printf("  \"vkDispatchFields\": %llu,\n", (unsigned long long)(sizeof(struct hbx_vk_dispatch) / sizeof(void *)));
+    printf("  \"vkDispatchBytes\": %llu,\n", (unsigned long long)sizeof(struct hbx_vk_dispatch));
     printf("  \"catalogMagic\": %u,\n", (unsigned)HBX_CATALOG_MAGIC);
     printf("  \"assetMagic\": %u,\n", (unsigned)HBX_ASSET_MAGIC);
     printf("  \"ctx\": {\n");
@@ -25,8 +25,8 @@ int main(void) {
     FIELD(control); FIELD(catalog); FIELD(catalog_bytes); FIELD(icons);
     FIELD(assets); FIELD(log); FIELD(ui); FIELD(atlas); FIELD(atlas_bytes);
     FIELD(gpu); FIELD(input); FIELD(args);
-    printf("    \"icons_bytes\": %zu,\n", offsetof(struct hbx_ctx, icons_bytes));
-    printf("    \"audio\": %zu\n", offsetof(struct hbx_ctx, audio));
+    printf("    \"icons_bytes\": %llu,\n", (unsigned long long)offsetof(struct hbx_ctx, icons_bytes));
+    printf("    \"audio\": %llu\n", (unsigned long long)offsetof(struct hbx_ctx, audio));
     printf("  },\n");
     printf("  \"gpu\": {\n");
     GFIELD(instance); GFIELD(physical); GFIELD(device); GFIELD(queue);
@@ -35,7 +35,7 @@ int main(void) {
     GFIELD(views); GFIELD(dispatch); GFIELD(vi_window); GFIELD(create_vi_surface);
     GFIELD(destroy_surface); GFIELD(surface); GFIELD(present_state);
     GFIELD(present_state_bytes);
-    printf("    \"reserved\": %zu\n", offsetof(struct hbx_gpu, reserved));
+    printf("    \"reserved\": %llu\n", (unsigned long long)offsetof(struct hbx_gpu, reserved));
     printf("  }\n");
     printf("}\n");
     return 0;

@@ -54,22 +54,7 @@ uint hbJoyMouseAttributes(uint player,uint side){
  uint o=base+32u+tail*40u,seq=hbWord(o+16u),high=hbWord(o+20u);
  return hbWord(o)==seq*2u&&hbWord(o+4u)==high*2u+(seq>>31u)?hbWord(o+32u):0u;
 }
-// Background FTP service owns bytes 8192..8447; app command is at 8448.
-bool hbFtpAvailable(){return hbWord(8192u)==0x46545031u;}
-uint hbFtpState(){return hbFtpAvailable()?hbWord(8196u):0u;}
-uint hbFtpAddress(){return hbWord(8200u);}
-uint hbFtpPort(){return hbWord(8204u);}
-uint hbFtpClients(){return hbWord(8208u);}
-uint hbFtpSent(){return hbWord(8216u);}
-uint hbFtpReceived(){return hbWord(8224u);}
-uint hbFtpFiles(){return hbWord(8232u);}
-bool hbFtpBusy(){return hbWord(8448u)!=hbWord(8236u);}
 #ifndef HB_READONLY
-bool hbFtpCommand(uint action){
- if(!hbFtpAvailable()||hbFtpBusy()||(action!=1u&&action!=2u))return false;
- uint o=HB_EXT+8448u/4u;c.atlas[o+1u]=action;
- uint sequence=c.atlas[o]+1u;c.atlas[o]=sequence==0u?1u:sequence;return true;
-}
 void hbEndFrame(){c.state.y=hbButtons();}
 void hbExit(){c.reserved.z=1u;}
 void hbSound(uint id){c.events.x++;c.events.y=id;}

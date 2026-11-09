@@ -1,0 +1,278 @@
+{
+  "purpose": "HBLauncher GPU app packages from the PC; SD loading is not connected",
+  "runtimeABI": 1,
+  "titleCount": 10,
+  "catalog": {
+    "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps",
+    "apps": [
+      {
+        "id": "blitbun",
+        "name": "BlitBun",
+        "version": "1.14.4",
+        "description": "PC-to-Switch 2 streaming · video, audio and optional controller forwarding",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\blitbun",
+        "fingerprint": "7a9b3d76d3bdea1faa9cb78b7e9f58d311b660de03a5f74a2b35568a89b82ec0",
+        "effects": {}
+      },
+      {
+        "id": "gameboy-color",
+        "name": "Game Boy (GPU)",
+        "version": "0.2.0",
+        "description": "Experimental shader-based DMG emulator; CGB-compatible cartridges run in mono. Partial CPU/MBC; no sound.",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gameboy-color",
+        "fingerprint": "0d82eb1dd95272f91ddc630c84dab8684e82bffb798ea44bfe355c2e0e539d5b",
+        "effects": {}
+      },
+      {
+        "id": "gb2ns2",
+        "name": "GB2NS2",
+        "version": "0.1.0",
+        "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gb2ns2",
+        "fingerprint": "bd05400d358f55593a09c18fe21aa65e2d21380962f415b2f7bea3fd4e294e1d",
+        "effects": {}
+      },
+      {
+        "id": "hello-world",
+        "name": "Hello World",
+        "version": "1.0.0",
+        "description": "A simple first homebrew app",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-world",
+        "fingerprint": "67fba7851336f8271ef3b0a4efc10316d2ec35ebc52a75efc559b0d9e7842e5b",
+        "effects": {}
+      },
+      {
+        "id": "iz-exchange",
+        "name": "File Exchange",
+        "version": "1.1.1",
+        "description": "Live console folders and FTP file transfers",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\iz-exchange",
+        "fingerprint": "3ef7435df5e99b19b568101703601d76c3cbcc0c0b1e5c8f7665c3eaaafefdae",
+        "effects": {}
+      },
+      {
+        "id": "media-machine",
+        "name": "Media Machine",
+        "version": "1.1.0",
+        "description": "Local audio and video player for BrendanLauncher",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\media-machine",
+        "fingerprint": "65379b16eb993312391fcf9cdc30a2b7cb5daa47116b26354ef740d997cf9b0d",
+        "effects": {}
+      },
+      {
+        "id": "sphaira",
+        "name": "Sphaira",
+        "version": "1.0.0",
+        "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira",
+        "fingerprint": "80bd0edcaa440ee6c339f8b43b42f0114cd71468c242bc0a04e837052cffdf4c",
+        "effects": {
+          "1": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_1.pcm",
+          "2": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_2.pcm"
+        }
+      },
+      {
+        "id": "standalone-installer",
+        "name": "Standalone Client Installer",
+        "version": "1.0.0",
+        "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\standalone-installer",
+        "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
+        "effects": {}
+      },
+      {
+        "id": "vacootube",
+        "name": "VacooTube",
+        "version": "1.4.1",
+        "description": "Independent video player for Switch 2 · touch and controller input",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\vacootube",
+        "fingerprint": "5ff448064421fedfd5c78f9e0fc207b1bd077df8d24eff7d0e492e5f48c2423a",
+        "effects": {}
+      },
+      {
+        "id": "youtube",
+        "name": "YouTube (VacuumTube)",
+        "version": "2.0.1",
+        "description": "YouTube TV client and media streaming for Switch 2 HBL framework",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\youtube",
+        "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
+        "effects": {}
+      }
+    ],
+    "rejected": [
+      {
+        "folder": "gpu-triangle",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle\\switch\\app.json'"
+      },
+      {
+        "folder": "hello-cpu",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-cpu\\switch\\app.json'"
+      },
+      {
+        "folder": "hello-vite-native",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native\\switch\\app.json'"
+      },
+      {
+        "folder": "system-monitor",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
+      },
+      {
+        "folder": "twilight",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\twilight\\switch\\app.json'"
+      }
+    ]
+  },
+  "session": "latest",
+  "started": "2026-11-09T00:48:13.075Z",
+  "resourcesRetained": true,
+  "frames": 1,
+  "functions": {
+    "vkCreateShaderModule": 431688671344,
+    "vkCreateDescriptorSetLayout": 431688672592,
+    "vkCreatePipelineLayout": 431688672208,
+    "vkEnumeratePhysicalDevices": 431688665744,
+    "vkGetPhysicalDeviceMemoryProperties": 431688666448,
+    "vkCreateBuffer": 431688670480,
+    "vkGetBufferMemoryRequirements": 431688668560,
+    "vkAllocateMemory": 431688667696,
+    "vkBindBufferMemory": 431688668368,
+    "vkMapMemory2": 431688687600,
+    "vkCreateDescriptorPool": 431688672784,
+    "vkAllocateDescriptorSets": 431688673072,
+    "vkUpdateDescriptorSets": 431688673264,
+    "vkCreateGraphicsPipelines": 431688671920,
+    "vkCreateComputePipelines": 431688672016,
+    "vkGetSwapchainImagesKHR": 431688690640,
+    "vkCreateSemaphore": 431688669520,
+    "vkCreateImageView": 431688671152,
+    "vkCreateCommandPool": 431688673840,
+    "vkAllocateCommandBuffers": 431688663264,
+    "vkBeginCommandBuffer": 431688674224,
+    "vkCmdPipelineBarrier2": 431688683856,
+    "vkCmdBindDescriptorSets2": 431688687792,
+    "vkCmdBindPipeline": 431688674512,
+    "vkCmdDispatch": 431688676144,
+    "vkCmdBeginRendering": 431688683088,
+    "vkCmdDraw": 431688675760,
+    "vkCmdEndRendering": 431688683760,
+    "vkCmdCopyImageToBuffer2": 431688683664,
+    "vkEndCommandBuffer": 431688674320,
+    "vkAcquireNextImage2KHR": 431688692944,
+    "vkQueueSubmit": 431688667408,
+    "vkQueuePresentKHR": 431688690832,
+    "vkQueueWaitIdle": 431688667504
+  },
+  "commands": [
+    [
+      "357101441104",
+      "357102145616"
+    ]
+  ],
+  "operations": [
+    {
+      "name": "vkAcquireNextImage2KHR",
+      "args": [
+        "357046173776",
+        362569868672,
+        362569868176
+      ],
+      "started": "2026-11-09T00:48:20.942Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:20.949Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569870720,
+        0
+      ],
+      "started": "2026-11-09T00:48:21.004Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:21.011Z"
+    },
+    {
+      "name": "vkQueuePresentKHR",
+      "args": [
+        "357042925968",
+        362569871232
+      ],
+      "started": "2026-11-09T00:48:21.049Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:21.058Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:21.086Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:21.095Z"
+    }
+  ],
+  "shaderStaging": {
+    "address": 360262729728,
+    "bytes": 131072
+  },
+  "capture": {
+    "buffer": "357036853120",
+    "memory": "357082477488",
+    "mapped": 357090918400,
+    "bytes": 8294400,
+    "width": 1920,
+    "height": 1080
+  },
+  "controls": {
+    "buffer": "357036852752",
+    "memory": "357082476624",
+    "mapped": 357082529792,
+    "setLayout": "357036944464",
+    "descriptorPool": "357046980688",
+    "descriptor": "357039982416",
+    "bytes": 8388608
+  },
+  "pipeline": "357082488912",
+  "layout": "357081788496",
+  "shaders": [
+    "357050526720",
+    "357050526992"
+  ],
+  "computePipeline": "357102747728",
+  "computeShader": "357081145696",
+  "resources": {
+    "device": "357046173776",
+    "queue": "357042925968",
+    "swapchain": "357042929280",
+    "images": [
+      "357045753424",
+      "357045754960"
+    ],
+    "views": [
+      "357036750160",
+      "357036750480"
+    ],
+    "semaphores": [
+      "357040003696",
+      "357040003984"
+    ],
+    "acquired": "357040003408",
+    "pool": "357045029344"
+  },
+  "firstShaderFramePresented": true,
+  "computeCheck": {
+    "angleX": 8.016666412353516,
+    "palette": 0,
+    "buttons": 0,
+    "frames": 1,
+    "modal": 0
+  },
+  "ready": true,
+  "scratchRestored": true,
+  "completed": "2026-11-09T00:48:22.539Z"
+}

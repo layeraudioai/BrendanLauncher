@@ -1,0 +1,4134 @@
+{
+  "session": "latest",
+  "cases": [
+    {
+      "name": "D-pad down",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "D-pad wraps down",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "D-pad wraps up",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Held button is not repeated",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Stick down",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Stick repeat cooldown",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "A opens empty slot",
+      "selection": 2,
+      "modal": 1,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "B closes empty slot",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Modal holds selection",
+      "selection": 1,
+      "modal": 1,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Disconnected input ignored",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Touch selects last row",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Ending touch ignored",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Refresh stays still while idle",
+      "selection": 0,
+      "modal": 0,
+      "frames": 5,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Refresh tap starts spinning",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 1,
+        "angle": 0.14000000059604645,
+        "requests": 1,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Held refresh tap waits for host acknowledgement",
+      "selection": 1,
+      "modal": 0,
+      "frames": 80,
+      "refresh": {
+        "remaining": 1,
+        "angle": 4.91681432723999,
+        "requests": 1,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Tap while refreshing ignored",
+      "selection": 1,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0.6000000238418579,
+        "angle": 0.14000000059604645,
+        "requests": 1,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Refresh does not trigger through modal",
+      "selection": 0,
+      "modal": 1,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Touch ending on refresh ignored",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Sliding held touch over refresh ignored",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "New tap after release refreshes again",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 1,
+        "angle": 0.14000000059604645,
+        "requests": 2,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Direct touch from first to last row",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Direct touch from last to first row",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "First gap does not select",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Second gap does not select",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Space above first row does not select",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Rounded corner does not select",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Single-title D-pad stays on title",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 1,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Two-title wrap uses actual count",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 2,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Empty library ignores D-pad",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Empty library ignores A",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Empty library ignores row taps",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Empty library still refreshes",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 1,
+        "angle": 0.14000000059604645,
+        "requests": 1,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Right leaves an empty library empty",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Left does not change the catalog",
+      "selection": 2,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Disconnected horizontal input ignored",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Installed app request waits for fade",
+      "selection": 1,
+      "modal": 0,
+      "frames": 20,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 2,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "More than one page wraps correctly",
+      "selection": 4,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 5,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Touch on second page selects global app index",
+      "selection": 3,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 5,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Left leaves an empty library empty",
+      "selection": 0,
+      "modal": 0,
+      "frames": 1,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 0,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    },
+    {
+      "name": "Completed host refresh leaves idle arrow still",
+      "selection": 0,
+      "modal": 0,
+      "frames": 3,
+      "refresh": {
+        "remaining": 0,
+        "angle": 0,
+        "requests": 0,
+        "completions": 0
+      },
+      "library": {
+        "count": 3,
+        "preview": 0,
+        "reserved": 0
+      },
+      "passed": true
+    }
+  ],
+  "started": "2026-11-09T00:48:22.695Z",
+  "operations": [
+    {
+      "name": "vkAllocateCommandBuffers",
+      "args": [
+        "357046173776",
+        362569868416,
+        362569868160
+      ],
+      "started": "2026-11-09T00:48:23.552Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.561Z"
+    },
+    {
+      "name": "vkBeginCommandBuffer",
+      "args": [
+        "357102579792",
+        362569868416
+      ],
+      "started": "2026-11-09T00:48:23.586Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.594Z"
+    },
+    {
+      "name": "vkCmdPipelineBarrier2",
+      "args": [
+        "357102579792",
+        362569868672
+      ],
+      "started": "2026-11-09T00:48:23.613Z",
+      "status": "returned",
+      "result": "357101835648",
+      "completed": "2026-11-09T00:48:23.624Z"
+    },
+    {
+      "name": "vkCmdBindDescriptorSets2",
+      "args": [
+        "357102579792",
+        362569868416
+      ],
+      "started": "2026-11-09T00:48:23.645Z",
+      "status": "returned",
+      "result": "357102581096",
+      "completed": "2026-11-09T00:48:23.654Z"
+    },
+    {
+      "name": "vkCmdBindPipeline",
+      "args": [
+        "357102579792",
+        1,
+        "357102747728"
+      ],
+      "started": "2026-11-09T00:48:23.656Z",
+      "status": "returned",
+      "result": "357081146432",
+      "completed": "2026-11-09T00:48:23.666Z"
+    },
+    {
+      "name": "vkCmdDispatch",
+      "args": [
+        "357102579792",
+        1,
+        1,
+        1
+      ],
+      "started": "2026-11-09T00:48:23.668Z",
+      "status": "returned",
+      "result": "357082210548",
+      "completed": "2026-11-09T00:48:23.678Z"
+    },
+    {
+      "name": "vkCmdPipelineBarrier2",
+      "args": [
+        "357102579792",
+        362569868672
+      ],
+      "started": "2026-11-09T00:48:23.696Z",
+      "status": "returned",
+      "result": "357101835744",
+      "completed": "2026-11-09T00:48:23.704Z"
+    },
+    {
+      "name": "vkEndCommandBuffer",
+      "args": [
+        "357102579792"
+      ],
+      "started": "2026-11-09T00:48:23.707Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.715Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.747Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.756Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.759Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.780Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.804Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.811Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.814Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.822Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.843Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.851Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.854Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.862Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.884Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.892Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.895Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.904Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.925Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.932Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.934Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.943Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:23.964Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.973Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:23.976Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:23.983Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.004Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.011Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.014Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.022Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.056Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.064Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.067Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.076Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.101Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.111Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.113Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.121Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.142Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.149Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.152Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.160Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.187Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.209Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.212Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.223Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.307Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.316Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.318Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.328Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.359Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.368Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.397Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.405Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.408Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.415Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.418Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.426Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.428Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.438Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.441Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.448Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.451Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.460Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.463Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.476Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.479Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.487Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.490Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.502Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.551Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.559Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.562Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.570Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.593Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.601Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.604Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.611Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.614Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.624Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.627Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.635Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.638Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.646Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.649Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.658Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.661Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.669Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.672Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.680Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.682Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.693Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.696Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.704Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.707Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.714Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.717Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.725Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.728Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.737Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.740Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.748Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.751Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.763Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.765Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.774Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.777Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.785Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.788Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.796Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.798Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.810Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.813Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.822Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.826Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.833Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.836Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.844Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.847Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.855Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.857Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.864Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.867Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.874Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.877Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.883Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.886Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.894Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.897Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.904Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.907Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.922Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.925Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.932Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.935Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.943Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.946Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.955Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.958Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.972Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.974Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.981Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:24.984Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:24.991Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:24.994Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.001Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.004Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.013Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.017Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.025Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.027Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.034Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.038Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.046Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.048Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.062Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.065Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.077Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.079Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.087Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.090Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.099Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.103Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.121Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.124Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.131Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.134Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.142Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.144Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.155Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.158Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.166Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.168Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.175Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.178Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.185Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.188Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.196Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.198Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.207Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.210Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.217Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.220Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.228Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.231Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.240Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.242Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.250Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.254Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.263Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.266Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.274Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.276Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.283Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.286Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.304Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.307Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.314Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.317Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.328Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.331Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.338Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.341Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.348Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.351Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.360Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.362Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.370Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.373Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.380Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.383Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.391Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.393Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.403Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.407Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.414Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.416Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.424Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.427Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.434Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.438Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.446Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.448Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.456Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.459Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.466Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.468Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.484Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.487Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.494Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.497Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.505Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.508Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.515Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.519Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.527Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.530Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.540Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.543Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.556Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.559Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.566Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.570Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.581Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.584Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.601Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.607Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.627Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.629Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.638Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.642Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.649Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.653Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.661Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.664Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.683Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.686Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.694Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.696Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.705Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.707Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.714Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.717Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.725Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.727Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.735Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.739Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.746Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.750Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.758Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.761Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.770Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.773Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.787Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.790Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.799Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.802Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.810Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.813Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.823Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.826Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.838Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.841Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.851Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.856Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.866Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.869Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.878Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.881Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.891Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.898Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.909Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.912Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.921Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.924Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.933Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.936Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.944Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.947Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.955Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.958Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.966Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.969Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.978Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:25.981Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:25.989Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:25.992Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.000Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.003Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.011Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.015Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.022Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.026Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.038Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.041Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.054Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.057Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.077Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.080Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.088Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.090Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.098Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.101Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.110Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.113Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.122Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.125Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.144Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.174Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.184Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.188Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.229Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.232Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.290Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.294Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.314Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.317Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.333Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.336Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.345Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.348Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.356Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.359Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.366Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.369Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.376Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.379Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.387Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.390Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.397Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.401Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.408Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.411Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.419Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.423Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.433Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.436Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.444Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.446Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.455Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.458Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.466Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.469Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.477Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.481Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.488Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.492Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.499Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.502Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.510Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.512Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.520Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.523Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.531Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.534Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.542Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.545Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.553Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.556Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.564Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.568Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.575Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.578Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.586Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.590Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.598Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.601Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.609Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.612Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.620Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.623Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.635Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.638Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.646Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.668Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.676Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.679Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.687Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.709Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.716Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.719Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.727Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.751Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.761Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.764Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.772Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.794Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.802Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.806Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.813Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.839Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.848Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.851Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.859Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.880Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.888Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.891Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.898Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.921Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.929Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.932Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.946Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:26.969Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.977Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:26.980Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:26.988Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.009Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.017Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.019Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.027Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.049Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.059Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.063Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.070Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.093Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.102Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.106Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.113Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.135Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.145Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.149Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.157Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.179Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.187Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.190Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.197Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.221Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.232Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.235Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.243Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.265Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.273Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.277Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.284Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.307Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.315Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.319Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.326Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.351Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.361Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.366Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.376Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.400Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.409Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.412Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.420Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.443Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.453Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.456Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.467Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.490Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.499Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.502Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.510Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.533Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.541Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.544Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.558Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.561Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.570Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.573Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.581Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.585Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.594Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.597Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.605Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.609Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.619Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.622Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.631Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.635Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.644Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.648Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.657Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.664Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.674Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.678Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.685Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.689Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.699Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.702Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.711Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.714Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.722Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.726Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.734Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.737Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.745Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.749Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.757Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.761Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.769Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.773Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.781Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.784Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.793Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.796Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.804Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.808Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.816Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.819Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.827Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.831Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.839Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.843Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.850Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.854Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.862Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.866Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.876Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.880Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.890Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.898Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.907Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.910Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.918Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.922Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.930Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.934Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.942Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.946Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.954Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.959Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.968Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.971Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.979Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:27.982Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:27.991Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:27.994Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.009Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.012Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.021Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.024Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.033Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.079Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.087Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.091Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.099Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.122Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.130Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.135Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.144Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.175Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.185Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.188Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.197Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.220Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.228Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.232Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.240Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.244Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.254Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.258Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.266Z"
+    },
+    {
+      "name": "vkQueueSubmit",
+      "args": [
+        "357042925968",
+        1,
+        362569869184,
+        0
+      ],
+      "started": "2026-11-09T00:48:28.269Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.277Z"
+    },
+    {
+      "name": "vkQueueWaitIdle",
+      "args": [
+        "357042925968"
+      ],
+      "started": "2026-11-09T00:48:28.281Z",
+      "status": "returned",
+      "result": "0",
+      "completed": "2026-11-09T00:48:28.290Z"
+    }
+  ],
+  "passed": true,
+  "scratchRestored": true,
+  "completed": "2026-11-09T00:48:28.330Z"
+}

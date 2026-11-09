@@ -1,0 +1,54 @@
+[
+  {
+    "name": "BlitBun",
+    "description": "PC-to-Switch 2 streaming · video, audio and optional controller forwarding",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-0.png"
+  },
+  {
+    "name": "Game Boy (GPU)",
+    "description": "Experimental shader-based DMG emulator; CGB-compatible cartridges run in mono. Partial CPU/MBC; no sound.",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-1.png"
+  },
+  {
+    "name": "GB2NS2",
+    "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-2.png"
+  },
+  {
+    "name": "Hello World",
+    "description": "A simple first homebrew app",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-3.png"
+  },
+  {
+    "name": "File Exchange",
+    "description": "Live console folders and FTP file transfers",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-4.png",
+    "transition": "none"
+  },
+  {
+    "name": "Media Machine",
+    "description": "Local audio and video player for BrendanLauncher",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-5.png",
+    "transition": "fade"
+  },
+  {
+    "name": "Sphaira",
+    "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-6.png"
+  },
+  {
+    "name": "Standalone Client Installer",
+    "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-7.png"
+  },
+  {
+    "name": "VacooTube",
+    "description": "Independent video player for Switch 2 · touch and controller input",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-8.png"
+  },
+  {
+    "name": "YouTube (VacuumTube)",
+    "description": "YouTube TV client and media streaming for Switch 2 HBL framework",
+    "icon": "K:\\ns2hb\\GitRepo\\brendanlauncher\\runs\\latest\\catalog-1-icon-9.png"
+  }
+]

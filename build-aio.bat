@@ -7,6 +7,15 @@ echo BrendanLauncher AIO build + server
 echo Native CPU launcher/apps, GPU apps and IZ module platform assets
 echo ============================================================
 
+if exist "C:\dkp\devkitA64\bin\aarch64-none-elf-gcc.exe" (
+  set "PATH=C:\dkp\devkitA64\bin;%PATH%"
+)
+for /d %%d in (C:\VulkanSDK\*) do (
+  if exist "%%d\Bin\glslangValidator.exe" (
+    set "PATH=%%d\Bin;%PATH%"
+  )
+)
+
 where node >nul 2>nul || (echo ERROR: Node.js 22+ is required. & exit /b 1)
 node -e "if(Number(process.versions.node.split('.')[0])<22)process.exit(1)" || (echo ERROR: Install Node.js 22 or newer. & exit /b 1)
 where bash >nul 2>nul || (echo ERROR: Install Git for Windows or MSYS2 with bash on PATH. & exit /b 1)
@@ -48,7 +57,7 @@ echo [2/2] Starting BrendanLauncher server with integrated IZ modules...
 echo NOTE: bundled IZ host modules declare Linux x64/ARM64 support; native Windows may show packages but cannot run those Linux-only host services.
 echo Keep this window open. Press Ctrl+C to stop the server.
 echo.
-node server.cjs
+node server.cjs %*
 set "RESULT=%ERRORLEVEL%"
 if not "%RESULT%"=="0" echo BrendanLauncher server exited with code %RESULT%.
 exit /b %RESULT%

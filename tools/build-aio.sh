@@ -11,6 +11,16 @@ command -v glslangValidator >/dev/null || { echo "glslangValidator is required t
 command -v spirv-val >/dev/null || { echo "spirv-val is required to validate GPU shaders." >&2; exit 1; }
 
 if ! command -v "${CC:-aarch64-linux-gnu-gcc}" >/dev/null && ! command -v aarch64-none-elf-gcc >/dev/null; then
+  if [ -d "/c/dkp/devkitA64/bin" ]; then
+    export PATH="/c/dkp/devkitA64/bin:$PATH"
+  elif [ -d "/mnt/c/dkp/devkitA64/bin" ]; then
+    export PATH="/mnt/c/dkp/devkitA64/bin:$PATH"
+  elif [ -d "C:/dkp/devkitA64/bin" ]; then
+    export PATH="C:/dkp/devkitA64/bin:$PATH"
+  fi
+fi
+
+if ! command -v "${CC:-aarch64-linux-gnu-gcc}" >/dev/null && ! command -v aarch64-none-elf-gcc >/dev/null; then
   echo "Install an AArch64 cross-toolchain (aarch64-linux-gnu or aarch64-none-elf)." >&2; exit 1
 fi
 if ! command -v "${CC:-aarch64-linux-gnu-gcc}" >/dev/null; then

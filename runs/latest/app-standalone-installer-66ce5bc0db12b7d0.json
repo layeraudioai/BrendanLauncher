@@ -1,0 +1,46 @@
+{
+  "session": "latest",
+  "id": "standalone-installer",
+  "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
+  "started": "2026-11-09T00:49:56.794Z",
+  "resourcesRetained": true,
+  "commands": [
+    [
+      "357102338128",
+      "357102399568"
+    ]
+  ],
+  "functions": {
+    "vkCreateShaderModule": 431688671344,
+    "vkCreateGraphicsPipelines": 431688671920,
+    "vkCreateComputePipelines": 431688672016,
+    "vkAllocateCommandBuffers": 431688663264,
+    "vkBeginCommandBuffer": 431688674224,
+    "vkCmdPipelineBarrier2": 431688683856,
+    "vkCmdBindDescriptorSets2": 431688687792,
+    "vkCmdBindPipeline": 431688674512,
+    "vkCmdDispatch": 431688676144,
+    "vkCmdBeginRendering": 431688683088,
+    "vkCmdDraw": 431688675760,
+    "vkCmdEndRendering": 431688683760,
+    "vkCmdCopyImageToBuffer2": 431688683664,
+    "vkEndCommandBuffer": 431688674320
+  },
+  "pipeline": "357082494352",
+  "layout": "357081788496",
+  "shaders": [
+    "357081148144",
+    "357081147872"
+  ],
+  "computePipelines": {
+    "compute": {
+      "pipeline": "357102752960",
+      "shader": "357081149232"
+    }
+  },
+  "computePipeline": "357102752960",
+  "computeShader": "357081149232",
+  "ready": true,
+  "scratchRestored": true,
+  "completed": "2026-11-09T00:49:59.330Z"
+}

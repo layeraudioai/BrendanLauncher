@@ -69,6 +69,19 @@ async function main() {
     }
   }
 
+  if (!pinVal && process.stdin.isTTY) {
+    const readline = require('node:readline/promises');
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    try {
+      const answer = await rl.question('Enter 4-digit pairing PIN (or leave blank for [0,0,0,0]): ');
+      if (answer.trim()) {
+        pinVal = answer.trim();
+      }
+    } finally {
+      rl.close();
+    }
+  }
+
   const host = await chooseHost(filteredArgs);
   const token = pairingCode(pinVal);
   

@@ -1,0 +1,21 @@
+{
+  "session": "latest",
+  "started": "2026-11-09T00:48:30.562Z",
+  "functions": {
+    "InitializeAudioOutParameter": 431872757552,
+    "OpenDefaultAudioOutEPNS0_8AudioOutER": 431872859776,
+    "GetAudioOutSampleRate": 431872861712,
+    "GetAudioOutChannelCount": 431872861728,
+    "GetAudioOutSampleFormat": 431872861744,
+    "GetReleasedAudioOutBuffer": 431872861968,
+    "FlushAudioOutBuffers": 431872862656,
+    "GetAudioOutBufferCount": 431872862320
+  },
+  "resourcesRetained": true,
+  "played": 0,
+  "history": [],
+  "audio": 360262926336,
+  "base": 360262926336,
+  "ready": true,
+  "package": null
+}

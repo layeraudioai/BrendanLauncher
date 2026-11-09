@@ -1,0 +1,46 @@
+{
+  "session": "latest",
+  "id": "youtube",
+  "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
+  "started": "2026-11-09T00:49:23.426Z",
+  "resourcesRetained": true,
+  "commands": [
+    [
+      "357102215248",
+      "357102796880"
+    ]
+  ],
+  "functions": {
+    "vkCreateShaderModule": 431688671344,
+    "vkCreateGraphicsPipelines": 431688671920,
+    "vkCreateComputePipelines": 431688672016,
+    "vkAllocateCommandBuffers": 431688663264,
+    "vkBeginCommandBuffer": 431688674224,
+    "vkCmdPipelineBarrier2": 431688683856,
+    "vkCmdBindDescriptorSets2": 431688687792,
+    "vkCmdBindPipeline": 431688674512,
+    "vkCmdDispatch": 431688676144,
+    "vkCmdBeginRendering": 431688683088,
+    "vkCmdDraw": 431688675760,
+    "vkCmdEndRendering": 431688683760,
+    "vkCmdCopyImageToBuffer2": 431688683664,
+    "vkEndCommandBuffer": 431688674320
+  },
+  "pipeline": "357082491632",
+  "layout": "357081788496",
+  "shaders": [
+    "357081147056",
+    "357081147328"
+  ],
+  "computePipelines": {
+    "compute": {
+      "pipeline": "357102751216",
+      "shader": "357081147600"
+    }
+  },
+  "computePipeline": "357102751216",
+  "computeShader": "357081147600",
+  "ready": true,
+  "scratchRestored": true,
+  "completed": "2026-11-09T00:49:25.641Z"
+}
