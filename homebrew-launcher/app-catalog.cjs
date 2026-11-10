@@ -15,11 +15,49 @@ async function readApp(directory, { validate = true } = {}) {
     const root = await fs.realpath(directory);
     let manifestPath = path.join(root, 'app.json');
     let assetRoot = root;
+    let isNative = false;
     if (!await fs.access(manifestPath).then(() => true, () => false)) {
-        manifestPath = path.join(root, 'switch/app.json');
-        assetRoot = path.join(root, 'switch');
+        manifestPath = path.join(root, 'manifest.json');
+        if (await fs.access(manifestPath).then(() => true, () => false)) {
+            isNative = true;
+        } else {
+            manifestPath = path.join(root, 'switch/app.json');
+            assetRoot = path.join(root, 'switch');
+        }
     }
     const manifestAsset = await asset(assetRoot, path.relative(assetRoot, manifestPath), 16384), m = JSON.parse(manifestAsset.bytes);
+    
+    if (isNative || m.kind === 'native') {
+        check(m.abi === 3 && m.kind === 'native', 'Unsupported native app ABI/kind');
+        check(typeof m.id === 'string' && /^[a-z0-9][a-z0-9._-]{0,63}$/.test(m.id), 'Invalid native app id');
+        check(typeof m.name === 'string' && m.name.trim().length > 0 && m.name.length <= 64, 'Invalid native app name');
+        check(typeof m.version === 'string' && m.version.length <= 32, 'Invalid version');
+        check(typeof m.description === 'string' && m.description.length <= 160, 'Invalid description');
+
+        const files = {}, hash = crypto.createHash('sha256'); hash.update(manifestAsset.bytes);
+        let iconBytes;
+        try {
+            const iconAsset = await asset(root, m.icon || 'icon.png', 2 * 1024 * 1024);
+            iconBytes = iconAsset.bytes;
+        } catch {
+            iconBytes = Buffer.from('89504e470d0a1a0a0000000d4948445200000060000000600806000000c477d5c40000000a49444154789c6360000002000179a473e50000000049454e44ae426082', 'hex');
+        }
+        files.icon = { bytes: iconBytes };
+        hash.update(iconBytes);
+
+        return { 
+            id: m.id, 
+            name: m.name.trim(), 
+            version: m.version, 
+            description: m.description, 
+            root, 
+            manifest: { ...m, format: 'native-sdk' }, 
+            files, 
+            effects: {}, 
+            fingerprint: hash.digest('hex') 
+        };
+    }
+
     check((m.format === 'hblauncher.gpu-app' || m.format === 'izlauncher.app') && m.abi === 1, 'Unsupported app format/ABI');
     check(m.format !== 'izlauncher.app' || m.displayOnly === true || m.builtin === true || !!m.shaders, 'IZ metadata-only package; mark displayOnly or provide executable GPU shaders');
     check(m.displayOnly === undefined || typeof m.displayOnly === 'boolean', 'Invalid displayOnly flag');

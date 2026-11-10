@@ -17,6 +17,8 @@ if ! command -v "${CC:-aarch64-linux-gnu-gcc}" >/dev/null && ! command -v aarch6
     export PATH="/mnt/c/dkp/devkitA64/bin:$PATH"
   elif [ -d "C:/dkp/devkitA64/bin" ]; then
     export PATH="C:/dkp/devkitA64/bin:$PATH"
+  elif [ -d "/opt/devkitpro/msys2/usr/bin" ]; then
+    export PATH="/opt/devkitpro/msys2/usr/bin:$PATH"
   fi
 fi
 

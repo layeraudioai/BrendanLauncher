@@ -4,10 +4,31 @@
 set -e
 cd "$(dirname "$0")"
 ROOT=$(cd .. && pwd)
-CC=${CC:-aarch64-linux-gnu-gcc}
-OBJCOPY=${OBJCOPY:-aarch64-linux-gnu-objcopy}
-NM=${NM:-aarch64-linux-gnu-nm}
-SIZE=${SIZE:-aarch64-linux-gnu-size}
+if [ -d "/c/dkp/devkitA64/bin" ]; then
+  export PATH="/c/dkp/devkitA64/bin:$PATH"
+elif [ -d "/mnt/c/dkp/devkitA64/bin" ]; then
+  export PATH="/mnt/c/dkp/devkitA64/bin:$PATH"
+elif [ -d "C:/dkp/devkitA64/bin" ]; then
+  export PATH="C:/dkp/devkitA64/bin:$PATH"
+elif [ -d "/opt/devkitpro/msys2/usr/bin" ]; then
+  export PATH="/opt/devkitpro/msys2/usr/bin:$PATH"
+fi
+
+if [ -z "${CC:-}" ]; then
+  for prefix in aarch64-none-elf- aarch64-linux-gnu-; do
+    if command -v "${prefix}gcc" >/dev/null; then
+      CC="${prefix}gcc"
+      OBJCOPY="${prefix}objcopy"
+      NM="${prefix}nm"
+      SIZE="${prefix}size"
+      break
+    fi
+  done
+fi
+CC=${CC:-aarch64-none-elf-gcc}
+OBJCOPY=${OBJCOPY:-aarch64-none-elf-objcopy}
+NM=${NM:-aarch64-none-elf-nm}
+SIZE=${SIZE:-aarch64-none-elf-size}
 OUT=${1:-build}
 mkdir -p "$OUT"
 CFLAGS="-std=gnu11 -O2 -ffreestanding -nostdlib -fno-builtin -fno-pic -fno-pie \

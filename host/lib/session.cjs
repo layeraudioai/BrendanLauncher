@@ -17,8 +17,13 @@ const {spawn} = require('node:child_process');
 const {check, readIfJson, sleep, HostError} = require('./common.cjs');
 
 function ns2jbDir(override) {
-  return path.resolve(override || process.env.HBL_NS2JB ||
-    path.join(path.dirname(path.resolve(__dirname, '..', '..')), 'ns2jb-kurumuz'));
+  if (override) return path.resolve(override);
+  if (process.env.HBL_NS2JB) return path.resolve(process.env.HBL_NS2JB);
+  const internal = path.join(path.resolve(__dirname, '..', '..'), 'ns2jb-kurumuz');
+  if (fs.existsSync(path.join(internal, 'run.cjs'))) return internal;
+  const sibling = path.join(path.dirname(path.resolve(__dirname, '..', '..')), 'ns2jb-kurumuz');
+  if (fs.existsSync(path.join(sibling, 'run.cjs'))) return sibling;
+  return internal;
 }
 
 function runDirectories(directory) {

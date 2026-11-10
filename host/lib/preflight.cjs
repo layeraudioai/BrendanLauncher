@@ -36,11 +36,19 @@ async function run(options = {}) {
 
   /* Toolchain */
   add('node', true, true, process.version, 'install Node 18+');
-  for (const tool of ['aarch64-linux-gnu-gcc', 'aarch64-linux-gnu-objcopy', 'aarch64-linux-gnu-nm']) {
+  let cc = process.env.CC;
+  if (!cc) {
+    try {
+      cc = execFileSync('sh', ['-c', 'command -v aarch64-none-elf-gcc || command -v aarch64-linux-gnu-gcc || echo ""'], {encoding: 'utf8'}).trim();
+    } catch { cc = ''; }
+  }
+  const prefix = cc ? cc.replace(/-gcc$/, '') : 'aarch64-none-elf';
+  for (const suffix of ['gcc', 'objcopy', 'nm']) {
+    const tool = prefix + '-' + suffix;
     let ok = true;
     try { execFileSync('sh', ['-c', `command -v ${tool}`], {stdio: 'ignore'}); }
     catch { ok = false; }
-    add(tool, ok, true, ok ? 'found' : 'missing', 'apt install gcc-aarch64-linux-gnu');
+    add(tool, ok, true, ok ? 'found' : 'missing', 'install AArch64 cross-toolchain (devkitA64 or aarch64-linux-gnu)');
   }
 
   /* Built artifacts */

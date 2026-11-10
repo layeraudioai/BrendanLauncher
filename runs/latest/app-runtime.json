@@ -1,44 +1,14 @@
 {
   "session": "latest",
-  "started": "2026-11-09T00:48:28.523Z",
+  "started": "2026-11-09T20:44:33.773Z",
   "transitions": [
-    {
-      "event": "launch",
-      "id": "youtube",
-      "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
-      "time": "2026-11-09T00:49:26.945Z"
-    },
-    {
-      "event": "return",
-      "time": "2026-11-09T00:49:34.465Z"
-    },
     {
       "event": "return",
       "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-09T00:49:42.247Z"
-    },
-    {
-      "event": "launch",
-      "id": "standalone-installer",
-      "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
-      "time": "2026-11-09T00:50:00.774Z"
-    },
-    {
-      "event": "return",
-      "time": "2026-11-09T00:50:12.631Z"
-    },
-    {
-      "event": "launch",
-      "id": "media-machine",
-      "fingerprint": "65379b16eb993312391fcf9cdc30a2b7cb5daa47116b26354ef740d997cf9b0d",
-      "time": "2026-11-09T00:50:23.490Z"
-    },
-    {
-      "event": "return",
-      "time": "2026-11-09T00:50:43.909Z"
+      "time": "2026-11-09T20:45:07.160Z"
     }
   ],
-  "generation": 6,
+  "generation": 2,
   "resourcesRetained": true,
   "catalog": {
     "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps",
@@ -139,6 +109,10 @@
     ],
     "rejected": [
       {
+        "folder": "air-guitar",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar\\switch\\app.json'"
+      },
+      {
         "folder": "gpu-triangle",
         "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle\\switch\\app.json'"
       },
@@ -151,12 +125,12 @@
         "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native\\switch\\app.json'"
       },
       {
-        "folder": "system-monitor",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
+        "folder": "ns2jb-modloader",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\ns2jb-modloader\\switch\\app.json'"
       },
       {
-        "folder": "twilight",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\twilight\\switch\\app.json'"
+        "folder": "system-monitor",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
       }
     ]
   },

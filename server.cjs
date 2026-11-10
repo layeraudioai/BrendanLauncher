@@ -28,7 +28,7 @@ function ensurePythonAndPillow() {
       execSync(`${cmd} --version`, { stdio: 'ignore' });
       pyCmd = cmd;
       break;
-    } catch (e) {}
+    } catch (e) { }
   }
   if (!pyCmd) {
     throw new Error('Python 3 is required but was not found on the system. Please install Python 3.');
@@ -38,7 +38,7 @@ function ensurePythonAndPillow() {
   try {
     execSync(`${pyCmd} -c "import PIL"`, { stdio: 'ignore' });
     hasPillow = true;
-  } catch (e) {}
+  } catch (e) { }
 
   if (!hasPillow) {
     console.log('[SETUP] Python Pillow (PIL) module not found. Attempting automatic installation via pip...');
@@ -62,7 +62,7 @@ async function main() {
   let pinVal = null;
   const filteredArgs = [];
   for (let i = 0; i < rawArgs.length; i++) {
-    if (rawArgs[i] === '--pin' && rawArgs[i+1]) {
+    if (rawArgs[i] === '--pin' && rawArgs[i + 1]) {
       pinVal = rawArgs[++i];
     } else {
       filteredArgs.push(rawArgs[i]);
@@ -84,7 +84,7 @@ async function main() {
 
   const host = await chooseHost(filteredArgs);
   const token = pairingCode(pinVal);
-  
+
   console.log('==================================================');
   console.log(' BrendanLauncher Unified Switch 2 Server & Panel');
   console.log(' IZLauncher, HBLauncher, & SPHAIRA Hybrid Suite');
@@ -126,7 +126,7 @@ async function main() {
 
     console.log('Console connected! Initializing native client...');
     native = new NativeClient(connected.connection, connected.addresses);
-    
+
     console.log('Qualifying native session...');
     const qualification = await qualify(native);
     console.log('Qualification passed:', qualification);

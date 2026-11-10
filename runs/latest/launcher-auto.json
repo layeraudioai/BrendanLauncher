@@ -101,6 +101,10 @@
     ],
     "rejected": [
       {
+        "folder": "air-guitar",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar\\switch\\app.json'"
+      },
+      {
         "folder": "gpu-triangle",
         "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle\\switch\\app.json'"
       },
@@ -113,156 +117,156 @@
         "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native\\switch\\app.json'"
       },
       {
-        "folder": "system-monitor",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
+        "folder": "ns2jb-modloader",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\ns2jb-modloader\\switch\\app.json'"
       },
       {
-        "folder": "twilight",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\twilight\\switch\\app.json'"
+        "folder": "system-monitor",
+        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
       }
     ]
   },
   "session": "latest",
-  "started": "2026-11-09T00:48:13.075Z",
+  "started": "2026-11-09T20:43:59.128Z",
   "resourcesRetained": true,
   "frames": 1,
   "functions": {
-    "vkCreateShaderModule": 431688671344,
-    "vkCreateDescriptorSetLayout": 431688672592,
-    "vkCreatePipelineLayout": 431688672208,
-    "vkEnumeratePhysicalDevices": 431688665744,
-    "vkGetPhysicalDeviceMemoryProperties": 431688666448,
-    "vkCreateBuffer": 431688670480,
-    "vkGetBufferMemoryRequirements": 431688668560,
-    "vkAllocateMemory": 431688667696,
-    "vkBindBufferMemory": 431688668368,
-    "vkMapMemory2": 431688687600,
-    "vkCreateDescriptorPool": 431688672784,
-    "vkAllocateDescriptorSets": 431688673072,
-    "vkUpdateDescriptorSets": 431688673264,
-    "vkCreateGraphicsPipelines": 431688671920,
-    "vkCreateComputePipelines": 431688672016,
-    "vkGetSwapchainImagesKHR": 431688690640,
-    "vkCreateSemaphore": 431688669520,
-    "vkCreateImageView": 431688671152,
-    "vkCreateCommandPool": 431688673840,
-    "vkAllocateCommandBuffers": 431688663264,
-    "vkBeginCommandBuffer": 431688674224,
-    "vkCmdPipelineBarrier2": 431688683856,
-    "vkCmdBindDescriptorSets2": 431688687792,
-    "vkCmdBindPipeline": 431688674512,
-    "vkCmdDispatch": 431688676144,
-    "vkCmdBeginRendering": 431688683088,
-    "vkCmdDraw": 431688675760,
-    "vkCmdEndRendering": 431688683760,
-    "vkCmdCopyImageToBuffer2": 431688683664,
-    "vkEndCommandBuffer": 431688674320,
-    "vkAcquireNextImage2KHR": 431688692944,
-    "vkQueueSubmit": 431688667408,
-    "vkQueuePresentKHR": 431688690832,
-    "vkQueueWaitIdle": 431688667504
+    "vkCreateShaderModule": 56204091504,
+    "vkCreateDescriptorSetLayout": 56204092752,
+    "vkCreatePipelineLayout": 56204092368,
+    "vkEnumeratePhysicalDevices": 56204085904,
+    "vkGetPhysicalDeviceMemoryProperties": 56204086608,
+    "vkCreateBuffer": 56204090640,
+    "vkGetBufferMemoryRequirements": 56204088720,
+    "vkAllocateMemory": 56204087856,
+    "vkBindBufferMemory": 56204088528,
+    "vkMapMemory2": 56204107760,
+    "vkCreateDescriptorPool": 56204092944,
+    "vkAllocateDescriptorSets": 56204093232,
+    "vkUpdateDescriptorSets": 56204093424,
+    "vkCreateGraphicsPipelines": 56204092080,
+    "vkCreateComputePipelines": 56204092176,
+    "vkGetSwapchainImagesKHR": 56204110800,
+    "vkCreateSemaphore": 56204089680,
+    "vkCreateImageView": 56204091312,
+    "vkCreateCommandPool": 56204094000,
+    "vkAllocateCommandBuffers": 56204083424,
+    "vkBeginCommandBuffer": 56204094384,
+    "vkCmdPipelineBarrier2": 56204104016,
+    "vkCmdBindDescriptorSets2": 56204107952,
+    "vkCmdBindPipeline": 56204094672,
+    "vkCmdDispatch": 56204096304,
+    "vkCmdBeginRendering": 56204103248,
+    "vkCmdDraw": 56204095920,
+    "vkCmdEndRendering": 56204103920,
+    "vkCmdCopyImageToBuffer2": 56204103824,
+    "vkEndCommandBuffer": 56204094480,
+    "vkAcquireNextImage2KHR": 56204113104,
+    "vkQueueSubmit": 56204087568,
+    "vkQueuePresentKHR": 56204110992,
+    "vkQueueWaitIdle": 56204087664
   },
   "commands": [
     [
-      "357101441104",
-      "357102145616"
+      "535999696976",
+      "535999995984"
     ]
   ],
   "operations": [
     {
       "name": "vkAcquireNextImage2KHR",
       "args": [
-        "357046173776",
-        362569868672,
-        362569868176
+        "535943725136",
+        541467420032,
+        541467419536
       ],
-      "started": "2026-11-09T00:48:20.942Z",
+      "started": "2026-11-09T20:44:15.461Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-09T00:48:20.949Z"
+      "completed": "2026-11-09T20:44:15.481Z"
     },
     {
       "name": "vkQueueSubmit",
       "args": [
-        "357042925968",
+        "535940477328",
         1,
-        362569870720,
+        541467422080,
         0
       ],
-      "started": "2026-11-09T00:48:21.004Z",
+      "started": "2026-11-09T20:44:15.654Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-09T00:48:21.011Z"
+      "completed": "2026-11-09T20:44:15.668Z"
     },
     {
       "name": "vkQueuePresentKHR",
       "args": [
-        "357042925968",
-        362569871232
+        "535940477328",
+        541467422592
       ],
-      "started": "2026-11-09T00:48:21.049Z",
+      "started": "2026-11-09T20:44:15.751Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-09T00:48:21.058Z"
+      "completed": "2026-11-09T20:44:15.849Z"
     },
     {
       "name": "vkQueueWaitIdle",
       "args": [
-        "357042925968"
+        "535940477328"
       ],
-      "started": "2026-11-09T00:48:21.086Z",
+      "started": "2026-11-09T20:44:15.898Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-09T00:48:21.095Z"
+      "completed": "2026-11-09T20:44:15.986Z"
     }
   ],
   "shaderStaging": {
-    "address": 360262729728,
+    "address": 539160281088,
     "bytes": 131072
   },
   "capture": {
-    "buffer": "357036853120",
-    "memory": "357082477488",
-    "mapped": 357090918400,
+    "buffer": "535934404480",
+    "memory": "535980028848",
+    "mapped": 535988469760,
     "bytes": 8294400,
     "width": 1920,
     "height": 1080
   },
   "controls": {
-    "buffer": "357036852752",
-    "memory": "357082476624",
-    "mapped": 357082529792,
-    "setLayout": "357036944464",
-    "descriptorPool": "357046980688",
-    "descriptor": "357039982416",
+    "buffer": "535934404112",
+    "memory": "535980027984",
+    "mapped": 535980081152,
+    "setLayout": "535934495824",
+    "descriptorPool": "535944532048",
+    "descriptor": "535937533776",
     "bytes": 8388608
   },
-  "pipeline": "357082488912",
-  "layout": "357081788496",
+  "pipeline": "535980040272",
+  "layout": "535979339856",
   "shaders": [
-    "357050526720",
-    "357050526992"
+    "535948078080",
+    "535948078352"
   ],
-  "computePipeline": "357102747728",
-  "computeShader": "357081145696",
+  "computePipeline": "536000299088",
+  "computeShader": "535978697056",
   "resources": {
-    "device": "357046173776",
-    "queue": "357042925968",
-    "swapchain": "357042929280",
+    "device": "535943725136",
+    "queue": "535940477328",
+    "swapchain": "535940480640",
     "images": [
-      "357045753424",
-      "357045754960"
+      "535943304784",
+      "535943306320"
     ],
     "views": [
-      "357036750160",
-      "357036750480"
+      "535934301520",
+      "535934301840"
     ],
     "semaphores": [
-      "357040003696",
-      "357040003984"
+      "535937555056",
+      "535937555344"
     ],
-    "acquired": "357040003408",
-    "pool": "357045029344"
+    "acquired": "535937554768",
+    "pool": "535942580704"
   },
   "firstShaderFramePresented": true,
   "computeCheck": {
@@ -274,5 +278,5 @@
   },
   "ready": true,
   "scratchRestored": true,
-  "completed": "2026-11-09T00:48:22.539Z"
+  "completed": "2026-11-09T20:44:19.261Z"
 }

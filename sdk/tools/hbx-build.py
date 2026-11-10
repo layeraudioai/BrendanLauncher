@@ -29,9 +29,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-dkp_bin = Path("C:/dkp/devkitA64/bin")
-if dkp_bin.exists():
-    os.environ["PATH"] = str(dkp_bin) + os.pathsep + os.environ.get("PATH", "")
+for p in [Path("C:/dkp/devkitA64/bin"), Path("/opt/devkitpro/msys2/usr/bin")]:
+    if p.exists():
+        os.environ["PATH"] = str(p) + os.pathsep + os.environ.get("PATH", "")
+        break
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 SDK = ROOT / "sdk"

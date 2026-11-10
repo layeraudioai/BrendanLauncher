@@ -1,678 +1,118 @@
 {
   "session": "latest",
-  "started": "2026-11-09T00:48:28.482Z",
+  "started": "2026-11-09T20:44:33.601Z",
   "batches": [
     {
       "status": "continuous",
-      "counter": "31353768298646",
+      "counter": "8948153665",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:34.445Z"
+      "at": "2026-11-09T20:44:50.473Z"
     },
     {
       "status": "continuous",
-      "counter": "31353801107511",
-      "interval": 1.04988368,
+      "counter": "8982010097",
+      "interval": 1.083405824,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:35.488Z"
+      "at": "2026-11-09T20:44:51.531Z"
     },
     {
       "status": "continuous",
-      "counter": "31353836524889",
-      "interval": 1.133356096,
+      "counter": "9016907431",
+      "interval": 1.116714688,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:36.615Z"
+      "at": "2026-11-09T20:44:52.706Z"
     },
     {
       "status": "continuous",
-      "counter": "31353874025059",
-      "interval": 1.20000544,
+      "counter": "9051285618",
+      "interval": 1.100101984,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:37.829Z"
+      "at": "2026-11-09T20:44:53.824Z"
     },
     {
       "status": "continuous",
-      "counter": "31353911532939",
-      "interval": 1.20025216,
+      "counter": "9086695500",
+      "interval": 1.133116224,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:39.031Z"
+      "at": "2026-11-09T20:44:54.920Z"
     },
     {
       "status": "continuous",
-      "counter": "31353947582411",
-      "interval": 1.153583104,
+      "counter": "9123161318",
+      "interval": 1.166906176,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:40.219Z"
+      "at": "2026-11-09T20:44:56.051Z"
     },
     {
       "status": "continuous",
-      "counter": "31353983399533",
-      "interval": 1.146147904,
+      "counter": "9156479827",
+      "interval": 1.066192288,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:41.371Z"
+      "at": "2026-11-09T20:44:57.167Z"
     },
     {
       "status": "continuous",
-      "counter": "31354019345798",
-      "interval": 1.15028048,
+      "counter": "9188251094",
+      "interval": 1.016680544,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:48:42.531Z"
+      "at": "2026-11-09T20:44:58.187Z"
     },
     {
       "status": "continuous",
-      "counter": "31354052679620",
-      "interval": 1.066682304,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:43.591Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354087566141",
-      "interval": 1.116368672,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:44.755Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354121428071",
-      "interval": 1.08358176,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:45.809Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354155795645",
-      "interval": 1.099762368,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:46.826Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354192253548",
-      "interval": 1.166652896,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:48.054Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354227149721",
-      "interval": 1.116677536,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:49.151Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354261005754",
-      "interval": 1.083393056,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:50.187Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354297461965",
-      "interval": 1.166598752,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:51.438Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354330805081",
-      "interval": 1.066979712,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:52.422Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354365173931",
-      "interval": 1.0998032,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:53.531Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354399024388",
-      "interval": 1.083214624,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:54.627Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354433920890",
-      "interval": 1.116688064,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:55.814Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354467910106",
-      "interval": 1.087654912,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:56.838Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354504754171",
-      "interval": 1.17901008,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:58.013Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354538614115",
-      "interval": 1.083518208,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:48:59.078Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354572462114",
-      "interval": 1.083135968,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:00.168Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354607357641",
-      "interval": 1.116656864,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:01.340Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354640691464",
-      "interval": 1.066682336,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:02.382Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354673504943",
-      "interval": 1.050031328,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:03.510Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354706456699",
-      "interval": 1.054456192,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:04.572Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354739770719",
-      "interval": 1.06604864,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:05.583Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354774024633",
-      "interval": 1.096125248,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:06.639Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354806837286",
-      "interval": 1.050004896,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:07.733Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354840170629",
-      "interval": 1.066666976,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:08.733Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354876114277",
-      "interval": 1.150196736,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:09.918Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354910482872",
-      "interval": 1.09979504,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:11.003Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354945378901",
-      "interval": 1.116672928,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:12.124Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31354980282611",
-      "interval": 1.11691872,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:13.259Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355014649522",
-      "interval": 1.099741152,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:14.326Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355049024777",
-      "interval": 1.10000816,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:15.461Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355082879322",
-      "interval": 1.08334544,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:16.554Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355118304799",
-      "interval": 1.133615264,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:17.623Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355152149522",
-      "interval": 1.083031136,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:18.737Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355187576179",
-      "interval": 1.133653024,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:19.895Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355219815876",
-      "interval": 1.031670304,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:20.928Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355251058835",
-      "interval": 0.999774688,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:21.931Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355470126607",
+      "counter": "9534102723",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:28.945Z"
+      "at": "2026-11-09T20:45:09.151Z"
     },
     {
       "status": "continuous",
-      "counter": "31355501369157",
-      "interval": 0.9997616,
+      "counter": "9567435833",
+      "interval": 1.06665952,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:29.944Z"
+      "at": "2026-11-09T20:45:10.281Z"
     },
     {
       "status": "continuous",
-      "counter": "31355532618674",
-      "interval": 0.999984544,
+      "counter": "9601810933",
+      "interval": 1.1000032,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:30.925Z"
+      "at": "2026-11-09T20:45:11.396Z"
     },
     {
       "status": "continuous",
-      "counter": "31355704188330",
-      "interval": null,
+      "counter": "9636176777",
+      "interval": 1.099707008,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:36.461Z"
+      "at": "2026-11-09T20:45:12.471Z"
     },
     {
       "status": "continuous",
-      "counter": "31355735430807",
-      "interval": 0.999759264,
+      "counter": "9671594256",
+      "interval": 1.133359328,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:37.424Z"
+      "at": "2026-11-09T20:45:13.705Z"
     },
     {
       "status": "continuous",
-      "counter": "31355766731694",
-      "interval": 1.001628384,
+      "counter": "9706091864",
+      "interval": 1.103923456,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T00:49:38.423Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355940181460",
-      "interval": null,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:43.973Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31355974678350",
-      "interval": 1.10390048,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:45.031Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356008928977",
-      "interval": 1.096020064,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:46.167Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356046942231",
-      "interval": 1.216424128,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:47.364Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356214656129",
-      "interval": null,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:52.788Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356250071259",
-      "interval": 1.13328416,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:53.897Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356286123622",
-      "interval": 1.153675616,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:49:55.024Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356525246446",
-      "interval": null,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:02.701Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356556489658",
-      "interval": 0.999782784,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:03.700Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356587739583",
-      "interval": 0.9999976,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:04.672Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356618989526",
-      "interval": 0.999998176,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:05.664Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356650239645",
-      "interval": 1.000003808,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:06.654Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356681489775",
-      "interval": 1.00000416,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:07.723Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356712739770",
-      "interval": 0.99999984,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:08.670Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356901629467",
-      "interval": null,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:14.741Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356936536550",
-      "interval": 1.117026656,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:15.875Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31356974034887",
-      "interval": 1.199946784,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:17.034Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357010484385",
-      "interval": 1.166383936,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:18.182Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357229418815",
-      "interval": null,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:25.202Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357260661502",
-      "interval": 0.999765984,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:26.205Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357291911465",
-      "interval": 0.999998816,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:27.226Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357323161445",
-      "interval": 0.99999936,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:28.200Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357354425017",
-      "interval": 1.000434304,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:29.188Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357385661622",
-      "interval": 0.99957136,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:30.193Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357416911211",
-      "interval": 0.999986848,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:31.237Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357448161459",
-      "interval": 1.000007936,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:32.246Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357479411486",
-      "interval": 1.000000864,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:33.235Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357510661418",
-      "interval": 0.999997824,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:34.198Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357541911236",
-      "interval": 0.999994176,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:35.225Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357573161337",
-      "interval": 1.000003232,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:36.238Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357604411400",
-      "interval": 1.000002016,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:37.215Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357635661354",
-      "interval": 0.999998528,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:38.239Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357666911418",
-      "interval": 1.000002048,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:39.313Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "31357698161425",
-      "interval": 1.000000224,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T00:50:40.228Z"
+      "at": "2026-11-09T20:45:14.726Z"
     }
   ],
   "resourcesRetained": true,
@@ -680,13 +120,13 @@
   "input": {
     "type": "handheld",
     "id": 32,
-    "target": 431875735392
+    "target": 56391155552
   },
   "touch": {
-    "target": 431875742384,
+    "target": 56391162544,
     "offset": 128
   },
-  "base": 360642752512,
+  "base": 539540303872,
   "sdk": {
     "joyMouse": true
   },
@@ -2871,9 +2311,9 @@
     "stackOffset": 372736,
     "tablesOffset": 12288
   },
-  "frameSha256": "7d7eaafade3da65802cdf2658e886a4da06e9fa01dcc9881b9bde564c348847d",
+  "frameSha256": "60593fa3c08f6691a305920615cd8bbddb67b5c46323aeae498f89370d20e448",
   "framesPerCycle": 60,
   "continuous": true,
-  "thread": "360264523776",
+  "thread": "539161829376",
   "threadRunning": true
 }

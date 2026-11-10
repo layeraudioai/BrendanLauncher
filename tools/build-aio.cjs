@@ -32,7 +32,7 @@ async function main() {
   const {scan: scanNative} = require('../host/lib/packages.cjs');
   const native = scanNative(path.join(ROOT, 'apps'));
   const nativeReady = new Set(native.packages.map(item => item.manifest.id));
-  for (const id of ['hello-cpu', 'gpu-triangle', 'system-monitor']) {
+  for (const id of ['air-guitar', 'hello-cpu', 'gpu-triangle', 'system-monitor']) {
     if (!nativeReady.has(id)) throw Error(`Required native package was not built: ${id}`);
   }
   const nativeErrors = native.errors.filter(item => path.basename(item.directory) !== 'twilight');
