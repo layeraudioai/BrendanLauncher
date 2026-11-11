@@ -1,34 +1,45 @@
 {
   "session": "latest",
-  "started": "2026-11-10T23:13:37.549Z",
+  "started": "2026-11-11T00:22:10.204Z",
   "transitions": [
     {
+      "event": "launch",
+      "id": "youtube",
+      "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
+      "time": "2026-11-11T00:22:43.089Z"
+    },
+    {
       "event": "return",
-      "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-10T23:13:53.364Z"
+      "time": "2026-11-11T00:22:59.080Z"
     },
     {
       "event": "return",
       "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-10T23:14:05.313Z"
+      "time": "2026-11-11T00:23:09.709Z"
+    },
+    {
+      "event": "launch",
+      "id": "system-monitor",
+      "fingerprint": "4523c0241eb53ee9a043ae6e011e1d8ecf41ecd8eca726c0d084b6b8d76b3218",
+      "time": "2026-11-11T00:23:23.375Z"
     },
     {
       "event": "return",
-      "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-10T23:14:13.206Z"
+      "error": "Cannot find module 'K:\\ns2hb\\GitRepo\\brendanlauncher2\\runs\\latest\\switch2\\tools\\fs-memory.cjs'\nRequire stack:\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\host\\lib\\target.cjs\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\homebrew-launcher\\app-runtime.cjs\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\homebrew-launcher\\launcher-loop.cjs",
+      "time": "2026-11-11T00:23:26.993Z"
     }
   ],
   "generation": 4,
   "resourcesRetained": true,
   "catalog": {
-    "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps",
+    "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps",
     "apps": [
       {
         "id": "air-guitar",
         "name": "AirGuitar",
         "version": "1.0.0",
         "description": "Split-Joy-Con motion rhythm game with .chart support and adaptive Freeplay mode",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\air-guitar",
         "fingerprint": "d279b58782ba55d6d2327a51d3f7d3563701fd8c8b2756b5c105d991161850da",
         "effects": {}
       },
@@ -37,7 +48,7 @@
         "name": "BlitBun",
         "version": "1.14.4",
         "description": "PC-to-Switch 2 streaming · video, audio and optional controller forwarding",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\blitbun",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\blitbun",
         "fingerprint": "7a9b3d76d3bdea1faa9cb78b7e9f58d311b660de03a5f74a2b35568a89b82ec0",
         "effects": {}
       },
@@ -46,7 +57,7 @@
         "name": "Game Boy (GPU)",
         "version": "0.2.0",
         "description": "Experimental shader-based DMG emulator; CGB-compatible cartridges run in mono. Partial CPU/MBC; no sound.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gameboy-color",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gameboy-color",
         "fingerprint": "0d82eb1dd95272f91ddc630c84dab8684e82bffb798ea44bfe355c2e0e539d5b",
         "effects": {}
       },
@@ -55,7 +66,7 @@
         "name": "GB2NS2",
         "version": "0.1.0",
         "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gb2ns2",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gb2ns2",
         "fingerprint": "bd05400d358f55593a09c18fe21aa65e2d21380962f415b2f7bea3fd4e294e1d",
         "effects": {}
       },
@@ -64,7 +75,7 @@
         "name": "GPU Triangle",
         "version": "1.0.0",
         "description": "SDK sample - animated triangle drawn on the GPU",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gpu-triangle",
         "fingerprint": "cedf9fa736ccf66727c26950b8adaa43503474ab781e17a9194f0b342ec77920",
         "effects": {}
       },
@@ -73,7 +84,7 @@
         "name": "Hello CPU",
         "version": "1.0.0",
         "description": "SDK sample - CPU logic with Vulkan UI drawing",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-cpu",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-cpu",
         "fingerprint": "ed9b39b049b3726d3662ca43578d3120769ed942bd6ecae519304c934007a856",
         "effects": {}
       },
@@ -82,7 +93,7 @@
         "name": "Hello TypeScript web app",
         "version": "1.0.0",
         "description": "Native Switch UI port of Hello TypeScript web app (WebPort v1)",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-vite-native",
         "fingerprint": "03a0a81faf7d9c1f8d79eb24fcd1c15d75c828106a06600655793f3c0b257a09",
         "effects": {}
       },
@@ -91,7 +102,7 @@
         "name": "Hello World",
         "version": "1.0.0",
         "description": "A simple first homebrew app",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-world",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-world",
         "fingerprint": "67fba7851336f8271ef3b0a4efc10316d2ec35ebc52a75efc559b0d9e7842e5b",
         "effects": {}
       },
@@ -100,7 +111,7 @@
         "name": "File Exchange",
         "version": "1.1.1",
         "description": "Live console folders and FTP file transfers",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\iz-exchange",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\iz-exchange",
         "fingerprint": "3ef7435df5e99b19b568101703601d76c3cbcc0c0b1e5c8f7665c3eaaafefdae",
         "effects": {}
       },
@@ -109,7 +120,7 @@
         "name": "Media Machine",
         "version": "1.1.0",
         "description": "Local audio and video player for BrendanLauncher",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\media-machine",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\media-machine",
         "fingerprint": "65379b16eb993312391fcf9cdc30a2b7cb5daa47116b26354ef740d997cf9b0d",
         "effects": {}
       },
@@ -118,11 +129,11 @@
         "name": "Sphaira",
         "version": "1.0.0",
         "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira",
-        "fingerprint": "262842247b746b982f0586a4c1159834ede9fec10c2c981fdfb0f5a827ff56e2",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira",
+        "fingerprint": "7189646e5c5411f56ab558e2592fdcf66049e3141a43c9e0c9e555b9589658cf",
         "effects": {
-          "1": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_1.pcm",
-          "2": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_2.pcm"
+          "1": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira\\assets\\audio_1.pcm",
+          "2": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira\\assets\\audio_2.pcm"
         }
       },
       {
@@ -130,7 +141,7 @@
         "name": "Standalone Client Installer",
         "version": "1.0.0",
         "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\standalone-installer",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\standalone-installer",
         "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
         "effects": {}
       },
@@ -139,7 +150,7 @@
         "name": "System Monitor",
         "version": "1.0.0",
         "description": "Read-only telemetry status and a bounded CPU benchmark",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\system-monitor",
         "fingerprint": "4523c0241eb53ee9a043ae6e011e1d8ecf41ecd8eca726c0d084b6b8d76b3218",
         "effects": {}
       },
@@ -148,7 +159,7 @@
         "name": "VacooTube",
         "version": "1.4.1",
         "description": "Independent video player for Switch 2 · touch and controller input",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\vacootube",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\vacootube",
         "fingerprint": "5ff448064421fedfd5c78f9e0fc207b1bd077df8d24eff7d0e492e5f48c2423a",
         "effects": {}
       },
@@ -157,17 +168,12 @@
         "name": "YouTube (VacuumTube)",
         "version": "2.0.1",
         "description": "YouTube TV client and media streaming for Switch 2 HBL framework",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\youtube",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\youtube",
         "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
         "effects": {}
       }
     ],
-    "rejected": [
-      {
-        "folder": "ns2jb-modloader",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\ns2jb-modloader\\switch\\app.json'"
-      }
-    ]
+    "rejected": []
   },
   "active": null
 }

@@ -3,8 +3,8 @@
  * session.cjs - acquire and verify the 4/4 console session.
  *
  * The exploit chain itself is not part of this repository: it lives in the
- * owner's ns2jb-kurumuz checkout, addressed through HBL_NS2JB (default
- * ../ns2jb-kurumuz).  This module only starts the runner, waits for a run
+ * owner's ns2jb-kurumuz checkout, addressed through HBL_NS2JB or detected in
+ * nearby checkout layouts.  This module only starts the runner, waits for a run
  * directory, verifies the stage reached 4/4, and exposes the run directory the
  * loader needs.
  *
@@ -19,11 +19,13 @@ const {check, readIfJson, sleep, HostError} = require('./common.cjs');
 function ns2jbDir(override) {
   if (override) return path.resolve(override);
   if (process.env.HBL_NS2JB) return path.resolve(process.env.HBL_NS2JB);
-  const internal = path.join(path.resolve(__dirname, '..', '..'), 'ns2jb-kurumuz');
-  if (fs.existsSync(path.join(internal, 'run.cjs'))) return internal;
-  const sibling = path.join(path.dirname(path.resolve(__dirname, '..', '..')), 'ns2jb-kurumuz');
-  if (fs.existsSync(path.join(sibling, 'run.cjs'))) return sibling;
-  return internal;
+  const project = path.resolve(__dirname, '..', '..');
+  const candidates = [
+    path.join(project, 'ns2jb-kurumuz'),
+    path.join(path.dirname(project), 'ns2jb-kurumuz'),
+    path.resolve(project, '..', '..', 'ns2jb-kurumuz')
+  ];
+  return candidates.find(candidate => fs.existsSync(path.join(candidate, 'run.cjs'))) || candidates[0];
 }
 
 function runDirectories(directory) {

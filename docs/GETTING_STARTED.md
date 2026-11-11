@@ -108,7 +108,10 @@ python3 sdk/tools/hbx-build.py apps/my-app
 
 ABI v3 CPU apps and supported GPU packages share this catalog and are selected
 from the same on-console menu. CPU apps use the current BrendanLauncher
-connection; no separate launcher or console session is required.
+connection; no separate launcher or console session is required. Start the
+combined GPU/CPU picker with `node homebrew-launcher/start-launcher.cjs
+[computer-IP]`; it uses the standard verified 4/4 runner and its run directory
+for both app types. Do not start a second console session while it is running.
 
 Full SDK guide: [`SDK.md`](SDK.md).  Start from `apps/hello-cpu` for CPU logic,
 `apps/gpu-triangle` for GPU geometry, `sdk/examples/raw-vulkan` for an

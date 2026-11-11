@@ -1,54 +1,166 @@
 {
   "session": "latest",
-  "started": "2026-11-10T23:13:37.496Z",
+  "started": "2026-11-11T00:22:10.118Z",
   "batches": [
     {
       "status": "continuous",
-      "counter": "446270129437",
+      "counter": "574890696209",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:13:47.949Z"
+      "at": "2026-11-11T00:22:24.010Z"
     },
     {
       "status": "continuous",
-      "counter": "446536796676",
+      "counter": "574934960238",
+      "interval": 1.416448928,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:25.448Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "574979345838",
+      "interval": 1.4203392,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:26.841Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575025063995",
+      "interval": 1.462981024,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:28.333Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575070377266",
+      "interval": 1.450024672,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:29.666Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575115689503",
+      "interval": 1.449991584,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:31.175Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575602931392",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:13:56.599Z"
+      "at": "2026-11-11T00:22:46.806Z"
     },
     {
       "status": "continuous",
-      "counter": "446599296621",
-      "interval": 1.99999824,
+      "counter": "575634173663",
+      "interval": 0.999752672,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:13:58.445Z"
+      "at": "2026-11-11T00:22:47.797Z"
     },
     {
       "status": "continuous",
-      "counter": "447181588814",
+      "counter": "575665423996",
+      "interval": 1.000010656,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:48.769Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575696673884",
+      "interval": 0.999996416,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:49.771Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575727928168",
+      "interval": 1.000137088,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:50.847Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575759178422",
+      "interval": 1.000008128,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:51.816Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "575790423818",
+      "interval": 0.999852672,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:22:52.767Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "576096010607",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:14:17.074Z"
+      "at": "2026-11-11T00:23:02.549Z"
     },
     {
       "status": "continuous",
-      "counter": "447229507836",
-      "interval": 1.533408704,
+      "counter": "576414760559",
+      "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:14:18.682Z"
+      "at": "2026-11-11T00:23:12.755Z"
     },
     {
       "status": "continuous",
-      "counter": "447276381138",
-      "interval": 1.499945664,
+      "counter": "576468815083",
+      "interval": 1.729744768,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-10T23:14:20.144Z"
+      "at": "2026-11-11T00:23:14.507Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "576514785556",
+      "interval": 1.471055136,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:23:15.887Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "576559964738",
+      "interval": 1.445733824,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:23:17.394Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "576957364779",
+      "interval": null,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:23:30.418Z"
+    },
+    {
+      "status": "continuous",
+      "counter": "577019865238",
+      "interval": 2.000014688,
+      "frames": 60,
+      "failures": [],
+      "at": "2026-11-11T00:23:32.315Z"
     }
   ],
   "resourcesRetained": true,
@@ -56,13 +168,13 @@
   "input": {
     "type": "handheld",
     "id": 32,
-    "target": 110193590112
+    "target": 34285076320
   },
   "touch": {
-    "target": 110193597104,
+    "target": 34285083312,
     "offset": 128
   },
-  "base": 190077186048,
+  "base": 198207844352,
   "sdk": {
     "joyMouse": true
   },
@@ -2247,9 +2359,9 @@
     "stackOffset": 372736,
     "tablesOffset": 12288
   },
-  "frameSha256": "ab2b40f198ed3125394b2de1c57f3a4717803ced33c2c6c48fabbdd04a41ec93",
+  "frameSha256": "7b473415551c4cae640cb0aab74fce2d86852424bf2413fce38fc06c2a68e06b",
   "framesPerCycle": 60,
   "continuous": true,
-  "thread": "189698629632",
+  "thread": "197829451776",
   "threadRunning": true
 }

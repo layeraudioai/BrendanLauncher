@@ -3,14 +3,14 @@
   "runtimeABI": 1,
   "titleCount": 15,
   "catalog": {
-    "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps",
+    "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps",
     "apps": [
       {
         "id": "air-guitar",
         "name": "AirGuitar",
         "version": "1.0.0",
         "description": "Split-Joy-Con motion rhythm game with .chart support and adaptive Freeplay mode",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\air-guitar",
         "fingerprint": "d279b58782ba55d6d2327a51d3f7d3563701fd8c8b2756b5c105d991161850da",
         "effects": {}
       },
@@ -19,7 +19,7 @@
         "name": "BlitBun",
         "version": "1.14.4",
         "description": "PC-to-Switch 2 streaming · video, audio and optional controller forwarding",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\blitbun",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\blitbun",
         "fingerprint": "7a9b3d76d3bdea1faa9cb78b7e9f58d311b660de03a5f74a2b35568a89b82ec0",
         "effects": {}
       },
@@ -28,7 +28,7 @@
         "name": "Game Boy (GPU)",
         "version": "0.2.0",
         "description": "Experimental shader-based DMG emulator; CGB-compatible cartridges run in mono. Partial CPU/MBC; no sound.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gameboy-color",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gameboy-color",
         "fingerprint": "0d82eb1dd95272f91ddc630c84dab8684e82bffb798ea44bfe355c2e0e539d5b",
         "effects": {}
       },
@@ -37,7 +37,7 @@
         "name": "GB2NS2",
         "version": "0.1.0",
         "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gb2ns2",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gb2ns2",
         "fingerprint": "bd05400d358f55593a09c18fe21aa65e2d21380962f415b2f7bea3fd4e294e1d",
         "effects": {}
       },
@@ -46,7 +46,7 @@
         "name": "GPU Triangle",
         "version": "1.0.0",
         "description": "SDK sample - animated triangle drawn on the GPU",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\gpu-triangle",
         "fingerprint": "cedf9fa736ccf66727c26950b8adaa43503474ab781e17a9194f0b342ec77920",
         "effects": {}
       },
@@ -55,7 +55,7 @@
         "name": "Hello CPU",
         "version": "1.0.0",
         "description": "SDK sample - CPU logic with Vulkan UI drawing",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-cpu",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-cpu",
         "fingerprint": "ed9b39b049b3726d3662ca43578d3120769ed942bd6ecae519304c934007a856",
         "effects": {}
       },
@@ -64,7 +64,7 @@
         "name": "Hello TypeScript web app",
         "version": "1.0.0",
         "description": "Native Switch UI port of Hello TypeScript web app (WebPort v1)",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-vite-native",
         "fingerprint": "03a0a81faf7d9c1f8d79eb24fcd1c15d75c828106a06600655793f3c0b257a09",
         "effects": {}
       },
@@ -73,7 +73,7 @@
         "name": "Hello World",
         "version": "1.0.0",
         "description": "A simple first homebrew app",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-world",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\hello-world",
         "fingerprint": "67fba7851336f8271ef3b0a4efc10316d2ec35ebc52a75efc559b0d9e7842e5b",
         "effects": {}
       },
@@ -82,7 +82,7 @@
         "name": "File Exchange",
         "version": "1.1.1",
         "description": "Live console folders and FTP file transfers",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\iz-exchange",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\iz-exchange",
         "fingerprint": "3ef7435df5e99b19b568101703601d76c3cbcc0c0b1e5c8f7665c3eaaafefdae",
         "effects": {}
       },
@@ -91,7 +91,7 @@
         "name": "Media Machine",
         "version": "1.1.0",
         "description": "Local audio and video player for BrendanLauncher",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\media-machine",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\media-machine",
         "fingerprint": "65379b16eb993312391fcf9cdc30a2b7cb5daa47116b26354ef740d997cf9b0d",
         "effects": {}
       },
@@ -100,11 +100,11 @@
         "name": "Sphaira",
         "version": "1.0.0",
         "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira",
-        "fingerprint": "262842247b746b982f0586a4c1159834ede9fec10c2c981fdfb0f5a827ff56e2",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira",
+        "fingerprint": "7189646e5c5411f56ab558e2592fdcf66049e3141a43c9e0c9e555b9589658cf",
         "effects": {
-          "1": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_1.pcm",
-          "2": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_2.pcm"
+          "1": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira\\assets\\audio_1.pcm",
+          "2": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\sphaira\\assets\\audio_2.pcm"
         }
       },
       {
@@ -112,7 +112,7 @@
         "name": "Standalone Client Installer",
         "version": "1.0.0",
         "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\standalone-installer",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\standalone-installer",
         "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
         "effects": {}
       },
@@ -121,7 +121,7 @@
         "name": "System Monitor",
         "version": "1.0.0",
         "description": "Read-only telemetry status and a bounded CPU benchmark",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\system-monitor",
         "fingerprint": "4523c0241eb53ee9a043ae6e011e1d8ecf41ecd8eca726c0d084b6b8d76b3218",
         "effects": {}
       },
@@ -130,7 +130,7 @@
         "name": "VacooTube",
         "version": "1.4.1",
         "description": "Independent video player for Switch 2 · touch and controller input",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\vacootube",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\vacootube",
         "fingerprint": "5ff448064421fedfd5c78f9e0fc207b1bd077df8d24eff7d0e492e5f48c2423a",
         "effects": {}
       },
@@ -139,159 +139,154 @@
         "name": "YouTube (VacuumTube)",
         "version": "2.0.1",
         "description": "YouTube TV client and media streaming for Switch 2 HBL framework",
-        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\youtube",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps\\youtube",
         "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
         "effects": {}
       }
     ],
-    "rejected": [
-      {
-        "folder": "ns2jb-modloader",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\ns2jb-modloader\\switch\\app.json'"
-      }
-    ]
+    "rejected": []
   },
   "session": "latest",
-  "started": "2026-11-10T23:13:14.209Z",
+  "started": "2026-11-11T00:21:37.215Z",
   "resourcesRetained": true,
   "frames": 1,
   "functions": {
-    "vkCreateShaderModule": 110006526064,
-    "vkCreateDescriptorSetLayout": 110006527312,
-    "vkCreatePipelineLayout": 110006526928,
-    "vkEnumeratePhysicalDevices": 110006520464,
-    "vkGetPhysicalDeviceMemoryProperties": 110006521168,
-    "vkCreateBuffer": 110006525200,
-    "vkGetBufferMemoryRequirements": 110006523280,
-    "vkAllocateMemory": 110006522416,
-    "vkBindBufferMemory": 110006523088,
-    "vkMapMemory2": 110006542320,
-    "vkCreateDescriptorPool": 110006527504,
-    "vkAllocateDescriptorSets": 110006527792,
-    "vkUpdateDescriptorSets": 110006527984,
-    "vkCreateGraphicsPipelines": 110006526640,
-    "vkCreateComputePipelines": 110006526736,
-    "vkGetSwapchainImagesKHR": 110006545360,
-    "vkCreateSemaphore": 110006524240,
-    "vkCreateImageView": 110006525872,
-    "vkCreateCommandPool": 110006528560,
-    "vkAllocateCommandBuffers": 110006517984,
-    "vkBeginCommandBuffer": 110006528944,
-    "vkCmdPipelineBarrier2": 110006538576,
-    "vkCmdBindDescriptorSets2": 110006542512,
-    "vkCmdBindPipeline": 110006529232,
-    "vkCmdDispatch": 110006530864,
-    "vkCmdBeginRendering": 110006537808,
-    "vkCmdDraw": 110006530480,
-    "vkCmdEndRendering": 110006538480,
-    "vkCmdCopyImageToBuffer2": 110006538384,
-    "vkEndCommandBuffer": 110006529040,
-    "vkAcquireNextImage2KHR": 110006547664,
-    "vkQueueSubmit": 110006522128,
-    "vkQueuePresentKHR": 110006545552,
-    "vkQueueWaitIdle": 110006522224
+    "vkCreateShaderModule": 34098012272,
+    "vkCreateDescriptorSetLayout": 34098013520,
+    "vkCreatePipelineLayout": 34098013136,
+    "vkEnumeratePhysicalDevices": 34098006672,
+    "vkGetPhysicalDeviceMemoryProperties": 34098007376,
+    "vkCreateBuffer": 34098011408,
+    "vkGetBufferMemoryRequirements": 34098009488,
+    "vkAllocateMemory": 34098008624,
+    "vkBindBufferMemory": 34098009296,
+    "vkMapMemory2": 34098028528,
+    "vkCreateDescriptorPool": 34098013712,
+    "vkAllocateDescriptorSets": 34098014000,
+    "vkUpdateDescriptorSets": 34098014192,
+    "vkCreateGraphicsPipelines": 34098012848,
+    "vkCreateComputePipelines": 34098012944,
+    "vkGetSwapchainImagesKHR": 34098031568,
+    "vkCreateSemaphore": 34098010448,
+    "vkCreateImageView": 34098012080,
+    "vkCreateCommandPool": 34098014768,
+    "vkAllocateCommandBuffers": 34098004192,
+    "vkBeginCommandBuffer": 34098015152,
+    "vkCmdPipelineBarrier2": 34098024784,
+    "vkCmdBindDescriptorSets2": 34098028720,
+    "vkCmdBindPipeline": 34098015440,
+    "vkCmdDispatch": 34098017072,
+    "vkCmdBeginRendering": 34098024016,
+    "vkCmdDraw": 34098016688,
+    "vkCmdEndRendering": 34098024688,
+    "vkCmdCopyImageToBuffer2": 34098024592,
+    "vkEndCommandBuffer": 34098015248,
+    "vkAcquireNextImage2KHR": 34098033872,
+    "vkQueueSubmit": 34098008336,
+    "vkQueuePresentKHR": 34098031760,
+    "vkQueueWaitIdle": 34098008432
   },
   "commands": [
     [
-      "186535874640",
-      "186537156688"
+      "194667749456",
+      "194666537040"
     ]
   ],
   "operations": [
     {
       "name": "vkAcquireNextImage2KHR",
       "args": [
-        "186480607312",
-        192004302208,
-        192004301712
+        "194611269712",
+        200134960512,
+        200134960016
       ],
-      "started": "2026-11-10T23:13:26.068Z",
+      "started": "2026-11-11T00:21:55.548Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-10T23:13:26.078Z"
+      "completed": "2026-11-11T00:21:55.576Z"
     },
     {
       "name": "vkQueueSubmit",
       "args": [
-        "186477359504",
+        "194608021904",
         1,
-        192004304256,
+        200134962560,
         0
       ],
-      "started": "2026-11-10T23:13:26.190Z",
+      "started": "2026-11-11T00:21:55.867Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-10T23:13:26.201Z"
+      "completed": "2026-11-11T00:21:55.894Z"
     },
     {
       "name": "vkQueuePresentKHR",
       "args": [
-        "186477359504",
-        192004304768
+        "194608021904",
+        200134963072
       ],
-      "started": "2026-11-10T23:13:26.281Z",
+      "started": "2026-11-11T00:21:56.095Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-10T23:13:26.294Z"
+      "completed": "2026-11-11T00:21:56.120Z"
     },
     {
       "name": "vkQueueWaitIdle",
       "args": [
-        "186477359504"
+        "194608021904"
       ],
-      "started": "2026-11-10T23:13:26.351Z",
+      "started": "2026-11-11T00:21:56.256Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-10T23:13:26.362Z"
+      "completed": "2026-11-11T00:21:56.286Z"
     }
   ],
   "shaderStaging": {
-    "address": 189697163264,
+    "address": 197827821568,
     "bytes": 131072
   },
   "capture": {
-    "buffer": "186471286656",
-    "memory": "186516911024",
-    "mapped": 186525351936,
+    "buffer": "194601944960",
+    "memory": "194647569328",
+    "mapped": 194656010240,
     "bytes": 8294400,
     "width": 1920,
     "height": 1080
   },
   "controls": {
-    "buffer": "186471286288",
-    "memory": "186516910160",
-    "mapped": 186516963328,
-    "setLayout": "186471378000",
-    "descriptorPool": "186481414224",
-    "descriptor": "186474415952",
+    "buffer": "194601944592",
+    "memory": "194647568464",
+    "mapped": 194647621632,
+    "setLayout": "194602036304",
+    "descriptorPool": "194612076624",
+    "descriptor": "194605078352",
     "bytes": 8388608
   },
-  "pipeline": "186516922448",
-  "layout": "186516222032",
+  "pipeline": "194647580752",
+  "layout": "194646880336",
   "shaders": [
-    "186484960256",
-    "186484960528"
+    "194615622656",
+    "194615622928"
   ],
-  "computePipeline": "186537181264",
-  "computeShader": "186515579232",
+  "computePipeline": "194667860048",
+  "computeShader": "194646241632",
   "resources": {
-    "device": "186480607312",
-    "queue": "186477359504",
-    "swapchain": "186477362816",
+    "device": "194611269712",
+    "queue": "194608021904",
+    "swapchain": "194608025216",
     "images": [
-      "186480186960",
-      "186480188496"
+      "194610988624",
+      "194610990160"
     ],
     "views": [
-      "186471183696",
-      "186471184016"
+      "194601842000",
+      "194601842320"
     ],
     "semaphores": [
-      "186474437232",
-      "186474437520"
+      "194605095536",
+      "194605095824"
     ],
-    "acquired": "186474436944",
-    "pool": "186479462880"
+    "acquired": "194605095248",
+    "pool": "194609535456"
   },
   "firstShaderFramePresented": true,
   "computeCheck": {
@@ -303,5 +298,5 @@
   },
   "ready": true,
   "scratchRestored": true,
-  "completed": "2026-11-10T23:13:28.950Z"
+  "completed": "2026-11-11T00:21:59.968Z"
 }

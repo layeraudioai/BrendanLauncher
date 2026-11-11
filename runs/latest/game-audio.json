@@ -1,17 +1,21 @@
 {
   "session": "latest",
-  "started": "2026-11-10T23:13:40.658Z",
+  "started": "2026-11-11T00:22:14.203Z",
   "functions": {
-    "InitializeAudioOutParameter": 110190612272,
-    "OpenDefaultAudioOutEPNS0_8AudioOutER": 110190714496,
-    "GetAudioOutSampleRate": 110190716432,
-    "GetAudioOutChannelCount": 110190716448,
-    "GetAudioOutSampleFormat": 110190716464
+    "InitializeAudioOutParameter": 34282098480,
+    "OpenDefaultAudioOutEPNS0_8AudioOutER": 34282200704,
+    "GetAudioOutSampleRate": 34282202640,
+    "GetAudioOutChannelCount": 34282202656,
+    "GetAudioOutSampleFormat": 34282202672,
+    "GetReleasedAudioOutBuffer": 34282202896,
+    "FlushAudioOutBuffers": 34282203584,
+    "GetAudioOutBufferCount": 34282203248
   },
   "resourcesRetained": true,
   "played": 0,
   "history": [],
-  "audio": 189697359872,
-  "base": 189697359872,
-  "ready": true
+  "audio": 197828018176,
+  "base": 197828018176,
+  "ready": true,
+  "package": null
 }
