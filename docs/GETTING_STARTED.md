@@ -112,7 +112,9 @@ connection; no separate launcher or console session is required. Start the
 combined GPU/CPU picker with `node server.cjs [computer-IP]` (or
 `node homebrew-launcher/start-launcher.cjs [computer-IP]`). Both use the
 standard verified 4/4 runner and its run directory for both app types. Do not
-start a second console session while it is running.
+start a second console session while it is running. If the computer has more
+than one network address, choose the one reachable from the console when
+prompted, or pass that IPv4 address as the argument.
 
 Full SDK guide: [`SDK.md`](SDK.md).  Start from `apps/hello-cpu` for CPU logic,
 `apps/gpu-triangle` for GPU geometry, `sdk/examples/raw-vulkan` for an
