@@ -147,146 +147,146 @@
     "rejected": []
   },
   "session": "latest",
-  "started": "2026-11-11T00:21:37.215Z",
+  "started": "2026-11-11T00:46:22.482Z",
   "resourcesRetained": true,
   "frames": 1,
   "functions": {
-    "vkCreateShaderModule": 34098012272,
-    "vkCreateDescriptorSetLayout": 34098013520,
-    "vkCreatePipelineLayout": 34098013136,
-    "vkEnumeratePhysicalDevices": 34098006672,
-    "vkGetPhysicalDeviceMemoryProperties": 34098007376,
-    "vkCreateBuffer": 34098011408,
-    "vkGetBufferMemoryRequirements": 34098009488,
-    "vkAllocateMemory": 34098008624,
-    "vkBindBufferMemory": 34098009296,
-    "vkMapMemory2": 34098028528,
-    "vkCreateDescriptorPool": 34098013712,
-    "vkAllocateDescriptorSets": 34098014000,
-    "vkUpdateDescriptorSets": 34098014192,
-    "vkCreateGraphicsPipelines": 34098012848,
-    "vkCreateComputePipelines": 34098012944,
-    "vkGetSwapchainImagesKHR": 34098031568,
-    "vkCreateSemaphore": 34098010448,
-    "vkCreateImageView": 34098012080,
-    "vkCreateCommandPool": 34098014768,
-    "vkAllocateCommandBuffers": 34098004192,
-    "vkBeginCommandBuffer": 34098015152,
-    "vkCmdPipelineBarrier2": 34098024784,
-    "vkCmdBindDescriptorSets2": 34098028720,
-    "vkCmdBindPipeline": 34098015440,
-    "vkCmdDispatch": 34098017072,
-    "vkCmdBeginRendering": 34098024016,
-    "vkCmdDraw": 34098016688,
-    "vkCmdEndRendering": 34098024688,
-    "vkCmdCopyImageToBuffer2": 34098024592,
-    "vkEndCommandBuffer": 34098015248,
-    "vkAcquireNextImage2KHR": 34098033872,
-    "vkQueueSubmit": 34098008336,
-    "vkQueuePresentKHR": 34098031760,
-    "vkQueueWaitIdle": 34098008432
+    "vkCreateShaderModule": 338929541232,
+    "vkCreateDescriptorSetLayout": 338929542480,
+    "vkCreatePipelineLayout": 338929542096,
+    "vkEnumeratePhysicalDevices": 338929535632,
+    "vkGetPhysicalDeviceMemoryProperties": 338929536336,
+    "vkCreateBuffer": 338929540368,
+    "vkGetBufferMemoryRequirements": 338929538448,
+    "vkAllocateMemory": 338929537584,
+    "vkBindBufferMemory": 338929538256,
+    "vkMapMemory2": 338929557488,
+    "vkCreateDescriptorPool": 338929542672,
+    "vkAllocateDescriptorSets": 338929542960,
+    "vkUpdateDescriptorSets": 338929543152,
+    "vkCreateGraphicsPipelines": 338929541808,
+    "vkCreateComputePipelines": 338929541904,
+    "vkGetSwapchainImagesKHR": 338929560528,
+    "vkCreateSemaphore": 338929539408,
+    "vkCreateImageView": 338929541040,
+    "vkCreateCommandPool": 338929543728,
+    "vkAllocateCommandBuffers": 338929533152,
+    "vkBeginCommandBuffer": 338929544112,
+    "vkCmdPipelineBarrier2": 338929553744,
+    "vkCmdBindDescriptorSets2": 338929557680,
+    "vkCmdBindPipeline": 338929544400,
+    "vkCmdDispatch": 338929546032,
+    "vkCmdBeginRendering": 338929552976,
+    "vkCmdDraw": 338929545648,
+    "vkCmdEndRendering": 338929553648,
+    "vkCmdCopyImageToBuffer2": 338929553552,
+    "vkEndCommandBuffer": 338929544208,
+    "vkAcquireNextImage2KHR": 338929562832,
+    "vkQueueSubmit": 338929537296,
+    "vkQueuePresentKHR": 338929560720,
+    "vkQueueWaitIdle": 338929537392
   },
   "commands": [
     [
-      "194667749456",
-      "194666537040"
+      "346540183632",
+      "346540888144"
     ]
   ],
   "operations": [
     {
       "name": "vkAcquireNextImage2KHR",
       "args": [
-        "194611269712",
-        200134960512,
-        200134960016
+        "346484916304",
+        352008611200,
+        352008610704
       ],
-      "started": "2026-11-11T00:21:55.548Z",
+      "started": "2026-11-11T00:46:36.013Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:55.576Z"
+      "completed": "2026-11-11T00:46:36.028Z"
     },
     {
       "name": "vkQueueSubmit",
       "args": [
-        "194608021904",
+        "346481668496",
         1,
-        200134962560,
+        352008613248,
         0
       ],
-      "started": "2026-11-11T00:21:55.867Z",
+      "started": "2026-11-11T00:46:36.170Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:55.894Z"
+      "completed": "2026-11-11T00:46:36.184Z"
     },
     {
       "name": "vkQueuePresentKHR",
       "args": [
-        "194608021904",
-        200134963072
+        "346481668496",
+        352008613760
       ],
-      "started": "2026-11-11T00:21:56.095Z",
+      "started": "2026-11-11T00:46:36.282Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:56.120Z"
+      "completed": "2026-11-11T00:46:36.311Z"
     },
     {
       "name": "vkQueueWaitIdle",
       "args": [
-        "194608021904"
+        "346481668496"
       ],
-      "started": "2026-11-11T00:21:56.256Z",
+      "started": "2026-11-11T00:46:36.358Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:56.286Z"
+      "completed": "2026-11-11T00:46:36.373Z"
     }
   ],
   "shaderStaging": {
-    "address": 197827821568,
+    "address": 349701472256,
     "bytes": 131072
   },
   "capture": {
-    "buffer": "194601944960",
-    "memory": "194647569328",
-    "mapped": 194656010240,
+    "buffer": "346475595648",
+    "memory": "346521220016",
+    "mapped": 346529660928,
     "bytes": 8294400,
     "width": 1920,
     "height": 1080
   },
   "controls": {
-    "buffer": "194601944592",
-    "memory": "194647568464",
-    "mapped": 194647621632,
-    "setLayout": "194602036304",
-    "descriptorPool": "194612076624",
-    "descriptor": "194605078352",
+    "buffer": "346475595280",
+    "memory": "346521219152",
+    "mapped": 346521272320,
+    "setLayout": "346475686992",
+    "descriptorPool": "346485723216",
+    "descriptor": "346478724944",
     "bytes": 8388608
   },
-  "pipeline": "194647580752",
-  "layout": "194646880336",
+  "pipeline": "346521231440",
+  "layout": "346520531024",
   "shaders": [
-    "194615622656",
-    "194615622928"
+    "346489269248",
+    "346489269520"
   ],
-  "computePipeline": "194667860048",
-  "computeShader": "194646241632",
+  "computePipeline": "346541490256",
+  "computeShader": "346519888224",
   "resources": {
-    "device": "194611269712",
-    "queue": "194608021904",
-    "swapchain": "194608025216",
+    "device": "346484916304",
+    "queue": "346481668496",
+    "swapchain": "346481671808",
     "images": [
-      "194610988624",
-      "194610990160"
+      "346484495952",
+      "346484497488"
     ],
     "views": [
-      "194601842000",
-      "194601842320"
+      "346475492688",
+      "346475493008"
     ],
     "semaphores": [
-      "194605095536",
-      "194605095824"
+      "346478746224",
+      "346478746512"
     ],
-    "acquired": "194605095248",
-    "pool": "194609535456"
+    "acquired": "346478745936",
+    "pool": "346483771872"
   },
   "firstShaderFramePresented": true,
   "computeCheck": {
@@ -298,5 +298,5 @@
   },
   "ready": true,
   "scratchRestored": true,
-  "completed": "2026-11-11T00:21:59.968Z"
+  "completed": "2026-11-11T00:46:39.521Z"
 }

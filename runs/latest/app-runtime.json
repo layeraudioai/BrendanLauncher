@@ -1,35 +1,25 @@
 {
   "session": "latest",
-  "started": "2026-11-11T00:22:10.204Z",
+  "started": "2026-11-11T00:46:49.235Z",
   "transitions": [
     {
       "event": "launch",
-      "id": "youtube",
-      "fingerprint": "649c92cb4fe98b9ac6e93f1a39fd03ba6baededb7a77e443473c3a41bc8e2b67",
-      "time": "2026-11-11T00:22:43.089Z"
-    },
-    {
-      "event": "return",
-      "time": "2026-11-11T00:22:59.080Z"
-    },
-    {
-      "event": "return",
-      "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-11T00:23:09.709Z"
-    },
-    {
-      "event": "launch",
-      "id": "system-monitor",
-      "fingerprint": "4523c0241eb53ee9a043ae6e011e1d8ecf41ecd8eca726c0d084b6b8d76b3218",
-      "time": "2026-11-11T00:23:23.375Z"
+      "id": "air-guitar",
+      "fingerprint": "d279b58782ba55d6d2327a51d3f7d3563701fd8c8b2756b5c105d991161850da",
+      "time": "2026-11-11T00:47:11.502Z"
     },
     {
       "event": "return",
       "error": "Cannot find module 'K:\\ns2hb\\GitRepo\\brendanlauncher2\\runs\\latest\\switch2\\tools\\fs-memory.cjs'\nRequire stack:\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\host\\lib\\target.cjs\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\homebrew-launcher\\app-runtime.cjs\n- K:\\ns2hb\\GitRepo\\brendanlauncher2\\homebrew-launcher\\launcher-loop.cjs",
-      "time": "2026-11-11T00:23:26.993Z"
+      "time": "2026-11-11T00:47:15.255Z"
+    },
+    {
+      "event": "return",
+      "error": "Cannot read properties of undefined (reading 'bytes')",
+      "time": "2026-11-11T00:47:25.535Z"
     }
   ],
-  "generation": 4,
+  "generation": 3,
   "resourcesRetained": true,
   "catalog": {
     "root": "K:\\ns2hb\\GitRepo\\brendanlauncher2\\apps",

@@ -1,6 +1,6 @@
 {
   "session": "latest",
-  "started": "2026-11-11T00:21:24.084Z",
+  "started": "2026-11-11T00:46:11.569Z",
   "bytes": 8294400,
   "api": "Vulkan 1.4",
   "displayTouched": true,
@@ -9,647 +9,647 @@
     {
       "name": "sdk.allocate",
       "args": [
-        200134960000,
+        352008610688,
         4096,
         8192
       ],
-      "started": "2026-11-11T00:21:24.352Z",
+      "started": "2026-11-11T00:46:11.778Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:24.366Z"
+      "completed": "2026-11-11T00:46:11.791Z"
     },
     {
       "name": "sdk.memset",
       "args": [
-        197827592192,
+        349701242880,
         0,
         8192
       ],
-      "started": "2026-11-11T00:21:24.392Z",
+      "started": "2026-11-11T00:46:11.838Z",
       "status": "returned",
-      "result": "197827592192",
-      "completed": "2026-11-11T00:21:24.409Z"
+      "result": "349701242880",
+      "completed": "2026-11-11T00:46:11.853Z"
     },
     {
       "name": "_ZN2nn2vi18OpenDefaultDisplayEPPNS0_7DisplayE",
       "args": [
-        200134960008
+        352008610696
       ],
-      "started": "2026-11-11T00:21:24.459Z",
+      "started": "2026-11-11T00:46:11.909Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:24.474Z"
+      "completed": "2026-11-11T00:46:11.929Z"
     },
     {
       "name": "_ZN2nn2vi5LayerC1Ev",
       "args": [
-        197827592192
+        349701242880
       ],
-      "started": "2026-11-11T00:21:24.552Z",
+      "started": "2026-11-11T00:46:12.004Z",
       "status": "returned",
-      "result": "197827593384",
-      "completed": "2026-11-11T00:21:24.565Z"
+      "result": "349701244072",
+      "completed": "2026-11-11T00:46:12.016Z"
     },
     {
       "name": "_ZN2nn2vi21LayerCreationSettingsC1Eii",
       "args": [
-        197827596288,
+        349701246976,
         1920,
         1080
       ],
-      "started": "2026-11-11T00:21:24.628Z",
+      "started": "2026-11-11T00:46:12.073Z",
       "status": "returned",
-      "result": "197827596288",
-      "completed": "2026-11-11T00:21:24.641Z"
+      "result": "349701246976",
+      "completed": "2026-11-11T00:46:12.098Z"
     },
     {
       "name": "_ZN2nn2vi5Layer4OpenEPKNS0_21LayerCreationSettingsEPNS0_7DisplayEPKc",
       "args": [
-        197827592192,
-        197827596288,
-        "34148618264",
-        197827596544
+        349701242880,
+        349701246976,
+        "338980147224",
+        349701247232
       ],
-      "started": "2026-11-11T00:21:24.729Z",
+      "started": "2026-11-11T00:46:12.171Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:24.745Z"
+      "completed": "2026-11-11T00:46:12.187Z"
     },
     {
       "name": "vkCreateInstance",
       "args": [
-        200134960512,
+        352008611200,
         0,
-        200134960000
+        352008610688
       ],
-      "started": "2026-11-11T00:21:24.929Z",
+      "started": "2026-11-11T00:46:12.360Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:24.964Z"
+      "completed": "2026-11-11T00:46:12.417Z"
     },
     {
       "name": "vkEnumeratePhysicalDevices",
       "args": [
-        "197827579904",
-        200134960008,
+        "349701230592",
+        352008610696,
         0
       ],
-      "started": "2026-11-11T00:21:25.042Z",
+      "started": "2026-11-11T00:46:12.620Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.055Z"
+      "completed": "2026-11-11T00:46:12.666Z"
     },
     {
       "name": "vkEnumeratePhysicalDevices",
       "args": [
-        "197827579904",
-        200134960008,
-        200134960016
+        "349701230592",
+        352008610696,
+        352008610704
       ],
-      "started": "2026-11-11T00:21:25.076Z",
+      "started": "2026-11-11T00:46:12.686Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.091Z"
+      "completed": "2026-11-11T00:46:12.699Z"
     },
     {
       "name": "_ZN2nn2vi5Layer15GetNativeWindowEv",
       "args": [
-        197827592192
+        349701242880
       ],
-      "started": "2026-11-11T00:21:25.170Z",
+      "started": "2026-11-11T00:46:12.773Z",
       "status": "returned",
-      "result": "197827593392",
-      "completed": "2026-11-11T00:21:25.182Z"
+      "result": "349701244080",
+      "completed": "2026-11-11T00:46:12.784Z"
     },
     {
       "name": "vkCreateViSurfaceNN",
       "args": [
-        "197827579904",
-        200134984832,
+        "349701230592",
+        352008635520,
         0,
-        200134960104
+        352008610792
       ],
-      "started": "2026-11-11T00:21:25.281Z",
+      "started": "2026-11-11T00:46:12.871Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.297Z"
+      "completed": "2026-11-11T00:46:12.883Z"
     },
     {
       "name": "vkGetPhysicalDeviceSurfaceCapabilitiesKHR",
       "args": [
-        "197827553328",
-        "197827574288",
-        200134985088
+        "349701204016",
+        "349701224976",
+        352008635776
       ],
-      "started": "2026-11-11T00:21:25.369Z",
+      "started": "2026-11-11T00:46:12.954Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.387Z"
+      "completed": "2026-11-11T00:46:12.966Z"
     },
     {
       "name": "vkGetPhysicalDeviceSurfaceFormatsKHR",
       "args": [
-        "197827553328",
-        "197827574288",
-        200134960144,
+        "349701204016",
+        "349701224976",
+        352008610832,
         0
       ],
-      "started": "2026-11-11T00:21:25.475Z",
+      "started": "2026-11-11T00:46:13.028Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.487Z"
+      "completed": "2026-11-11T00:46:13.039Z"
     },
     {
       "name": "vkGetPhysicalDeviceSurfaceFormatsKHR",
       "args": [
-        "197827553328",
-        "197827574288",
-        200134960144,
-        200134985600
+        "349701204016",
+        "349701224976",
+        352008610832,
+        352008636288
       ],
-      "started": "2026-11-11T00:21:25.506Z",
+      "started": "2026-11-11T00:46:13.065Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:25.535Z"
+      "completed": "2026-11-11T00:46:13.076Z"
     },
     {
       "name": "vkGetPhysicalDeviceQueueFamilyProperties",
       "args": [
-        "197827553328",
-        200134960024,
+        "349701204016",
+        352008610712,
         0
       ],
-      "started": "2026-11-11T00:21:25.597Z",
+      "started": "2026-11-11T00:46:13.134Z",
       "status": "returned",
-      "result": "194611261440",
-      "completed": "2026-11-11T00:21:25.610Z"
+      "result": "346484908032",
+      "completed": "2026-11-11T00:46:13.167Z"
     },
     {
       "name": "vkGetPhysicalDeviceQueueFamilyProperties",
       "args": [
-        "197827553328",
-        200134960024,
-        200134964096
+        "349701204016",
+        352008610712,
+        352008614784
       ],
-      "started": "2026-11-11T00:21:25.645Z",
+      "started": "2026-11-11T00:46:13.185Z",
       "status": "returned",
-      "result": "200134964096",
-      "completed": "2026-11-11T00:21:25.661Z"
+      "result": "352008614784",
+      "completed": "2026-11-11T00:46:13.196Z"
     },
     {
       "name": "vkGetPhysicalDeviceMemoryProperties",
       "args": [
-        "197827553328",
-        200134968192
+        "349701204016",
+        352008618880
       ],
-      "started": "2026-11-11T00:21:25.739Z",
+      "started": "2026-11-11T00:46:13.266Z",
       "status": "returned",
-      "result": "200134968192",
-      "completed": "2026-11-11T00:21:25.752Z"
+      "result": "352008618880",
+      "completed": "2026-11-11T00:46:13.276Z"
     },
     {
       "name": "vkCreateDevice",
       "args": [
-        "197827553328",
-        200134961536,
+        "349701204016",
+        352008612224,
         0,
-        200134960032
+        352008610720
       ],
-      "started": "2026-11-11T00:21:25.967Z",
+      "started": "2026-11-11T00:46:13.464Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.003Z"
+      "completed": "2026-11-11T00:46:13.498Z"
     },
     {
       "name": "vkGetDeviceQueue",
       "args": [
-        "194611269712",
+        "346484916304",
         0,
         0,
-        200134960040
+        352008610728
       ],
-      "started": "2026-11-11T00:21:26.080Z",
+      "started": "2026-11-11T00:46:13.570Z",
       "status": "returned",
-      "result": "194611269632",
-      "completed": "2026-11-11T00:21:26.091Z"
+      "result": "346484916224",
+      "completed": "2026-11-11T00:46:13.582Z"
     },
     {
       "name": "vkGetPhysicalDeviceSurfaceSupportKHR",
       "args": [
-        "197827553328",
+        "349701204016",
         0,
-        "197827574288",
-        200134960144
+        "349701224976",
+        352008610832
       ],
-      "started": "2026-11-11T00:21:26.173Z",
+      "started": "2026-11-11T00:46:13.638Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.185Z"
+      "completed": "2026-11-11T00:46:13.650Z"
     },
     {
       "name": "vkCreateSwapchainKHR",
       "args": [
-        "194611269712",
-        200134986112,
+        "346484916304",
+        352008636800,
         0,
-        200134960112
+        352008610800
       ],
-      "started": "2026-11-11T00:21:26.281Z",
+      "started": "2026-11-11T00:46:13.740Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.302Z"
+      "completed": "2026-11-11T00:46:13.756Z"
     },
     {
       "name": "vkCreateSemaphore",
       "args": [
-        "194611269712",
-        200134986368,
+        "346484916304",
+        352008637056,
         0,
-        200134960120
+        352008610808
       ],
-      "started": "2026-11-11T00:21:26.399Z",
+      "started": "2026-11-11T00:46:13.849Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.412Z"
+      "completed": "2026-11-11T00:46:13.883Z"
     },
     {
       "name": "vkCreateSemaphore",
       "args": [
-        "194611269712",
-        200134986368,
+        "346484916304",
+        352008637056,
         0,
-        200134960128
+        352008610816
       ],
-      "started": "2026-11-11T00:21:26.445Z",
+      "started": "2026-11-11T00:46:13.900Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.460Z"
+      "completed": "2026-11-11T00:46:13.911Z"
     },
     {
       "name": "vkAcquireNextImage2KHR",
       "args": [
-        "194611269712",
-        200134986624,
-        200134960136
+        "346484916304",
+        352008637312,
+        352008610824
       ],
-      "started": "2026-11-11T00:21:26.556Z",
+      "started": "2026-11-11T00:46:14.000Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.569Z"
+      "completed": "2026-11-11T00:46:14.011Z"
     },
     {
       "name": "vkGetSwapchainImagesKHR",
       "args": [
-        "194611269712",
-        "194608025216",
-        200134960144,
+        "346484916304",
+        "346481671808",
+        352008610832,
         0
       ],
-      "started": "2026-11-11T00:21:26.639Z",
+      "started": "2026-11-11T00:46:14.081Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.659Z"
+      "completed": "2026-11-11T00:46:14.096Z"
     },
     {
       "name": "vkGetSwapchainImagesKHR",
       "args": [
-        "194611269712",
-        "194608025216",
-        200134960144,
-        200134986880
+        "346484916304",
+        "346481671808",
+        352008610832,
+        352008637568
       ],
-      "started": "2026-11-11T00:21:26.681Z",
+      "started": "2026-11-11T00:46:14.123Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.694Z"
+      "completed": "2026-11-11T00:46:14.137Z"
     },
     {
       "name": "vkCreateBuffer",
       "args": [
-        "194611269712",
-        200134961792,
+        "346484916304",
+        352008612480,
         0,
-        200134960048
+        352008610736
       ],
-      "started": "2026-11-11T00:21:26.798Z",
+      "started": "2026-11-11T00:46:14.330Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:26.811Z"
+      "completed": "2026-11-11T00:46:14.343Z"
     },
     {
       "name": "vkGetBufferMemoryRequirements",
       "args": [
-        "194611269712",
-        "194601944224",
-        200134962048
+        "346484916304",
+        "346475594912",
+        352008612736
       ],
-      "started": "2026-11-11T00:21:26.900Z",
+      "started": "2026-11-11T00:46:14.415Z",
       "status": "returned",
-      "result": "194601944144",
-      "completed": "2026-11-11T00:21:26.913Z"
+      "result": "346475594832",
+      "completed": "2026-11-11T00:46:14.427Z"
     },
     {
       "name": "vkAllocateMemory",
       "args": [
-        "194611269712",
-        200134962304,
+        "346484916304",
+        352008612992,
         0,
-        200134960056
+        352008610744
       ],
-      "started": "2026-11-11T00:21:27.009Z",
+      "started": "2026-11-11T00:46:14.528Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:27.022Z"
+      "completed": "2026-11-11T00:46:14.543Z"
     },
     {
       "name": "vkBindBufferMemory",
       "args": [
-        "194611269712",
-        "194601944224",
-        "194614612928",
+        "346484916304",
+        "346475594912",
+        "346488259520",
         0
       ],
-      "started": "2026-11-11T00:21:27.100Z",
+      "started": "2026-11-11T00:46:14.614Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:27.121Z"
+      "completed": "2026-11-11T00:46:14.624Z"
     },
     {
       "name": "vkMapMemory2",
       "args": [
-        "194611269712",
-        200134962560,
-        200134960064
+        "346484916304",
+        352008613248,
+        352008610752
       ],
-      "started": "2026-11-11T00:21:27.211Z",
+      "started": "2026-11-11T00:46:14.712Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:27.240Z"
+      "completed": "2026-11-11T00:46:14.724Z"
     },
     {
       "name": "vkCreateImageView",
       "args": [
-        "194611269712",
-        200134976640,
+        "346484916304",
+        352008627328,
         0,
-        200134960096
+        352008610784
       ],
-      "started": "2026-11-11T00:21:30.631Z",
+      "started": "2026-11-11T00:46:17.597Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:30.647Z"
+      "completed": "2026-11-11T00:46:17.609Z"
     },
     {
       "name": "vkCreateCommandPool",
       "args": [
-        "194611269712",
-        200134962816,
+        "346484916304",
+        352008613504,
         0,
-        200134960072
+        352008610760
       ],
-      "started": "2026-11-11T00:21:30.730Z",
+      "started": "2026-11-11T00:46:17.700Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:30.754Z"
+      "completed": "2026-11-11T00:46:17.710Z"
     },
     {
       "name": "vkAllocateCommandBuffers",
       "args": [
-        "194611269712",
-        200134963072,
-        200134960080
+        "346484916304",
+        352008613760,
+        352008610768
       ],
-      "started": "2026-11-11T00:21:30.828Z",
+      "started": "2026-11-11T00:46:17.796Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:30.862Z"
+      "completed": "2026-11-11T00:46:17.806Z"
     },
     {
       "name": "vkBeginCommandBuffer",
       "args": [
-        "194620145744",
-        200134963328
+        "346493796432",
+        352008614016
       ],
-      "started": "2026-11-11T00:21:30.936Z",
+      "started": "2026-11-11T00:46:17.892Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:30.965Z"
+      "completed": "2026-11-11T00:46:17.905Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:31.039Z",
+      "started": "2026-11-11T00:46:18.000Z",
       "status": "returned",
-      "result": "194646769808",
-      "completed": "2026-11-11T00:21:31.063Z"
+      "result": "346520420496",
+      "completed": "2026-11-11T00:46:18.010Z"
     },
     {
       "name": "vkCmdBeginRendering",
       "args": [
-        "194620145744",
-        200134977664
+        "346493796432",
+        352008628352
       ],
-      "started": "2026-11-11T00:21:31.186Z",
+      "started": "2026-11-11T00:46:18.093Z",
       "status": "returned",
-      "result": "194620145664",
-      "completed": "2026-11-11T00:21:31.198Z"
+      "result": "346493796352",
+      "completed": "2026-11-11T00:46:18.103Z"
     },
     {
       "name": "vkCmdEndRendering",
       "args": [
-        "194620145744"
+        "346493796432"
       ],
-      "started": "2026-11-11T00:21:31.265Z",
+      "started": "2026-11-11T00:46:18.143Z",
       "status": "returned",
-      "result": "194615621488",
-      "completed": "2026-11-11T00:21:31.277Z"
+      "result": "346489268080",
+      "completed": "2026-11-11T00:46:18.161Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:31.312Z",
+      "started": "2026-11-11T00:46:18.203Z",
       "status": "returned",
-      "result": "194646769904",
-      "completed": "2026-11-11T00:21:31.324Z"
+      "result": "346520420592",
+      "completed": "2026-11-11T00:46:18.215Z"
     },
     {
       "name": "vkCmdBeginRendering",
       "args": [
-        "194620145744",
-        200134977664
+        "346493796432",
+        352008628352
       ],
-      "started": "2026-11-11T00:21:31.367Z",
+      "started": "2026-11-11T00:46:18.249Z",
       "status": "returned",
-      "result": "194620145664",
-      "completed": "2026-11-11T00:21:31.380Z"
+      "result": "346493796352",
+      "completed": "2026-11-11T00:46:18.260Z"
     },
     {
       "name": "vkCmdEndRendering",
       "args": [
-        "194620145744"
+        "346493796432"
       ],
-      "started": "2026-11-11T00:21:31.382Z",
+      "started": "2026-11-11T00:46:18.293Z",
       "status": "returned",
-      "result": "194615621488",
-      "completed": "2026-11-11T00:21:31.396Z"
+      "result": "346489268080",
+      "completed": "2026-11-11T00:46:18.305Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:31.432Z",
+      "started": "2026-11-11T00:46:18.339Z",
       "status": "returned",
-      "result": "194646770000",
-      "completed": "2026-11-11T00:21:31.446Z"
+      "result": "346520420688",
+      "completed": "2026-11-11T00:46:18.350Z"
     },
     {
       "name": "vkCmdBeginRendering",
       "args": [
-        "194620145744",
-        200134977664
+        "346493796432",
+        352008628352
       ],
-      "started": "2026-11-11T00:21:31.493Z",
+      "started": "2026-11-11T00:46:18.396Z",
       "status": "returned",
-      "result": "194620145664",
-      "completed": "2026-11-11T00:21:31.510Z"
+      "result": "346493796352",
+      "completed": "2026-11-11T00:46:18.407Z"
     },
     {
       "name": "vkCmdEndRendering",
       "args": [
-        "194620145744"
+        "346493796432"
       ],
-      "started": "2026-11-11T00:21:31.514Z",
+      "started": "2026-11-11T00:46:18.410Z",
       "status": "returned",
-      "result": "194615621488",
-      "completed": "2026-11-11T00:21:31.526Z"
+      "result": "346489268080",
+      "completed": "2026-11-11T00:46:18.421Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:31.582Z",
+      "started": "2026-11-11T00:46:18.455Z",
       "status": "returned",
-      "result": "194646770096",
-      "completed": "2026-11-11T00:21:31.595Z"
+      "result": "346520420784",
+      "completed": "2026-11-11T00:46:18.466Z"
     },
     {
       "name": "vkCmdBeginRendering",
       "args": [
-        "194620145744",
-        200134977664
+        "346493796432",
+        352008628352
       ],
-      "started": "2026-11-11T00:21:31.641Z",
+      "started": "2026-11-11T00:46:18.508Z",
       "status": "returned",
-      "result": "194620145664",
-      "completed": "2026-11-11T00:21:31.657Z"
+      "result": "346493796352",
+      "completed": "2026-11-11T00:46:18.519Z"
     },
     {
       "name": "vkCmdEndRendering",
       "args": [
-        "194620145744"
+        "346493796432"
       ],
-      "started": "2026-11-11T00:21:31.660Z",
+      "started": "2026-11-11T00:46:18.521Z",
       "status": "returned",
-      "result": "194615621488",
-      "completed": "2026-11-11T00:21:31.690Z"
+      "result": "346489268080",
+      "completed": "2026-11-11T00:46:18.534Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:31.757Z",
+      "started": "2026-11-11T00:46:18.566Z",
       "status": "returned",
-      "result": "194646770192",
-      "completed": "2026-11-11T00:21:31.779Z"
+      "result": "346520420880",
+      "completed": "2026-11-11T00:46:18.579Z"
     },
     {
       "name": "vkCmdCopyImageToBuffer2",
       "args": [
-        "194620145744",
-        200134978176
+        "346493796432",
+        352008628864
       ],
-      "started": "2026-11-11T00:21:31.957Z",
+      "started": "2026-11-11T00:46:18.647Z",
       "status": "returned",
-      "result": "194615621488",
-      "completed": "2026-11-11T00:21:31.979Z"
+      "result": "346489268080",
+      "completed": "2026-11-11T00:46:18.658Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134977152
+        "346493796432",
+        352008627840
       ],
-      "started": "2026-11-11T00:21:32.021Z",
+      "started": "2026-11-11T00:46:18.720Z",
       "status": "returned",
-      "result": "194646771088",
-      "completed": "2026-11-11T00:21:32.039Z"
+      "result": "346520421776",
+      "completed": "2026-11-11T00:46:18.731Z"
     },
     {
       "name": "vkCmdPipelineBarrier2",
       "args": [
-        "194620145744",
-        200134972544
+        "346493796432",
+        352008623232
       ],
-      "started": "2026-11-11T00:21:32.089Z",
+      "started": "2026-11-11T00:46:18.764Z",
       "status": "returned",
-      "result": "194646771184",
-      "completed": "2026-11-11T00:21:32.101Z"
+      "result": "346520421872",
+      "completed": "2026-11-11T00:46:18.777Z"
     },
     {
       "name": "vkEndCommandBuffer",
       "args": [
-        "194620145744"
+        "346493796432"
       ],
-      "started": "2026-11-11T00:21:32.146Z",
+      "started": "2026-11-11T00:46:18.821Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:32.163Z"
+      "completed": "2026-11-11T00:46:18.838Z"
     },
     {
       "name": "vkQueueSubmit",
       "args": [
-        "194608021904",
+        "346481668496",
         1,
-        200134972800,
+        352008623488,
         0
       ],
-      "started": "2026-11-11T00:21:32.269Z",
+      "started": "2026-11-11T00:46:18.951Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:32.291Z"
+      "completed": "2026-11-11T00:46:18.964Z"
     },
     {
       "name": "vkQueueWaitIdle",
       "args": [
-        "194608021904"
+        "346481668496"
       ],
-      "started": "2026-11-11T00:21:32.340Z",
+      "started": "2026-11-11T00:46:19.021Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:32.351Z"
+      "completed": "2026-11-11T00:46:19.031Z"
     },
     {
       "name": "vkQueuePresentKHR",
       "args": [
-        "194608021904",
-        200134987392
+        "346481668496",
+        352008638080
       ],
-      "started": "2026-11-11T00:21:36.085Z",
+      "started": "2026-11-11T00:46:21.901Z",
       "status": "returned",
       "result": "0",
-      "completed": "2026-11-11T00:21:36.101Z"
+      "completed": "2026-11-11T00:46:21.913Z"
     }
   ],
   "surface": {
@@ -663,15 +663,15 @@
   "queueFamily": 0,
   "deviceCreated": true,
   "displayResources": {
-    "layer": 197827592192,
-    "display": "34148618264",
-    "instance": "197827579904",
-    "device": "194611269712",
-    "surface": "197827574288",
-    "swapchain": "194608025216",
-    "acquiredSemaphore": "194605094672",
-    "presentSemaphore": "194605094960",
-    "queue": "194608021904"
+    "layer": 349701242880,
+    "display": "338980147224",
+    "instance": "349701230592",
+    "device": "346484916304",
+    "surface": "349701224976",
+    "swapchain": "346481671808",
+    "acquiredSemaphore": "346478745360",
+    "presentSemaphore": "346478745648",
+    "queue": "346481668496"
   },
   "imageIndex": 0,
   "width": 1920,
@@ -680,10 +680,10 @@
   "verified": true,
   "destinationSha256": "d7489c5f92e95426f405806b89a221d798c8dd31992b20de26caf7a97789fc99",
   "presentationAccepted": true,
-  "presentationAcceptedAt": "2026-11-11T00:21:36.104Z",
+  "presentationAcceptedAt": "2026-11-11T00:46:21.916Z",
   "phase": "display-held",
   "cleanupErrors": [],
   "resourcesRetained": true,
   "scratchRestored": true,
-  "completed": "2026-11-11T00:21:36.218Z"
+  "completed": "2026-11-11T00:46:21.988Z"
 }
