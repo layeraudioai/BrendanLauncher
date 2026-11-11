@@ -1,18 +1,37 @@
 {
   "session": "latest",
-  "started": "2026-11-09T20:44:33.773Z",
+  "started": "2026-11-10T23:13:37.549Z",
   "transitions": [
     {
       "event": "return",
       "error": "Cannot read properties of undefined (reading 'bytes')",
-      "time": "2026-11-09T20:45:07.160Z"
+      "time": "2026-11-10T23:13:53.364Z"
+    },
+    {
+      "event": "return",
+      "error": "Cannot read properties of undefined (reading 'bytes')",
+      "time": "2026-11-10T23:14:05.313Z"
+    },
+    {
+      "event": "return",
+      "error": "Cannot read properties of undefined (reading 'bytes')",
+      "time": "2026-11-10T23:14:13.206Z"
     }
   ],
-  "generation": 2,
+  "generation": 4,
   "resourcesRetained": true,
   "catalog": {
     "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps",
     "apps": [
+      {
+        "id": "air-guitar",
+        "name": "AirGuitar",
+        "version": "1.0.0",
+        "description": "Split-Joy-Con motion rhythm game with .chart support and adaptive Freeplay mode",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar",
+        "fingerprint": "d279b58782ba55d6d2327a51d3f7d3563701fd8c8b2756b5c105d991161850da",
+        "effects": {}
+      },
       {
         "id": "blitbun",
         "name": "BlitBun",
@@ -38,6 +57,33 @@
         "description": "GB2NS2: experimental standalone shader-based Game Boy emulator. Compatibility is incomplete; no audio yet.",
         "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gb2ns2",
         "fingerprint": "bd05400d358f55593a09c18fe21aa65e2d21380962f415b2f7bea3fd4e294e1d",
+        "effects": {}
+      },
+      {
+        "id": "gpu-triangle",
+        "name": "GPU Triangle",
+        "version": "1.0.0",
+        "description": "SDK sample - animated triangle drawn on the GPU",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle",
+        "fingerprint": "cedf9fa736ccf66727c26950b8adaa43503474ab781e17a9194f0b342ec77920",
+        "effects": {}
+      },
+      {
+        "id": "hello-cpu",
+        "name": "Hello CPU",
+        "version": "1.0.0",
+        "description": "SDK sample - CPU logic with Vulkan UI drawing",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-cpu",
+        "fingerprint": "ed9b39b049b3726d3662ca43578d3120769ed942bd6ecae519304c934007a856",
+        "effects": {}
+      },
+      {
+        "id": "hello-vite-native",
+        "name": "Hello TypeScript web app",
+        "version": "1.0.0",
+        "description": "Native Switch UI port of Hello TypeScript web app (WebPort v1)",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native",
+        "fingerprint": "03a0a81faf7d9c1f8d79eb24fcd1c15d75c828106a06600655793f3c0b257a09",
         "effects": {}
       },
       {
@@ -73,7 +119,7 @@
         "version": "1.0.0",
         "description": "Switch 2 Homebrew Menu, File Browser & Tool Suite",
         "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira",
-        "fingerprint": "80bd0edcaa440ee6c339f8b43b42f0114cd71468c242bc0a04e837052cffdf4c",
+        "fingerprint": "262842247b746b982f0586a4c1159834ede9fec10c2c981fdfb0f5a827ff56e2",
         "effects": {
           "1": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_1.pcm",
           "2": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\sphaira\\assets\\audio_2.pcm"
@@ -86,6 +132,15 @@
         "description": "Packs HBLauncher runtime and assets into SB4 save slots for 100% offline client-side launching.",
         "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\standalone-installer",
         "fingerprint": "66ce5bc0db12b7d0c35878082c5490b69296a1162da78a61e10ab2ec2fca7dd5",
+        "effects": {}
+      },
+      {
+        "id": "system-monitor",
+        "name": "System Monitor",
+        "version": "1.0.0",
+        "description": "Read-only telemetry status and a bounded CPU benchmark",
+        "root": "K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor",
+        "fingerprint": "4523c0241eb53ee9a043ae6e011e1d8ecf41ecd8eca726c0d084b6b8d76b3218",
         "effects": {}
       },
       {
@@ -109,28 +164,8 @@
     ],
     "rejected": [
       {
-        "folder": "air-guitar",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\air-guitar\\switch\\app.json'"
-      },
-      {
-        "folder": "gpu-triangle",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\gpu-triangle\\switch\\app.json'"
-      },
-      {
-        "folder": "hello-cpu",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-cpu\\switch\\app.json'"
-      },
-      {
-        "folder": "hello-vite-native",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\hello-vite-native\\switch\\app.json'"
-      },
-      {
         "folder": "ns2jb-modloader",
         "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\ns2jb-modloader\\switch\\app.json'"
-      },
-      {
-        "folder": "system-monitor",
-        "error": "ENOENT: no such file or directory, realpath 'K:\\ns2hb\\GitRepo\\brendanlauncher\\apps\\system-monitor\\switch\\app.json'"
       }
     ]
   },

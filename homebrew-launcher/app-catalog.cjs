@@ -26,7 +26,7 @@ async function readApp(directory, { validate = true } = {}) {
         }
     }
     const manifestAsset = await asset(assetRoot, path.relative(assetRoot, manifestPath), 16384), m = JSON.parse(manifestAsset.bytes);
-    
+
     if (isNative || m.kind === 'native') {
         check(m.abi === 3 && m.kind === 'native', 'Unsupported native app ABI/kind');
         check(typeof m.id === 'string' && /^[a-z0-9][a-z0-9._-]{0,63}$/.test(m.id), 'Invalid native app id');
@@ -45,16 +45,16 @@ async function readApp(directory, { validate = true } = {}) {
         files.icon = { bytes: iconBytes };
         hash.update(iconBytes);
 
-        return { 
-            id: m.id, 
-            name: m.name.trim(), 
-            version: m.version, 
-            description: m.description, 
-            root, 
-            manifest: { ...m, format: 'native-sdk' }, 
-            files, 
-            effects: {}, 
-            fingerprint: hash.digest('hex') 
+        return {
+            id: m.id,
+            name: m.name.trim(),
+            version: m.version,
+            description: m.description,
+            root,
+            manifest: { ...m, format: 'native-sdk' },
+            files,
+            effects: {},
+            fingerprint: hash.digest('hex')
         };
     }
 
@@ -117,11 +117,23 @@ async function readApp(directory, { validate = true } = {}) {
     }
     return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, fingerprint: hash.digest('hex') };
 }
+async function hasManifest(directory) {
+    for (const name of ['app.json', 'manifest.json', 'switch/app.json']) {
+        try {
+            await fs.access(path.join(directory, name));
+            return true;
+        } catch (error) {
+            if (error.code !== 'ENOENT') throw error;
+        }
+    }
+    return false;
+}
 async function scan(root = ROOT) {
     root = path.resolve(root); let entries; try { entries = await fs.readdir(root, { withFileTypes: true }); } catch (error) { if (error.code === 'ENOENT') return { root, apps: [], rejected: [] }; throw error; }
     const apps = [], rejected = [], ids = new Set();
     for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
         if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
+        if (!await hasManifest(path.join(root, entry.name))) continue;
         try { check(apps.length < MAX_APPS, 'Catalog limit is 32 apps'); const app = await readApp(path.join(root, entry.name)); check(!ids.has(app.id), 'Duplicate app id'); ids.add(app.id); apps.push(app); }
         catch (error) { rejected.push({ folder: entry.name, error: error.message }); }
     }
@@ -137,8 +149,7 @@ async function raster(catalog, directory, label = 'catalog') {
     }
     await fs.writeFile(input, JSON.stringify(labels, null, 2));
     let success = false;
-    const preferred = process.env.PYTHON || process.env.PYTHON3 || 'python3';
-    for (const pyCmd of [...new Set([preferred, 'python', 'py'])]) {
+    for (const pyCmd of [...new Set(['python'])]) {
         try {
             await run(pyCmd, [path.join(__dirname, 'catalog-assets.py'), input, output], { timeout: 15000, maxBuffer: 65536 });
             success = true;

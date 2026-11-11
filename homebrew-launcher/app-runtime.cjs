@@ -1,9 +1,41 @@
 const fs=require('node:fs/promises'),path=require('node:path');
 const catalogTools=require('./app-catalog.cjs');
 const {prepare}=require('./gpu-app.cjs');
+const {Log}=require('../host/lib/common.cjs');
 const check=(v,m)=>{if(!v)throw Error(m);};
 async function atomic(file,value){const temp=file+'.tmp';await fs.writeFile(temp,JSON.stringify(value,null,2));await fs.rename(temp,file);}
-async function create({rpc,menu,directory,prepareApp=prepare}){
+function createNativeAppRuntime({runDir,appsDir,log,openTarget,RuntimeClass}){
+ let nativeRuntime;
+ return {
+  async launch(app){
+   if(!nativeRuntime){
+    const target=await openTarget({runDir,log});
+    const candidate=new RuntimeClass({target,runDir,log,appsDir});
+    try{await candidate.open();}
+    catch(error){
+     try{await candidate.stop({teardown:false});}
+     catch(cleanupError){throw new AggregateError([error,cleanupError],'Native runtime failed to open and clean up');}
+     throw error;
+    }
+    nativeRuntime=candidate;
+   }else await nativeRuntime.refreshCatalog();
+   return nativeRuntime.launchOneApp({appId:app.id});
+  },
+  async close(){
+   if(nativeRuntime)await nativeRuntime.stop({teardown:false});
+   nativeRuntime=null;
+  }
+ };
+}
+async function create(options){
+ const {rpc,menu,directory,prepareApp=prepare,rasterCatalog=catalogTools.raster}=options;
+ const nativeLog=options.nativeLog||new Log({file:path.join(directory,'native-apps.log')});
+ const {LiveTarget}=require('../host/lib/target.cjs');
+ const {Runtime}=require('../host/lib/runtime.cjs');
+ const nativeAppRuntime=options.nativeAppRuntime||createNativeAppRuntime({
+  runDir:directory,appsDir:menu.catalog.root,log:nativeLog,
+  openTarget:LiveTarget.open.bind(LiveTarget),RuntimeClass:Runtime
+ });
  const mapped=menu.controls.mapped,cache=new Map();let generation=0,refreshSeen=0,menuState=await rpc.read(mapped,1024);
  let catalog,menuData;const runtime={active:null,report:{session:rpc.a.session,started:new Date().toISOString(),transitions:[],generation:0,resourcesRetained:true}};
  const save=()=>atomic(path.join(directory,'app-runtime.json'),runtime.report);
@@ -24,7 +56,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
  }
  async function rescan(state,upload=true){
   const selected=catalog?.apps[state.readUInt32LE(80)]?.id;
-  const next=await catalogTools.scan(menu.catalog.root),bytes=await catalogTools.raster(next,directory,'catalog-'+(++generation));
+  const next=await catalogTools.scan(menu.catalog.root),bytes=await rasterCatalog(next,directory,'catalog-'+(++generation));
   const font=await fs.readFile(path.join(__dirname,'shaders/launcher-text.bin'));check(font.length===catalogTools.ATLAS_BYTES,'Menu type atlas changed size');
   menuData=Buffer.concat([font,bytes]);check(menuData.length+1024<=menu.controls.bytes,'Catalog exceeds GPU storage');catalog=next;
   let index=selected?catalog.apps.findIndex(a=>a.id===selected):-1;if(index<0)index=Math.min(state.readUInt32LE(80),Math.max(0,catalog.apps.length-1));
@@ -103,6 +135,20 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
    try{
     check(selected,'The selected app is no longer in the catalog');
     const app=await catalogTools.readApp(selected.root);check(app.fingerprint===selected.fingerprint,'App changed; tap Refresh before opening it');
+    if (app.manifest.kind === 'native') {
+        const bytes=Buffer.alloc(menu.controls.bytes);
+        bytes.writeUInt32LE(0,1012);bytes.writeUInt32LE(0,1016);
+        await rpc.write(mapped,bytes);
+        await audio(app);
+        const transition={event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()};
+        runtime.report.active={id:app.id,fingerprint:app.fingerprint};
+        runtime.report.transitions.push(transition);
+        await save();
+        transition.status=await nativeAppRuntime.launch(app);
+        check(Number.isInteger(transition.status),'Native runtime returned an invalid app status');
+        await save();
+        return returnToMenu();
+    }
     const service=await hostService(app);
     if(service){
      const bytes=Buffer.alloc(menu.controls.bytes);app.files.state.bytes.copy(bytes);app.files.data.bytes.copy(bytes,1024);
@@ -130,7 +176,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
   if(state.readFloatLE(104)!==refreshSeen)await rescan(state);
   return menu.commands[0];
  };
- runtime.close=async()=>{await runtime.active?.service?.close();if(runtime.mediaMachineStreamer)await runtime.mediaMachineStreamer.close();};
+ runtime.close=async()=>{await runtime.active?.service?.close();if(runtime.mediaMachineStreamer)await runtime.mediaMachineStreamer.close();await nativeAppRuntime.close();};
  await rescan(menuState);await audio(null);return runtime;
 }
-module.exports={create};
+module.exports={create,createNativeAppRuntime};

@@ -1,118 +1,54 @@
 {
   "session": "latest",
-  "started": "2026-11-09T20:44:33.601Z",
+  "started": "2026-11-10T23:13:37.496Z",
   "batches": [
     {
       "status": "continuous",
-      "counter": "8948153665",
+      "counter": "446270129437",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:44:50.473Z"
+      "at": "2026-11-10T23:13:47.949Z"
     },
     {
       "status": "continuous",
-      "counter": "8982010097",
-      "interval": 1.083405824,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:51.531Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9016907431",
-      "interval": 1.116714688,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:52.706Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9051285618",
-      "interval": 1.100101984,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:53.824Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9086695500",
-      "interval": 1.133116224,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:54.920Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9123161318",
-      "interval": 1.166906176,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:56.051Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9156479827",
-      "interval": 1.066192288,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:57.167Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9188251094",
-      "interval": 1.016680544,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:44:58.187Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9534102723",
+      "counter": "446536796676",
       "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:45:09.151Z"
+      "at": "2026-11-10T23:13:56.599Z"
     },
     {
       "status": "continuous",
-      "counter": "9567435833",
-      "interval": 1.06665952,
+      "counter": "446599296621",
+      "interval": 1.99999824,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:45:10.281Z"
+      "at": "2026-11-10T23:13:58.445Z"
     },
     {
       "status": "continuous",
-      "counter": "9601810933",
-      "interval": 1.1000032,
+      "counter": "447181588814",
+      "interval": null,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:45:11.396Z"
+      "at": "2026-11-10T23:14:17.074Z"
     },
     {
       "status": "continuous",
-      "counter": "9636176777",
-      "interval": 1.099707008,
+      "counter": "447229507836",
+      "interval": 1.533408704,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:45:12.471Z"
+      "at": "2026-11-10T23:14:18.682Z"
     },
     {
       "status": "continuous",
-      "counter": "9671594256",
-      "interval": 1.133359328,
+      "counter": "447276381138",
+      "interval": 1.499945664,
       "frames": 60,
       "failures": [],
-      "at": "2026-11-09T20:45:13.705Z"
-    },
-    {
-      "status": "continuous",
-      "counter": "9706091864",
-      "interval": 1.103923456,
-      "frames": 60,
-      "failures": [],
-      "at": "2026-11-09T20:45:14.726Z"
+      "at": "2026-11-10T23:14:20.144Z"
     }
   ],
   "resourcesRetained": true,
@@ -120,13 +56,13 @@
   "input": {
     "type": "handheld",
     "id": 32,
-    "target": 56391155552
+    "target": 110193590112
   },
   "touch": {
-    "target": 56391162544,
+    "target": 110193597104,
     "offset": 128
   },
-  "base": 539540303872,
+  "base": 190077186048,
   "sdk": {
     "joyMouse": true
   },
@@ -2311,9 +2247,9 @@
     "stackOffset": 372736,
     "tablesOffset": 12288
   },
-  "frameSha256": "60593fa3c08f6691a305920615cd8bbddb67b5c46323aeae498f89370d20e448",
+  "frameSha256": "ab2b40f198ed3125394b2de1c57f3a4717803ced33c2c6c48fabbdd04a41ec93",
   "framesPerCycle": 60,
   "continuous": true,
-  "thread": "539161829376",
+  "thread": "189698629632",
   "threadRunning": true
 }

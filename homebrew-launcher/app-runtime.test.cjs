@@ -1,12 +1,14 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),os=require('node:os');
-const {create}=require('./app-runtime.cjs');
+const {create,createNativeAppRuntime}=require('./app-runtime.cjs');
+const {MAX_APPS,SLOT_BYTES}=require('./app-catalog.cjs');
+const rasterCatalog=async()=>Buffer.alloc(MAX_APPS*SLOT_BYTES);
 test('Rescan, load, return, cache, removal and version reload use package data',async()=>{
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'hb-runtime-test-')),root=path.join(directory,'apps');await fs.mkdir(root);
  await fs.cp(path.resolve(__dirname,'../apps/hello-world'),path.join(root,'hello-world'),{recursive:true});
  const capacity=8*1024*1024,memory=Buffer.alloc(capacity+4096),mapped=0x100000;memory.writeUInt32LE(1,112);memory.writeUInt32LE(1,1020);
  const rpc={a:{session:'test-session'},async read(p,n){assert.ok(p>=mapped&&p+n<=mapped+memory.length);return Buffer.from(memory.subarray(p-mapped,p-mapped+n));},async write(p,b){assert.ok(p>=mapped&&p+b.length<=mapped+memory.length);b.copy(memory,p-mapped);}};
  const prepared=[],menu={catalog:{root},controls:{mapped,bytes:capacity},commands:[['11','12','13']]};
- const runtime=await create({rpc,menu,directory,prepareApp:async(r,m,app)=>{prepared.push({id:app.id,bytes:app.files.compute.bytes.length});return {ready:true,scratchRestored:true,commands:[['21','22','23']],...(app.files.memory?{privateStorage:{mapped:mapped+capacity,bytes:4096}}:{})};}});
+ const runtime=await create({rpc,menu,directory,rasterCatalog,prepareApp:async(r,m,app)=>{prepared.push({id:app.id,bytes:app.files.compute.bytes.length});return {ready:true,scratchRestored:true,commands:[['21','22','23']],...(app.files.memory?{privateStorage:{mapped:mapped+capacity,bytes:4096}}:{})};}});
  assert.equal(memory.readUInt32LE(112),1);assert.equal(runtime.report.catalog.apps[0].name,'Hello World');
  memory.writeUInt32LE(1,1012);assert.deepEqual(await runtime.afterBatch(),['21','22','23']);assert.equal(runtime.active.app.id,'hello-world');assert.equal(prepared.length,1);assert.equal(memory.readFloatLE(960),1);
  let audio=JSON.parse(await fs.readFile(path.join(directory,'game-audio-source.json')));assert.equal(audio.package.id,'hello-world');
@@ -24,6 +26,47 @@ test('Changed/broken packages return to a usable menu instead of dispatching',as
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'hb-runtime-fail-')),root=path.join(directory,'apps');await fs.mkdir(root);await fs.cp(path.resolve(__dirname,'../apps/hello-world'),path.join(root,'hello-world'),{recursive:true});
  const memory=Buffer.alloc(8*1024*1024),rpc={a:{session:'test'},read:async(p,n)=>Buffer.from(memory.subarray(p,p+n)),write:async(p,b)=>{b.copy(memory,p);}};
  const menu={catalog:{root},controls:{mapped:0,bytes:memory.length},commands:[['1']]};let dispatched=false;
- const runtime=await create({rpc,menu,directory,prepareApp:async()=>{dispatched=true;throw Error('Must not run');}});
+ const runtime=await create({rpc,menu,directory,rasterCatalog,prepareApp:async()=>{dispatched=true;throw Error('Must not run');}});
  await fs.writeFile(path.join(root,'hello-world/app.comp.spv'),Buffer.alloc(20));memory.writeUInt32LE(1,1012);assert.deepEqual(await runtime.afterBatch(),['1']);assert.equal(dispatched,false);assert.equal(memory.readUInt32LE(112),0);assert.equal(memory.readUInt32LE(92),1);assert.equal(runtime.active,null);
+});
+test('Native SDK apps use the same picker and return cleanly to the GPU menu',async()=>{
+ const directory=await fs.mkdtemp(path.join(os.tmpdir(),'hb-runtime-native-')),root=path.join(directory,'apps');await fs.mkdir(root);
+ await fs.cp(path.resolve(__dirname,'../apps/hello-cpu'),path.join(root,'hello-cpu'),{recursive:true});
+ const capacity=8*1024*1024,mapped=0x200000,memory=Buffer.alloc(capacity+4096);
+ const rpc={a:{session:'test-session'},async read(p,n){assert.ok(p>=mapped&&p+n<=mapped+memory.length);return Buffer.from(memory.subarray(p-mapped,p-mapped+n));},async write(p,b){assert.ok(p>=mapped&&p+b.length<=mapped+memory.length);b.copy(memory,p-mapped);}};
+ const menu={catalog:{root},controls:{mapped,bytes:capacity},commands:[['11','12','13']]};
+ let fail=false,closed=false;const launched=[];
+ const nativeAppRuntime={async launch(app){launched.push(app.id);if(fail)throw Error('native app failed');return 0;},async close(){closed=true;}};
+ const runtime=await create({rpc,menu,directory,rasterCatalog,nativeAppRuntime});
+ assert.deepEqual(runtime.report.catalog.apps.map(app=>app.id),['hello-cpu']);
+ memory.writeUInt32LE(1,1012);
+ assert.deepEqual(await runtime.afterBatch(),menu.commands[0]);
+ assert.deepEqual(launched,['hello-cpu']);
+ assert.equal(runtime.report.transitions.find(event=>event.event==='launch').status,0);
+ assert.equal(memory.readUInt32LE(92),0);
+ assert.equal(JSON.parse(await fs.readFile(path.join(directory,'game-audio-source.json'))).package,null);
+ fail=true;memory.writeUInt32LE(1,1012);
+ assert.deepEqual(await runtime.afterBatch(),menu.commands[0]);
+ assert.equal(memory.readUInt32LE(92),1);
+ assert.equal(runtime.report.transitions.at(-1).error,'native app failed');
+ await runtime.close();assert.equal(closed,true);
+});
+test('Native runtime reuses the BrendanLauncher run directory for CPU launches',async()=>{
+ const calls=[],target={session:'existing-session'},runDir=path.join(os.tmpdir(),'brendan-run'),appsDir=path.join(os.tmpdir(),'apps');
+ const log={stage(){},info(){},warn(){},error(){}};
+ class FakeRuntime{
+  constructor(options){this.options=options;calls.push(['construct',options]);}
+  async open(){assert.equal(typeof this.options.log.stage,'function');calls.push(['open']);}
+  async refreshCatalog(){calls.push(['refresh']);}
+  async launchOneApp(options){calls.push(['launch',options]);return 0;}
+  async stop(options){calls.push(['stop',options]);}
+ }
+ const native=createNativeAppRuntime({runDir,appsDir,log,openTarget:async options=>{calls.push(['target',options]);return target;},RuntimeClass:FakeRuntime});
+ await native.launch({id:'hello-cpu'});await native.launch({id:'system-monitor'});await native.close();
+ assert.equal(calls.filter(call=>call[0]==='target').length,1);
+ assert.deepEqual(calls[0],['target',{runDir,log}]);
+ assert.equal(calls.filter(call=>call[0]==='open').length,1);
+ assert.equal(calls.filter(call=>call[0]==='refresh').length,1);
+ assert.deepEqual(calls.filter(call=>call[0]==='launch').map(call=>call[1].appId),['hello-cpu','system-monitor']);
+ assert.deepEqual(calls.at(-1),['stop',{teardown:false}]);
 });

@@ -1,12 +1,12 @@
 {
   "session": "latest",
-  "started": "2026-11-09T20:43:44.848Z",
+  "started": "2026-11-10T23:13:01.600Z",
   "imports": {
     "_ZN2nn3hid19GetTouchScreenStateILm16EEEvPNS0_16TouchScreenStateIXT_EEE": {
       "slot": 10262720,
-      "target": 56391162544,
+      "target": 110193597104,
       "region": {
-        "address": 56386310144,
+        "address": 110188744704,
         "size": 6164480,
         "type": 3,
         "attributes": 0,
@@ -19,9 +19,9 @@
     },
     "_ZN2nn3hid15GetNpadStyleSetERKj": {
       "slot": 10262896,
-      "target": 56391154192,
+      "target": 110193588752,
       "region": {
-        "address": 56386310144,
+        "address": 110188744704,
         "size": 6164480,
         "type": 3,
         "attributes": 0,
@@ -34,9 +34,9 @@
     },
     "_ZN2nn3hid12GetNpadStateEPNS0_17NpadHandheldStateERKj": {
       "slot": 10262976,
-      "target": 56391155552,
+      "target": 110193590112,
       "region": {
-        "address": 56386310144,
+        "address": 110188744704,
         "size": 6164480,
         "type": 3,
         "attributes": 0,
@@ -49,28 +49,28 @@
     },
     "_ZN2nn3hid12GetNpadStateEPNS0_16NpadFullKeyStateERKj": {
       "slot": 10263000,
-      "target": 56026073168,
+      "target": 109828507728,
       "unresolved": true,
       "bytes": "0000000000000000"
     },
     "_ZN2nn3hid12GetNpadStateEPNS0_16NpadJoyDualStateERKj": {
       "slot": 10263008,
-      "target": 56026073168,
+      "target": 109828507728,
       "unresolved": true,
       "bytes": "0000000000000000"
     },
     "_ZN2nn3hid12GetNpadStateEPNS0_16NpadJoyLeftStateERKj": {
       "slot": 10263016,
-      "target": 56026073168,
+      "target": 109828507728,
       "unresolved": true,
       "bytes": "0000000000000000"
     },
     "_ZN2nn3hid12GetNpadStateEPNS0_17NpadJoyRightStateERKj": {
       "slot": 10263024,
-      "target": 56026073168,
+      "target": 109828507728,
       "unresolved": true,
       "bytes": "0000000000000000"
     }
   },
-  "completed": "2026-11-09T20:43:45.095Z"
+  "completed": "2026-11-10T23:13:01.974Z"
 }

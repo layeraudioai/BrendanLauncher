@@ -19,6 +19,8 @@ release/
 !.env.example
 *.local.json
 run/
+runs/
+runs/latest/
 saves/
 reference/
 

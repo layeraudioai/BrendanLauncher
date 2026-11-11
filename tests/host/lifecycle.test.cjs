@@ -55,7 +55,8 @@ test('dispatch table resolves symbols and rejects gaps', () => {
 test('every app package parses', () => {
   const {packages, errors} = scan(path.join(ROOT, 'apps'));
   assert.strictEqual(errors.length, 0, JSON.stringify(errors));
-  assert.deepStrictEqual(packages.map(pkg => pkg.manifest.id).sort(), ['gpu-triangle', 'hello-cpu']);
+  assert.deepStrictEqual(packages.map(pkg => pkg.manifest.id).sort(),
+    ['air-guitar', 'gpu-triangle', 'hello-cpu', 'hello-vite-native', 'system-monitor']);
   const kinds = new Set(packages.map(pkg => pkg.manifest.kind));
   assert.deepStrictEqual([...kinds], ['native']);
   for (const pkg of packages) {
