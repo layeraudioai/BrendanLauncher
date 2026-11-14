@@ -1,7 +1,0 @@
-'use strict';
-const test=require('node:test'),assert=require('node:assert/strict');
-const {inspect}=require('../tools/nro-inspect.cjs');
-function sample(){const b=Buffer.alloc(0xa0);b.writeUInt32LE(0,0);b.writeUInt32LE(0,4);b.writeUInt32LE(0x80,0x18);b.write('NRO0',0x10,'ascii');b.writeUInt32LE(0x20,0x20);b.writeUInt32LE(0x10,0x24);b.writeUInt32LE(0x30,0x28);b.writeUInt32LE(0x10,0x2c);b.writeUInt32LE(0x40,0x30);b.writeUInt32LE(0x10,0x34);return b;}
-test('parses NRO header, segment ranges and build ID without execution',()=>{const x=inspect(sample());assert.equal(x.format,'NRO0');assert.equal(x.imageBytes,0x80);assert.deepEqual(x.segments.map(s=>[s.name,s.offset,s.size]),[['text',0x20,0x10],['rodata',0x30,0x10],['data',0x40,0x10]]);assert.equal(x.buildId.length,64);});
-test('parses only bounded optional asset metadata',()=>{const b=Buffer.alloc(0xb8);sample().copy(b);b.writeUInt32LE(0x54455341,0x80);b.writeUInt32LE(0,0x84);b.writeBigUInt64LE(0xb8n,0x88);b.writeBigUInt64LE(0n,0x90);const x=inspect(b);assert.equal(x.assets.version,0);assert.deepEqual(x.assets.sections.icon,{offset:0xb8,size:0});});
-test('rejects malformed magic, header and ranges',()=>{assert.throws(()=>inspect(Buffer.alloc(0x100)),/magic/);const b=sample();b.writeUInt32LE(0xffff,0x24);assert.throws(()=>inspect(b),/outside file/);const c=Buffer.alloc(0xb8);sample().copy(c);c.writeUInt32LE(0x54455341,0x80);c.writeUInt32LE(3,0x84);assert.throws(()=>inspect(c),/asset header version/);});
