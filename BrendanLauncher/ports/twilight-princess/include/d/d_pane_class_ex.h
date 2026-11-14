@@ -1,5 +1,0 @@
-#ifndef D_PANE_D_PANE_CLASS_EX_H
-#define D_PANE_D_PANE_CLASS_EX_H
-
-
-#endif /* D_PANE_D_PANE_CLASS_EX_H */

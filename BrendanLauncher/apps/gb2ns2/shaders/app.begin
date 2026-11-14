@@ -1,0 +1,10 @@
+#version 450
+#extension GL_GOOGLE_include_directive : require
+#include "abi.glsl"
+#include "hb.glsl"
+layout(local_size_x=1) in;
+
+// This pass runs once before the repeated CPU emulation dispatches.
+void main() {
+    // State is persistent in c.atlas and should not be reset between frames.
+}

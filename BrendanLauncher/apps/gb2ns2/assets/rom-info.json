@@ -1,0 +1,11 @@
+{
+  "title": "Validation placeholder",
+  "mapper": 0,
+  "banks": 2,
+  "ramCode": 0,
+  "bytes": 32768,
+  "mode": "dmg",
+  "fastForward": false,
+  "targetFps": 60,
+  "refreshHz": 120
+}

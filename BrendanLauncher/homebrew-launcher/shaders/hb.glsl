@@ -58,6 +58,7 @@ uint hbJoyMouseAttributes(uint player,uint side){
 void hbEndFrame(){c.state.y=hbButtons();}
 void hbExit(){c.reserved.z=1u;}
 void hbSound(uint id){c.events.x++;c.events.y=id;}
+void hbStopSound(){hbSound(0u);}
 bool hbRequest(uint op,uint a,uint b,uint d){
  if(!hbAvailable()||hbBusy())return false;
  uint o=HB_EXT+2048u/4u;c.atlas[o+1u]=op;c.atlas[o+2u]=a;c.atlas[o+3u]=b;c.atlas[o+4u]=d;
