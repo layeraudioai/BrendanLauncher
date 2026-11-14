@@ -47,12 +47,6 @@ step 'GPU Hello World' "$NODE" apps/hello-world/build.cjs
 step 'Game Boy Color DMG-mode package (blank placeholder; add your own ROM in app flow)' "$NODE" apps/gameboy-color/build.cjs --placeholder
 step 'GB2NS2 DMG-mode package (blank placeholder)' "$NODE" apps/gb2ns2/build.cjs --placeholder
 step 'Media Machine GPU package' "$NODE" apps/media-machine/build.cjs
-step 'HyperText Music Land GPU package' "$NODE" apps/hypertextmusicland/build.cjs
-step 'Sphaira-format GPU package' "$NODE" apps/sphaira/build.cjs
-step 'Standalone Installer GPU package' "$NODE" apps/standalone-installer/build.cjs
-step 'YouTube/VacooTube GPU package' "$NODE" apps/youtube/build.cjs
-step 'IZ File Exchange GPU app package' "$NODE" apps/iz-exchange/switch/build.cjs
-step 'IZ File Exchange module payload and compressed shaders' "$NODE" modules/iz-exchange/switch/build.cjs
 
 printf '\n===== Publishing integrated module archives and app links =====\n'
 "$NODE" scripts/link-integrated-apps.cjs
