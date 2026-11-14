@@ -150,6 +150,7 @@ test('scene binary contains flattened transforms and sprite pixels', () => {
   const sprite = model.createObject('sprite', 'Sprite');
   sprite.parentId = parent.id;
   sprite.transform.x = 1;
+  project.scenes[0].camera.transform = { x: 1.5, y: 2, z: 8, rx: 0, ry: 90, rz: 0 };
   const rgba = Buffer.from([255, 0, 0, 255]);
   project.objects.push(parent, sprite);
   project.assets.push({ id: 'pixels', kind: 'image', name: 'pixel.png',
@@ -159,11 +160,24 @@ test('scene binary contains flattened transforms and sprite pixels', () => {
   assert.equal(uint32(bytes, 0), 2);
   assert.equal(uint32(bytes, 4), 20);
   assert.equal(uint32(bytes, 8), 1);
-  const record = (4 + 4 + 1 * 20) * 4;
+  assert.equal(uint32(bytes, 12), 3);
+  const record = (4 + model.SCENE_DESCRIPTOR_WORDS + 1 * 20) * 4;
+  const cameraDescriptor = 4 * 4;
+  assert.equal(float32(bytes, cameraDescriptor + 4 * 4), 1.5);
+  assert.equal(float32(bytes, cameraDescriptor + 5 * 4), 2);
+  assert.equal(float32(bytes, cameraDescriptor + 6 * 4), 8);
+  assert.ok(Math.abs(float32(bytes, cameraDescriptor + 8 * 4) - Math.PI / 2) < 1e-6);
   assert.equal(uint32(bytes, record), 3);
   assert.equal(float32(bytes, record + 5 * 4), 3);
   const textureWord = uint32(bytes, record + 16 * 4);
   assert.deepEqual(bytes.subarray(textureWord * 4, textureWord * 4 + 4), new Uint8Array(rgba));
+});
+
+test('sprite UVs map the source image top row to the top of the rendered plane', () => {
+  const project = model.createProject();
+  project.objects.push(model.createObject('sprite', 'Sprite'));
+  const fragment = builder.shaderSources(project).fragment;
+  assert.match(fragment, /uv=vec2\(p\.x\*\.5\+\.5,\.5-p\.y\*\.5\)/);
 });
 
 test('package scene metadata keeps combined image data outside the 7 MiB atlas', async () => {
@@ -183,23 +197,23 @@ test('package scene metadata keeps combined image data outside the 7 MiB atlas',
 
   assert.throws(() => model.toSceneData(project), /7 MiB data budget/);
   const packaged = model.toScenePackageData(project);
-  assert.equal(packaged.data.length, 3872);
+  assert.equal(packaged.data.length, 3896);
   assert.equal(packaged.images.length, 8_000_000);
-  assert.equal(uint32(packaged.data, 32 + 16 * 4), 0);
-  assert.equal(uint32(packaged.data, 112 + 16 * 4), 1000 * 1000);
+  assert.equal(uint32(packaged.data, 56 + 16 * 4), 0);
+  assert.equal(uint32(packaged.data, 136 + 16 * 4), 1000 * 1000);
   assert.equal(packaged.images[0], 17);
   assert.equal(packaged.images[4_000_000], 17);
   const previewData = model.toPreviewSceneData(project);
-  assert.equal(previewData.length, 8_003_872);
-  assert.equal(uint32(previewData, 32 + 16 * 4), 968);
-  assert.equal(uint32(previewData, 112 + 16 * 4), 1_000_968);
+  assert.equal(previewData.length, 8_003_896);
+  assert.equal(uint32(previewData, 56 + 16 * 4), 974);
+  assert.equal(uint32(previewData, 136 + 16 * 4), 1_000_974);
   const preview = new Abi1PreviewRuntime({ model, builder, canvas: {} });
   preview.project = project;
   assert.doesNotMatch(preview.previewFragmentSource(), /imageStore/);
   assert.match(preview.previewFragmentSource(), /atlasWord\(uint\(byteOffset>>2u\)\)/);
 
   const built = await builder.build(project);
-  assert.equal(built.entries.get('assets/scene.bin').length, 3872);
+  assert.equal(built.entries.get('assets/scene.bin').length, 3896);
   assert.equal(built.entries.get('assets/image-data.bin').length, 8_003_584);
   assert.equal(built.manifest.memory.bytes, 8_003_584);
 });
@@ -351,7 +365,7 @@ test('PC preview spawn records consume reserved scene slots and preserve spawn-o
   const spawned = preview.recordSpawn(1, 2, [1, 2, 3], [1, 1, 1], [0.2, 0.4, 0.6], output);
   assert.equal(spawned, 1);
   assert.equal(uint32(preview.sceneData, 24), 2);
-  const record = (4 + 4 + 1 * 20) * 4;
+  const record = (4 + model.SCENE_DESCRIPTOR_WORDS + 1 * 20) * 4;
   assert.equal(uint32(preview.sceneData, record), 2);
   assert.equal(uint32(preview.sceneData, record + 15 * 4), 0xffffffff);
   assert.equal(output[32], 1);
@@ -370,7 +384,8 @@ test('PC preview can persist a changed audio event on an audio object', () => {
   preview.sceneData = model.toPreviewSceneData(preview.project);
 
   preview.writeObjectAudioEvent(1, 0, 7);
-  assert.equal(uint32(preview.sceneData, 32 + 14 * 4), 7);
+  assert.equal(uint32(preview.sceneData,
+    (4 + model.SCENE_DESCRIPTOR_WORDS) * 4 + 14 * 4), 7);
 });
 
 test('PC preview adapts ABI-1 scene and script shaders to WebGL2', () => {
@@ -421,19 +436,24 @@ test('multiple isolated scenes share GLSL classes and can request runtime transi
   const bytes = model.toSceneData(project);
   assert.equal(uint32(bytes, 8), 2);
   assert.equal(uint32(bytes, 16), 1);
-  assert.equal(uint32(bytes, 32), 7);
-  assert.equal(uint32(bytes, 36), 48);
-  assert.equal(uint32(bytes, 40), 1);
+  const secondDescriptor = (4 + model.SCENE_DESCRIPTOR_WORDS) * 4;
+  assert.equal(uint32(bytes, secondDescriptor), 7);
+  assert.equal(uint32(bytes, secondDescriptor + 4), 48);
+  assert.equal(uint32(bytes, secondDescriptor + 8), 1);
+  assert.equal(uint32(bytes, secondDescriptor + 12), 4 + 2 * model.SCENE_DESCRIPTOR_WORDS + 48 * 20);
   const sources = builder.shaderSources(project);
   assert.match(sources.compute, /void hbLoadScene\(uint id\)/);
   assert.match(sources.compute, /helperColor\(\)/);
   assert.match(sources.fragment, /sceneRange\(c\.reserved\.x/);
+  assert.match(sources.fragment, /void sceneCamera\(uint id,out vec3 position,out vec3 rotation\)/);
+  assert.match(sources.fragment, /rotateXYZ\(normalize\(vec3\(screen\*1\.35,-1\.0\)\),cameraRotation\)/);
 
   const preview = new Abi1PreviewRuntime({ model, builder, canvas: {} });
   preview.project = model.normalizeProject(project);
   assert.match(preview.updateVertexSource(), /hbLoadScene\(uint id\)/);
   assert.match(preview.updateVertexSource(), /if\(uint\(aSceneId\)==uSceneId&&aObjectIndex>=0\.0\)/);
   assert.match(preview.previewFragmentSource(), /uSceneId/);
+  assert.match(preview.previewFragmentSource(), /uint descriptor=4u\+s\*10u/);
   const built = await builder.build(project);
   assert.equal(built.sceneCount, 2);
   assert.equal(uint32(built.entries.get('assets/state.bin'), 1008), 7);

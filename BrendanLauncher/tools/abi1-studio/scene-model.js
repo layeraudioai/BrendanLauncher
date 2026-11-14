@@ -8,13 +8,23 @@
 })(globalThis, function () {
   const ID_RE = /^[a-z0-9][a-z0-9-]{0,47}$/;
   const OBJECT_CAPACITY = 48;
+  const SCENE_DESCRIPTOR_WORDS = 10;
   const KIND_RE = /^(sprite|mesh|audio)$/;
+
+  function defaultSceneCamera() {
+    return {
+      yaw: 0.68,
+      pitch: 0.48,
+      distance: 9,
+      transform: { x: 0, y: 0, z: 9, rx: 0, ry: 0, rz: 0 }
+    };
+  }
 
   function createScene(id = 1, name = `Scene ${id}`) {
     return {
       id,
       name,
-      camera: { yaw: 0.68, pitch: 0.48, distance: 9 },
+      camera: defaultSceneCamera(),
       objects: []
     };
   }
@@ -92,7 +102,11 @@
       scenes: Array.isArray(value.scenes) ? value.scenes.map((scene, index) => ({
         ...createScene(scene.id, scene.name || `Scene ${index + 1}`),
         ...scene,
-        camera: { ...createScene().camera, ...(scene.camera || {}) },
+        camera: {
+          ...defaultSceneCamera(),
+          ...(scene.camera || {}),
+          transform: { ...defaultSceneCamera().transform, ...(scene.camera?.transform || {}) }
+        },
         objects: Array.isArray(scene.objects) ? scene.objects.map(object => ({
           ...createObject(object.kind, object.name),
           ...object,
@@ -101,7 +115,11 @@
         })) : []
       })) : [ {
         ...createScene(1, 'Main Scene'),
-        camera: { ...createScene().camera, ...(value.camera || {}) },
+        camera: {
+          ...defaultSceneCamera(),
+          ...(value.camera || {}),
+          transform: { ...defaultSceneCamera().transform, ...(value.camera?.transform || {}) }
+        },
         objects: Array.isArray(value.objects) ? value.objects.map(object => ({
           ...createObject(object.kind, object.name),
           ...object,
@@ -154,7 +172,8 @@
         throw new Error('Scene IDs must be unique integers from 1 to 65535');
       if (typeof scene.name !== 'string' || !scene.name.trim() || scene.name.length > 64)
         throw new Error('Scene names must be between 1 and 64 characters');
-      if (!scene.camera || ![scene.camera.yaw, scene.camera.pitch, scene.camera.distance].every(Number.isFinite))
+      if (!scene.camera || ![scene.camera.yaw, scene.camera.pitch, scene.camera.distance].every(Number.isFinite) ||
+          !scene.camera.transform || Object.values(scene.camera.transform).some(value => !Number.isFinite(value)))
         throw new Error(`Scene ${scene.name} has an invalid camera`);
       if (!Array.isArray(scene.objects) || scene.objects.length > 48)
         throw new Error(`Scene ${scene.name} can contain at most 48 objects`);
@@ -390,7 +409,7 @@
     const visible = flattenObjects(project);
     const headerWords = 4;
     const recordWords = 20;
-    const sceneHeaderWords = 4;
+    const sceneHeaderWords = SCENE_DESCRIPTOR_WORDS;
     const sceneHeadersEnd = headerWords + project.scenes.length * sceneHeaderWords;
     const recordsEnd = (sceneHeadersEnd +
       project.scenes.length * OBJECT_CAPACITY * recordWords) * 4;
@@ -428,7 +447,7 @@
     view.setUint32(0, visible.length, true);
     view.setUint32(4, recordWords, true);
     view.setUint32(8, project.scenes.length, true);
-    view.setUint32(12, 2, true);
+    view.setUint32(12, 3, true);
     project.scenes.forEach((scene, sceneIndex) => {
       const descriptor = (headerWords + sceneIndex * sceneHeaderWords) * 4;
       view.setUint32(descriptor, scene.id, true);
@@ -436,6 +455,13 @@
       view.setUint32(descriptor + 8, scene.objects.length, true);
       view.setUint32(descriptor + 12,
         sceneHeadersEnd + sceneIndex * OBJECT_CAPACITY * recordWords, true);
+      const cameraTransform = scene.camera.transform;
+      for (const [field, value] of [
+        [4, cameraTransform.x], [5, cameraTransform.y], [6, cameraTransform.z],
+        [7, cameraTransform.rx * Math.PI / 180],
+        [8, cameraTransform.ry * Math.PI / 180],
+        [9, cameraTransform.rz * Math.PI / 180]
+      ]) view.setFloat32(descriptor + field * 4, value, true);
       for (let slot = 0; slot < OBJECT_CAPACITY; slot++) {
         const record = (sceneHeadersEnd +
           (sceneIndex * OBJECT_CAPACITY + slot) * recordWords) * 4;
@@ -511,7 +537,7 @@
     output.set(packaged.data);
     output.set(packaged.images, packaged.data.length);
     const view = new DataView(output.buffer);
-    const sceneHeadersEnd = 4 + project.scenes.length * 4;
+    const sceneHeadersEnd = 4 + project.scenes.length * SCENE_DESCRIPTOR_WORDS;
     project.scenes.forEach((scene, sceneIndex) => {
       scene.objects.forEach((object, localIndex) => {
         if (!project.assets.some(item => item.id === object.assetId && item.kind === 'image')) return;
@@ -533,6 +559,6 @@
   Object.assign(Abi1SceneModel, { createProject, createScene, createScript, createObject,
     normalizeProject, validateProject, flattenObjects, worldTransforms, worldDeltaToParentLocal,
     cameraPlaneDelta, cloneSubtree, toSceneData, toScenePackageData,
-    toPreviewSceneData, parseColor, OBJECT_CAPACITY });
+    toPreviewSceneData, parseColor, OBJECT_CAPACITY, SCENE_DESCRIPTOR_WORDS });
   return Abi1SceneModel;
 });

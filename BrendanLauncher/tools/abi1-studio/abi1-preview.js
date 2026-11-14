@@ -483,7 +483,7 @@ uint atlasWord(uint wordIndex){
       this.staticObjectIndices.fill(-1);
       this.audioEventValues = new Uint32Array(count);
       for (const [sceneIndex, scene] of this.project.scenes.entries()) {
-        const descriptor = (4 + sceneIndex * 4) * 4;
+        const descriptor = (4 + sceneIndex * this.model.SCENE_DESCRIPTOR_WORDS) * 4;
         const firstRecord = view.getUint32(descriptor + 12, true);
         for (let slot = 0; slot < this.model.OBJECT_CAPACITY; slot++) {
           const index = sceneIndex * this.model.OBJECT_CAPACITY + slot;
@@ -542,7 +542,7 @@ uint atlasWord(uint wordIndex){
       const view = new DataView(sceneData.buffer, sceneData.byteOffset, sceneData.byteLength);
       const values = new Float32Array(this.sceneCount * 16);
       for (const [sceneIndex] of this.project.scenes.entries()) {
-        const descriptor = (4 + sceneIndex * 4) * 4;
+        const descriptor = (4 + sceneIndex * this.model.SCENE_DESCRIPTOR_WORDS) * 4;
         const firstRecord = view.getUint32(descriptor + 12, true);
         for (let slot = 0; slot < this.model.OBJECT_CAPACITY; slot++) {
           const index = sceneIndex * this.model.OBJECT_CAPACITY + slot;
@@ -663,7 +663,7 @@ uint atlasWord(uint wordIndex){
       const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
       if (sceneIndex < 0 || shape > 4) return -1;
       const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
-      const descriptor = (4 + sceneIndex * 4) * 4;
+      const descriptor = (4 + sceneIndex * this.model.SCENE_DESCRIPTOR_WORDS) * 4;
       const firstObject = view.getUint32(descriptor + 4, true);
       const objectCount = view.getUint32(descriptor + 8, true);
       const firstRecord = view.getUint32(descriptor + 12, true);
@@ -723,7 +723,7 @@ uint atlasWord(uint wordIndex){
       const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
       if (sceneIndex < 0) return;
       const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
-      const descriptor = (4 + sceneIndex * 4) * 4;
+      const descriptor = (4 + sceneIndex * this.model.SCENE_DESCRIPTOR_WORDS) * 4;
       const count = view.getUint32(descriptor + 8, true);
       const firstRecord = view.getUint32(descriptor + 12, true);
       for (let slot = 0; slot < count; slot++) {
@@ -740,7 +740,7 @@ uint atlasWord(uint wordIndex){
       const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
       if (sceneIndex < 0 || !Number.isInteger(objectIndex) || objectIndex < 0) return;
       const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
-      const descriptor = (4 + sceneIndex * 4) * 4;
+      const descriptor = (4 + sceneIndex * this.model.SCENE_DESCRIPTOR_WORDS) * 4;
       const count = view.getUint32(descriptor + 8, true);
       const firstRecord = view.getUint32(descriptor + 12, true);
       for (let slot = 0; slot < count; slot++) {

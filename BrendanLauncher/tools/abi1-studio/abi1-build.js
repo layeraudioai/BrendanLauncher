@@ -199,7 +199,7 @@ vec3 rotateXYZ(vec3 p, vec3 r) {
 }
 bool sceneRange(uint id, out uint firstObject, out uint objectCount, out uint firstRecord) {
     for(uint s=0u;s<c.atlas[2];s++){
-        uint descriptor=4u+s*4u;
+        uint descriptor=4u+s*10u;
         if(c.atlas[descriptor]==id){
             firstObject=c.atlas[descriptor+1u];
             objectCount=c.atlas[descriptor+2u];
@@ -210,6 +210,21 @@ bool sceneRange(uint id, out uint firstObject, out uint objectCount, out uint fi
     firstObject=0u;objectCount=0u;firstRecord=0u;
     return false;
 }
+void sceneCamera(uint id,out vec3 position,out vec3 rotation){
+    position=vec3(0.0,0.0,9.0);rotation=vec3(0.0);
+    for(uint s=0u;s<c.atlas[2];s++){
+        uint descriptor=4u+s*10u;
+        if(c.atlas[descriptor]==id){
+            position=vec3(uintBitsToFloat(c.atlas[descriptor+4u]),
+                          uintBitsToFloat(c.atlas[descriptor+5u]),
+                          uintBitsToFloat(c.atlas[descriptor+6u]));
+            rotation=vec3(uintBitsToFloat(c.atlas[descriptor+7u]),
+                          uintBitsToFloat(c.atlas[descriptor+8u]),
+                          uintBitsToFloat(c.atlas[descriptor+9u]));
+            return;
+        }
+    }
+}
 float objectDistance(vec3 point, uint i, uint record, out vec4 albedo, out vec2 uv, out uint textureRecord) {
     textureRecord=record;
     uint shape=c.atlas[record];
@@ -218,7 +233,7 @@ float objectDistance(vec3 point, uint i, uint record, out vec4 albedo, out vec2 
     vec3 scale=max(abs(vec3(uintBitsToFloat(c.atlas[record+11u]),uintBitsToFloat(c.atlas[record+12u]),uintBitsToFloat(c.atlas[record+13u]))),vec3(.001));
     vec3 p=rotateXYZ(point-position,-rotation)/scale;
     vec3 color=vec3(uintBitsToFloat(c.atlas[record+1u]),uintBitsToFloat(c.atlas[record+2u]),uintBitsToFloat(c.atlas[record+3u]));
-    albedo=vec4(color,1.0);uv=p.xy*.5+.5;
+    albedo=vec4(color,1.0);uv=vec2(p.x*.5+.5,.5-p.y*.5);
     if(shape==2u) return (length(p)-1.0)*min(scale.x,min(scale.y,scale.z));
     if(shape==0u) return 1e6;
     if(shape==3u||shape==4u) return max(abs(p.z)-.02,max(abs(p.x)-1.0,abs(p.y)-1.0))*min(scale.x,min(scale.y,scale.z));
@@ -245,8 +260,10 @@ vec3 normalAt(vec3 p){
 }
 void main(){
     vec2 screen=(gl_FragCoord.xy-vec2(960.0,540.0))/1080.0;
-    vec3 origin=vec3(0.0,0.0,9.0);
-    vec3 direction=normalize(vec3(screen*1.35,-1.0));
+    vec3 cameraPosition,cameraRotation;
+    sceneCamera(c.reserved.x,cameraPosition,cameraRotation);
+    vec3 origin=cameraPosition;
+    vec3 direction=rotateXYZ(normalize(vec3(screen*1.35,-1.0)),cameraRotation);
     float travel=0.0;vec4 color=vec4(.025,.055,.09,1.0);vec2 uv=vec2(0);uint record=0u;
     for(int step=0;step<80;step++){
         vec4 hitColor;vec2 hitUv;uint hitRecord;
@@ -277,7 +294,7 @@ layout(local_size_x=1) in;
 #include "hb.glsl"
 bool sceneRange(uint id, out uint firstObject, out uint objectCount, out uint firstRecord) {
     for(uint s=0u;s<c.atlas[2];s++){
-        uint descriptor=4u+s*4u;
+        uint descriptor=4u+s*10u;
         if(c.atlas[descriptor]==id){
             firstObject=c.atlas[descriptor+1u];
             objectCount=c.atlas[descriptor+2u];
@@ -301,7 +318,7 @@ uint hbSpawnObject(uint shape,vec3 position,vec3 scale,vec3 color){
     if(slot==objectCount){
         if(objectCount>=48u)return 0xffffffffu;
         for(uint s=0u;s<c.atlas[2];s++){
-            uint descriptor=4u+s*4u;
+            uint descriptor=4u+s*10u;
             if(c.atlas[descriptor]==c.reserved.x){c.atlas[descriptor+2u]=objectCount+1u;break;}
         }
     }

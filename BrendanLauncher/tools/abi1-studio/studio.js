@@ -107,6 +107,9 @@ class Abi1StudioApp {
       current.value = String(activeSceneId);
       startup.value = String(project.startupSceneId);
       $('#deleteScene').disabled = project.scenes.length === 1;
+      const transform = activeScene().camera.transform;
+      for (const input of document.querySelectorAll('[data-camera-transform]'))
+        input.value = Number(transform[input.dataset.cameraTransform].toFixed(3));
     }
 
     function selectScene(id) {
@@ -918,6 +921,13 @@ class Abi1StudioApp {
       selectScene(Number(event.target.value));
       setStatus(`Editing ${activeScene().name}`);
     });
+    for (const input of document.querySelectorAll('[data-camera-transform]'))
+      input.addEventListener('input', () => {
+        const value = Number(input.value);
+        if (!Number.isFinite(value)) return;
+        activeScene().camera.transform[input.dataset.cameraTransform] = value;
+        setStatus(`Runtime camera ${input.dataset.cameraTransform} updated`);
+      });
     $('#addScene').addEventListener('click', () => {
       if (project.scenes.length >= 48) return message('A project can contain at most 48 scenes.');
       const id = project.nextSceneId;

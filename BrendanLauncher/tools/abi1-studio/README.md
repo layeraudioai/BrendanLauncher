@@ -16,6 +16,9 @@ compiler is bundled as WebAssembly and runs in the browser.
   and object hierarchy. Assets, scripts, and GLSL class files are shared across
   scenes. A project can contain up to 48 objects total. Select a scene to edit
   it and choose a startup scene in App Details.
+- Each scene has one runtime camera. Set its world position and rotation in the
+  Runtime Camera panel; PC Preview and built apps use the same camera transform.
+  Rotation is entered in degrees.
 - Scripts can switch scenes at runtime with `hbLoadScene(2u)`, using the
   scene's numeric ID shown in the scene list. Scene IDs remain stable when
   scenes are added or removed.
@@ -75,9 +78,10 @@ class files for continued editing. Browser export is limited to 128 MiB.
 
 Choose **Preview** to run all scenes in the browser with WebGL 2, starting with
 the selected startup scene. Use `hbLoadScene(2u)` in a script to switch scenes
-in both Preview and built ABI-1 apps. Preview uses the generated ABI-1 fragment
-shader, runs per-object GLSL scripts at a fixed 60 Hz, and supports keyboard or
-standard gamepad input and imported PCM audio. It runs the app logic without
+in both Preview and built ABI-1 apps. Preview uses each scene's runtime camera
+and generated ABI-1 fragment shader, runs per-object GLSL scripts at a fixed
+60 Hz, and supports keyboard or standard gamepad input and imported PCM audio.
+It runs the app logic without
 emulating NS2 hardware; streamed-file requests are stubbed in Preview. Its
 raymarch distance scales with scene bounds so distant objects are not
 discarded at a fixed range. PC GPU/driver and audio
