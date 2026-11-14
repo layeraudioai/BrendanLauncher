@@ -30,6 +30,7 @@ void main(){
     // X button: Clear selection
     if ((buttons & HB_X) != 0u) {
         c.game.y = 0u;
+        hbStopSound();
     }
     // Exit via B or Minus
     if (hbConnected() && (buttons & (HB_B | HB_MINUS)) != 0u) {

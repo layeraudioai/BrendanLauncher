@@ -3,17 +3,21 @@
   "abi": 1,
   "id": "media-machine",
   "name": "Media Machine",
-  "version": "1.1.0",
-  "description": "Local audio and video player for BrendanLauncher",
-  "transition": "fade",
+  "version": "1.0.0",
+  "description": "Browse and play local audio and short video clips on Switch 2",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/text.bin",
   "shaders": {
     "vertex": "app.vert.spv",
     "fragment": "app.frag.spv",
     "compute": "app.comp.spv"
   },
-  "initialState": "assets/state.bin",
-  "data": "assets/text.bin",
-  "icon": "assets/icon.png",
+  "sdk": {
+    "version": 1,
+    "capabilities": [],
+    "services": []
+  },
   "audio": {
     "sampleRate": 48000,
     "channels": 2,

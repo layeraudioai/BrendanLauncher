@@ -61,12 +61,12 @@ void main(){
     if (c.game.y == 1u && c.game.z < uint(NUM_FILES)) {
         ivec3 video = VIDEO_META[int(c.game.z)];
         if (video.y > 0) {
-            vec2 videoPos = p - vec2(0, 0);
-            if (abs(videoPos.x) <= 960.0 && abs(videoPos.y) <= 540.0) {
-                vec2 uv = (videoPos + vec2(960.0, 540.0)) / vec2(1920.0, 1080.0);
-                ivec2 pixel = clamp(ivec2(uv * vec2(float(VIDEO_WIDTH), float(VIDEO_HEIGHT))),
-                                    ivec2(0), ivec2(int(VIDEO_WIDTH) - 1, int(VIDEO_HEIGHT) - 1));
-                uint byteIndex = uint(video.x) + (uint(pixel.y) * VIDEO_WIDTH + uint(pixel.x)) * 2u;
+            vec2 videoPos = p - vec2(960.0, 480.0);
+            if (abs(videoPos.x) <= 480.0 && abs(videoPos.y) <= 270.0) {
+                vec2 uv = (videoPos + vec2(480.0, 270.0)) / vec2(960.0, 540.0);
+                ivec2 pixel = clamp(ivec2(uv * vec2(160.0, 90.0)), ivec2(0), ivec2(159, 89));
+                uint frame = uint(c.motion.x * float(video.z)) % uint(video.y);
+                uint byteIndex = uint(video.x) + (frame * 160u * 90u + uint(pixel.y * 160 + pixel.x)) * 2u;
                 uint packed = (c.atlas[byteIndex >> 2u] >> ((byteIndex & 2u) * 8u)) & 65535u;
                 vec3 rgb = vec3(float((packed >> 11u) & 31u) / 31.0,
                                 float((packed >> 5u) & 63u) / 63.0,
