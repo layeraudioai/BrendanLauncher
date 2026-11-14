@@ -18,6 +18,8 @@
     "sampleRate": 48000,
     "channels": 2,
     "format": "s16le",
-    "effects": {}
+    "effects": {
+      "1": "assets/audio_1.pcm"
+    }
   }
 }

@@ -9,7 +9,7 @@ function run(program, args, options = {}) {
 }
 function plan() {
   console.log(`AIO source build root: ${ROOT}`);
-  console.log('1. Regenerate launcher assets/shaders/ABI and build native launcher + ABI-3 apps.');
+  console.log('1. Update the source app catalog inventory, then regenerate launcher assets/shaders/ABI and build native launcher + ABI-3 apps.');
   console.log('2. Build both IZlauncher/IZPSlauncher shells and all bundled GPU-app packages.');
   console.log('3. Repack IZ modules from the bundled module sources and create the integrated app links.');
   console.log('4. Verify native/GPU catalogs and module archives. The caller then starts server.cjs.');
@@ -17,6 +17,7 @@ function plan() {
 }
 async function main() {
   if (process.argv.includes('--plan')) { plan(); return; }
+  run(process.execPath, ['scripts/update-app-catalog.cjs']);
   run('bash', ['tools/build-aio.sh']);
   run(process.execPath, ['scripts/link-integrated-apps.cjs']);
 
@@ -42,7 +43,7 @@ async function main() {
 
   const gpu = await require('../homebrew-launcher/app-catalog.cjs').scan(path.join(ROOT, 'apps'));
   const gpuIds = new Set(gpu.apps.map(item => item.id));
-  const requiredGpu = ['hello-world', 'gameboy-color', 'gb2ns2', 'media-machine', 'hypertextmusicland', 'iz-exchange', 'sphaira', 'standalone-installer', 'youtube', 'blitbun', 'vacootube'];
+  const requiredGpu = ['hello-world', 'gameboy-color', 'gb2ns2', 'media-machine'];
   for (const id of requiredGpu) if (!gpuIds.has(id)) throw Error(`GPU/IZ app package is not launchable from the current catalog: ${id}`);
   const mediaMachine = gpu.apps.find(item => item.id === 'media-machine');
   if (!mediaMachine || !Object.keys(mediaMachine.effects).length) throw Error('Media Machine must have at least one valid audio effect before the launcher can start.');

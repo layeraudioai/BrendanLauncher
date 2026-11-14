@@ -1,0 +1,18 @@
+{
+  "format": "hblauncher-native-app/1",
+  "id": "system-monitor",
+  "kind": "native",
+  "abi": 3,
+  "codeBase": "0xc000000",
+  "dataBase": "0xd000000",
+  "entry": "0xc000000",
+  "spawn": "0xc000048",
+  "hbxAppMain": "0xc000820",
+  "codeBytes": 6244,
+  "codePages": 2,
+  "dataBytes": 0,
+  "bssBytes": 32,
+  "dataRegionBytes": 32,
+  "codeSha256": "0774b65df6d9b6a45a7a5a2776e0675c866a9a45cd1ba16d4a67a8ecdfee8118",
+  "dataSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

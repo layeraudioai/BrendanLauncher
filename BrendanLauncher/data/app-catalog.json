@@ -1,0 +1,37 @@
+{
+  "format": "brendanlauncher.app-catalog/1",
+  "apps": [
+    {
+      "id": "fs-demo",
+      "name": "Filesystem Demo",
+      "description": "Sandboxed per-app host storage for native ABI 3 apps",
+      "version": "1.0.0",
+      "kind": "native",
+      "abi": 3
+    },
+    {
+      "id": "gpu-triangle",
+      "name": "GPU Triangle",
+      "description": "SDK sample - animated triangle drawn on the GPU",
+      "version": "1.0.0",
+      "kind": "native",
+      "abi": 3
+    },
+    {
+      "id": "hello-cpu",
+      "name": "Hello CPU",
+      "description": "SDK sample - CPU logic with Vulkan UI drawing",
+      "version": "1.0.0",
+      "kind": "native",
+      "abi": 3
+    },
+    {
+      "id": "system-monitor",
+      "name": "System Monitor",
+      "description": "Read-only telemetry status and a bounded CPU benchmark",
+      "version": "1.0.0",
+      "kind": "native",
+      "abi": 3
+    }
+  ]
+}

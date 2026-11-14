@@ -1,0 +1,18 @@
+{
+  "format": "hblauncher-native-app/1",
+  "id": "hello-cpu",
+  "kind": "native",
+  "abi": 3,
+  "codeBase": "0xc000000",
+  "dataBase": "0xd000000",
+  "entry": "0xc000000",
+  "spawn": "0xc000048",
+  "hbxAppMain": "0xc0014a0",
+  "codeBytes": 9792,
+  "codePages": 3,
+  "dataBytes": 0,
+  "bssBytes": 96,
+  "dataRegionBytes": 96,
+  "codeSha256": "0ddf3cf2ce0867d8a42a6e04bddfff809e0e438502e7f5c40a2ceee02d43d84c",
+  "dataSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

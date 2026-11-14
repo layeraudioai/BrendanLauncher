@@ -1,0 +1,14 @@
+{
+  "id": "fs-demo",
+  "name": "Filesystem Demo",
+  "description": "Sandboxed per-app host storage for native ABI 3 apps",
+  "version": "1.0.0",
+  "abi": 3,
+  "kind": "native",
+  "host_storage": true,
+  "limits": {
+    "heap_bytes": 1048576,
+    "stack_bytes": 524288,
+    "frames": 3600
+  }
+}

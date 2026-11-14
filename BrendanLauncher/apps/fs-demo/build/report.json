@@ -1,0 +1,18 @@
+{
+  "format": "hblauncher-native-app/1",
+  "id": "fs-demo",
+  "kind": "native",
+  "abi": 3,
+  "codeBase": "0xc000000",
+  "dataBase": "0xd000000",
+  "entry": "0xc000000",
+  "spawn": "0xc000048",
+  "hbxAppMain": "0xc000c60",
+  "codeBytes": 5182,
+  "codePages": 2,
+  "dataBytes": 0,
+  "bssBytes": 448,
+  "dataRegionBytes": 448,
+  "codeSha256": "9db753d1ed121345e4a019b2146ab478b209e289208848bc2bb3a4916aff6c59",
+  "dataSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

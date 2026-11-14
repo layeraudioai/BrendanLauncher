@@ -1,0 +1,18 @@
+{
+  "format": "hblauncher-native-app/1",
+  "id": "gpu-triangle",
+  "kind": "native",
+  "abi": 3,
+  "codeBase": "0xc000000",
+  "dataBase": "0xd000000",
+  "entry": "0xc000000",
+  "spawn": "0xc000048",
+  "hbxAppMain": "0xc000de0",
+  "codeBytes": 5059,
+  "codePages": 2,
+  "dataBytes": 0,
+  "bssBytes": 0,
+  "dataRegionBytes": 0,
+  "codeSha256": "939460596bd51acda55d0e247b2ae99b79e0c77110b674b9b4cde36eda0f7e9c",
+  "dataSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
