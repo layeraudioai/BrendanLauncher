@@ -35,6 +35,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
   runtime.report.catalog=catalogTools.summary(catalog);runtime.report.generation=generation;await save();
  }
  async function returnToMenu(error){
+  await runtime.active?.assetStream?.close?.();
   await runtime.active?.service?.close();
   await audio(null);runtime.active=null;runtime.report.active=null;
   menuState.writeFloatLE(1,960);menuState.writeFloatLE(0,964);menuState.writeUInt32LE(0,784);menuState.writeUInt32LE(error?1:0,92);
@@ -46,6 +47,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
   if(runtime.active){
    if(state.readUInt32LE(1016)!==0)return returnToMenu();
    if(runtime.active.service?.afterBatch){const outcome=await runtime.active.service.afterBatch(state);if(outcome?.returnToMenu)return returnToMenu(outcome.error);}
+   try{await runtime.active.assetStream?.afterBatch(state);}catch(error){return returnToMenu(error);}
    if(runtime.active.app.id==='media-machine'){
     try{
      const stateBuf = await rpc.read(mapped, 1024);
@@ -107,7 +109,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
     if(service){
      const bytes=Buffer.alloc(menu.controls.bytes);app.files.state.bytes.copy(bytes);app.files.data.bytes.copy(bytes,1024);
      bytes.writeUInt32LE(0,1012);bytes.writeUInt32LE(0,1016);if(app.manifest.transition==='none')bytes.writeFloatLE(0,960);
-     await rpc.write(mapped,bytes);await audio(app);runtime.active={app,service,gpu:null};
+     await rpc.write(mapped,bytes);await audio(app);runtime.active={app,service,gpu:null,assetStream:app.streamedAssets?.length?require('../core/services/app-asset-stream.cjs').create({rpc,mapped,app}):null};
      runtime.report.active={id:app.id,fingerprint:app.fingerprint};runtime.report.transitions.push({event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()});await save();return menu.commands[0];
     }
     if(app.manifest.displayOnly===true)throw Error('This IZLauncher package contains metadata only and cannot be launched.');
@@ -118,7 +120,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
     if(app.manifest.transition==='none')bytes.writeFloatLE(0,960);
     if(app.files.memory){check(gpu.privateStorage?.bytes===app.files.memory.allocationBytes,'App private storage differs');const initial=Buffer.alloc(gpu.privateStorage.bytes);app.files.memory.bytes.copy(initial);await rpc.write(gpu.privateStorage.mapped,initial);}
     await rpc.write(mapped,bytes);await audio(app);
-    runtime.active={app,gpu};
+    runtime.active={app,gpu,assetStream:app.streamedAssets?.length?require('../core/services/app-asset-stream.cjs').create({rpc,mapped,app}):null};
     runtime.report.active={id:app.id,fingerprint:app.fingerprint};runtime.report.transitions.push({event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()});await save();
     return gpu.commands[0];
    }catch(error){
@@ -130,7 +132,7 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
   if(state.readFloatLE(104)!==refreshSeen)await rescan(state);
   return menu.commands[0];
  };
- runtime.close=async()=>{await runtime.active?.service?.close();if(runtime.mediaMachineStreamer)await runtime.mediaMachineStreamer.close();};
+ runtime.close=async()=>{await runtime.active?.assetStream?.close?.();await runtime.active?.service?.close();if(runtime.mediaMachineStreamer)await runtime.mediaMachineStreamer.close();};
  await rescan(menuState);await audio(null);return runtime;
 }
 module.exports={create};

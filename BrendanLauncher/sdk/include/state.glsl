@@ -14,7 +14,7 @@ layout(set=0,binding=0,std430) STATE_ACCESS buffer Controls {
     uint rows[20];    // 880
     vec4 transition;  // 960: fade opacity, requested mode, spare, spare
     uvec4 events;     // 976: sequence, sound kind, frame, cleared-row mask
-    uvec4 stats;      // 992: best, direction, lock resets, ghost y
-    uvec4 reserved;   // 1008: keep the type atlas aligned at byte 1024
+    uvec4 stats;      // 992: app stats; streamed apps use this as their request mailbox
+    uvec4 reserved;   // 1008: scene ID, stream response, exit, stream status
     uint atlas[];
 } c;

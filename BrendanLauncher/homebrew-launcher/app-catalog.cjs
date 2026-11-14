@@ -4,6 +4,7 @@ const { promisify } = require('node:util');
 const { inflateSync } = require('node:zlib');
 const run = promisify(execFile);
 const ROOT = path.resolve(__dirname, '../apps'), MAX_APPS = 32, SLOT_BYTES = 131072, ATLAS_BYTES = 1024 * 2048;
+const STREAM_WINDOW_OFFSET = 6 * 1024 * 1024, MAX_STREAM_BYTES = 512 * 1024 * 1024;
 const check = (v, m) => { if (!v) throw Error(m); };
 async function asset(root, name, max) {
     check(typeof name === 'string' && name.length > 0 && !path.isAbsolute(name) && !name.split(/[\\/]/).includes('..'), 'Asset path must stay inside its app');
@@ -38,6 +39,8 @@ async function readApp(directory, { validate = true } = {}) {
     check(typeof m.description === 'string' && m.description.length <= 160, 'Invalid description');
     check(m.transition === undefined || m.transition === 'none' || m.transition === 'fade', 'Invalid transition');
     check(m.service === undefined, 'Unsupported host service');
+    check(m.streamedAssets === undefined || Array.isArray(m.streamedAssets) && m.streamedAssets.length <= 48,
+        'Invalid streamed asset list');
     if (m.sdk) require('../sdk/host/runtime.cjs').validateManifest(m.sdk);
     const files = {}, hash = crypto.createHash('sha256'); hash.update(manifestAsset.bytes);
     if (m.computeSequence !== undefined) { check(m.computeSequence && Number.isInteger(m.computeSequence.repeat) && m.computeSequence.repeat >= 1 && m.computeSequence.repeat <= 512, 'Invalid compute sequence repeat'); check(typeof m.computeSequence.begin === 'string' && typeof m.computeSequence.after === 'string', 'Invalid compute sequence shaders'); }
@@ -64,6 +67,27 @@ async function readApp(directory, { validate = true } = {}) {
     } else {
         files.data = { file: path.join(assetRoot, 'data.bin'), bytes: Buffer.alloc(0) };
     }
+    const streamedAssets = [];
+    let streamedBytes = 0;
+    for (const [index, item] of (m.streamedAssets || []).entries()) {
+        check(item && item.id === index + 1 && typeof item.file === 'string',
+            'Streamed asset IDs must be sequential and each asset needs a file');
+        check(!path.isAbsolute(item.file) && !item.file.split(/[\\/]/).includes('..'),
+            'Asset path must stay inside its app');
+        const file = await fs.realpath(path.resolve(assetRoot, item.file));
+        check(file.startsWith(assetRoot + path.sep), 'Asset escapes its app folder');
+        const stat = await fs.stat(file);
+        check(stat.isFile() && stat.size > 0 && stat.size <= MAX_STREAM_BYTES,
+            'Invalid streamed asset size: ' + item.file);
+        streamedBytes += stat.size;
+        check(streamedBytes <= MAX_STREAM_BYTES, 'Streamed assets exceed the 512 MiB package limit');
+        hash.update(String(item.id));
+        for await (const chunk of require('node:fs').createReadStream(file)) hash.update(chunk);
+        streamedAssets.push({ id: item.id, file, size: stat.size });
+    }
+    if (streamedAssets.length)
+        check(files.data.bytes.length <= STREAM_WINDOW_OFFSET,
+            'Apps with streamed assets may use at most 6 MiB of inline data');
     if (m.memory !== undefined) {
         check(m.memory && Number.isInteger(m.memory.bytes) && m.memory.bytes >= 4096 && m.memory.bytes <= 32 * 1024 * 1024 && m.memory.bytes % 4096 === 0, 'Invalid private GPU memory size');
         check(m.memory.encoding === undefined || m.memory.encoding === 'deflate', 'Unsupported private memory encoding');
@@ -84,7 +108,7 @@ async function readApp(directory, { validate = true } = {}) {
         effects[id] = file; hash.update(id);
         for await (const chunk of require('node:fs').createReadStream(file)) hash.update(chunk);
     }
-    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, fingerprint: hash.digest('hex') };
+    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, streamedAssets, fingerprint: hash.digest('hex') };
 }
 async function scan(root = ROOT) {
     root = path.resolve(root); let entries; try { entries = await fs.readdir(root, { withFileTypes: true }); } catch (error) { if (error.code === 'ENOENT') return { root, apps: [], rejected: [] }; throw error; }
@@ -123,4 +147,7 @@ async function raster(catalog, directory, label = 'catalog') {
     if (!success) throw Error('Failed to run catalog-assets.py with python, or py.');
     const bytes = await fs.readFile(output); check(bytes.length === MAX_APPS * SLOT_BYTES, 'Invalid catalog raster'); return bytes;
 }
-module.exports = { ROOT, MAX_APPS, SLOT_BYTES, ATLAS_BYTES, asset, readApp, scan, summary, raster };
+module.exports = {
+    ROOT, MAX_APPS, SLOT_BYTES, ATLAS_BYTES, STREAM_WINDOW_OFFSET,
+    asset, readApp, scan, summary, raster
+};

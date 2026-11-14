@@ -18,6 +18,7 @@ class Abi1StudioApp {
     const status = $('#status');
     const previewDialog = $('#previewDialog');
     const scriptDialog = $('#scriptDialog');
+    const classDialog = $('#classDialog');
     const preview = new window.Abi1Preview.Abi1PreviewRuntime({
       model, builder, canvas: $('#previewCanvas'),
       onExit: () => {
@@ -30,12 +31,26 @@ class Abi1StudioApp {
     const thisApp = this;
     let pendingDownload = null;
     let project = this.project;
+    let activeSceneId = project.startupSceneId;
     let selectedId = null;
     let editingScriptId = null;
-    let camera = project.camera;
+    let editingClassId = null;
+    let camera = project.scenes[0].camera;
     let pointerAction = null;
     let renderQueued = false;
     const imageCache = new Map();
+
+    function activeScene() {
+      return project.scenes.find(scene => scene.id === activeSceneId) || project.scenes[0];
+    }
+
+    function activeObjects() {
+      return activeScene().objects;
+    }
+
+    function allObjects() {
+      return model.flattenObjects(project).map(item => item.object);
+    }
 
     function message(text) {
       pendingDownload = null;
@@ -49,7 +64,7 @@ class Abi1StudioApp {
     }
 
     function selectedObject() {
-      return project.objects.find(object => object.id === selectedId) || null;
+      return activeObjects().find(object => object.id === selectedId) || null;
     }
 
     function assetId() {
@@ -68,12 +83,41 @@ class Abi1StudioApp {
     function setProject(value) {
       project = model.normalizeProject(value);
       thisApp.project = project;
-      camera = project.camera;
-      selectedId = project.objects[0]?.id || null;
+      activeSceneId = project.startupSceneId;
+      camera = activeScene().camera;
+      selectedId = activeObjects()[0]?.id || null;
       syncAppFields();
+      renderScenes();
       renderHierarchy();
       renderInspector();
       renderScriptLibrary();
+      renderClassLibrary();
+      scheduleRender();
+    }
+
+    function renderScenes() {
+      const current = $('#sceneSelect');
+      const startup = $('#startupScene');
+      current.replaceChildren();
+      startup.replaceChildren();
+      for (const scene of project.scenes) {
+        current.add(new Option(`${scene.name} (${scene.id})`, String(scene.id)));
+        startup.add(new Option(scene.name, String(scene.id)));
+      }
+      current.value = String(activeSceneId);
+      startup.value = String(project.startupSceneId);
+      $('#deleteScene').disabled = project.scenes.length === 1;
+    }
+
+    function selectScene(id) {
+      const scene = project.scenes.find(item => item.id === id);
+      if (!scene) throw new Error(`Unknown scene ID: ${id}`);
+      activeSceneId = id;
+      camera = scene.camera;
+      selectedId = scene.objects[0]?.id || null;
+      renderScenes();
+      renderHierarchy();
+      renderInspector();
       scheduleRender();
     }
 
@@ -92,16 +136,21 @@ class Abi1StudioApp {
     }
 
     function addObject(kind, parentId = null, name) {
+      if (allObjects().length >= 48) {
+        message('A project can contain at most 48 objects across all scenes.');
+        return null;
+      }
       const object = model.createObject(kind, name);
       object.parentId = parentId;
-      const index = project.objects.length;
+      const objects = activeObjects();
+      const index = objects.length;
       if (kind === 'audio') {
-        const used = new Set(project.objects.filter(item => item.kind === 'audio').map(item => item.audioEventId));
+        const used = new Set(allObjects().filter(item => item.kind === 'audio').map(item => item.audioEventId));
         object.audioEventId = Array.from({ length: 31 }, (_, i) => i + 1).find(id => !used.has(id)) || 1;
       }
       object.transform.x = (index % 4) * 1.4 - 2.1;
       object.transform.z = -Math.floor(index / 4) * 1.4;
-      project.objects.push(object);
+      objects.push(object);
       selectedId = object.id;
       renderHierarchy();
       renderInspector();
@@ -115,7 +164,7 @@ class Abi1StudioApp {
       let changed = true;
       while (changed) {
         changed = false;
-        for (const object of project.objects) {
+        for (const object of activeObjects()) {
           if (object.parentId && result.has(object.parentId) && !result.has(object.id)) {
             result.add(object.id);
             changed = true;
@@ -129,8 +178,8 @@ class Abi1StudioApp {
       const host = $('#hierarchy');
       host.replaceChildren();
       const children = new Map();
-      for (const object of project.objects) {
-        const parent = project.objects.some(item => item.id === object.parentId) ? object.parentId : null;
+      for (const object of activeObjects()) {
+        const parent = activeObjects().some(item => item.id === object.parentId) ? object.parentId : null;
         if (!children.has(parent)) children.set(parent, []);
         children.get(parent).push(object);
       }
@@ -187,12 +236,12 @@ class Abi1StudioApp {
           reparent(movingId, null);
         }
       };
-      $('#sceneCount').textContent = `${project.objects.length} object${project.objects.length === 1 ? '' : 's'}`;
-      $('#emptyState').classList.toggle('hidden', project.objects.length > 0);
+      $('#sceneCount').textContent = `${activeObjects().length} object${activeObjects().length === 1 ? '' : 's'}`;
+      $('#emptyState').classList.toggle('hidden', activeObjects().length > 0);
     }
 
     function reparent(childId, parentId) {
-      const child = project.objects.find(object => object.id === childId);
+      const child = activeObjects().find(object => object.id === childId);
       if (!child || childId === parentId || (parentId && descendantsOf(childId).has(parentId))) return;
       const previousParent = child.parentId;
       child.parentId = parentId;
@@ -230,10 +279,16 @@ class Abi1StudioApp {
       form.elements.primitive.disabled = object.kind !== 'mesh' && object.kind !== 'sprite';
       form.elements.color.disabled = object.kind === 'audio';
       form.elements.audioEventId.closest('label').hidden = object.kind !== 'audio';
+      const audioAsset = object.kind === 'audio'
+        ? project.assets.find(asset => asset.id === object.assetId && asset.kind === 'audio')
+        : null;
+      $('#audioAssetLabel').hidden = object.kind !== 'audio';
+      $('#audioAssetName').textContent = audioAsset ? audioAsset.name : 'No asset assigned';
+      $('#audioAssetName').title = audioAsset ? audioAsset.name : '';
       const parentSelect = form.elements.namedItem('parent');
       parentSelect.replaceChildren(new Option('Scene Root', ''));
       const excluded = descendantsOf(object.id);
-      for (const candidate of project.objects) {
+      for (const candidate of activeObjects()) {
         if (excluded.has(candidate.id)) continue;
         const option = new Option(candidate.name, candidate.id);
         option.selected = candidate.id === object.parentId;
@@ -331,6 +386,107 @@ class Abi1StudioApp {
       $('#scriptName').focus();
     }
 
+    function renderClassLibrary() {
+      const host = $('#classLibrary');
+      host.replaceChildren();
+      if (!project.classes.length) {
+        const empty = document.createElement('div');
+        empty.className = 'script-empty';
+        empty.textContent = 'GLSL class files are available to scripts in every scene.';
+        host.append(empty);
+        return;
+      }
+      for (const item of project.classes) {
+        const row = document.createElement('div');
+        row.className = 'script-entry';
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.textContent = item.name;
+        edit.title = 'Edit GLSL class file';
+        edit.addEventListener('click', () => openClassEditor(item.id));
+        row.append(edit);
+        host.append(row);
+      }
+    }
+
+    function openClassEditor(classId) {
+      const item = project.classes.find(entry => entry.id === classId);
+      if (!item) return;
+      editingClassId = item.id;
+      $('#className').value = item.name;
+      $('#classSource').value = item.source;
+      $('#classError').textContent = '';
+      $('#deleteClass').hidden = false;
+      $('#downloadClass').hidden = false;
+      if (!classDialog.open) classDialog.showModal();
+      $('#className').focus();
+    }
+
+    $('#newClass').addEventListener('click', () => {
+      if (project.classes.length >= 32) return message('A project can contain at most 32 GLSL class files.');
+      const item = model.createScript('New Class');
+      editingClassId = item.id;
+      $('#className').value = item.name;
+      $('#classSource').value = '';
+      $('#classError').textContent = '';
+      $('#deleteClass').hidden = true;
+      $('#downloadClass').hidden = true;
+      classDialog.showModal();
+      $('#className').focus();
+    });
+    $('#saveClass').addEventListener('click', () => {
+      const name = $('#className').value.trim();
+      const source = $('#classSource').value;
+      if (!name || name.length > 64 || source.length > 16384) {
+        $('#classError').textContent = 'Enter a name and keep the GLSL source under 16 KiB.';
+        return;
+      }
+      let item = project.classes.find(entry => entry.id === editingClassId);
+      if (!item) {
+        item = { id: editingClassId, name, source };
+        project.classes.push(item);
+      } else {
+        item.name = name;
+        item.source = source;
+      }
+      try { model.validateProject(project); }
+      catch (error) {
+        $('#classError').textContent = error.message;
+        return;
+      }
+      classDialog.close();
+      renderClassLibrary();
+      setStatus(`Saved GLSL class file ${name}`);
+    });
+    $('#deleteClass').addEventListener('click', () => {
+      project.classes = project.classes.filter(item => item.id !== editingClassId);
+      classDialog.close();
+      renderClassLibrary();
+      setStatus('Deleted GLSL class file');
+    });
+    $('#downloadClass').addEventListener('click', () => {
+      const safe = ($('#className').value || 'class').replace(/[^a-z0-9_-]/gi, '-');
+      download(`${safe}.glsl`, $('#classSource').value, 'text/plain');
+    });
+    $('#importClass').addEventListener('click', () => $('#classFile').click());
+    $('#classFile').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        if (project.classes.length >= 32) throw new Error('A project can contain at most 32 GLSL class files');
+        if (file.size > 16384) throw new Error('GLSL class file exceeds 16 KiB');
+        const source = await file.text();
+        const name = file.name.replace(/\.glsl$/i, '').slice(0, 64) || 'Imported Class';
+        const item = { id: model.createScript().id, name, source };
+        project.classes.push(item);
+        model.validateProject(project);
+        renderClassLibrary();
+        openClassEditor(item.id);
+        setStatus(`Imported ${file.name}`);
+      } catch (error) { message(`Could not import class file: ${error.message}`); }
+      event.target.value = '';
+    });
+
     $('#inspector').addEventListener('input', event => {
       const object = selectedObject();
       if (!object) return;
@@ -354,8 +510,8 @@ class Abi1StudioApp {
       const object = selectedObject();
       if (!object) return;
       const removed = descendantsOf(object.id);
-      project.objects = project.objects.filter(item => !removed.has(item.id));
-      selectedId = project.objects[0]?.id || null;
+      activeScene().objects = activeObjects().filter(item => !removed.has(item.id));
+      selectedId = activeObjects()[0]?.id || null;
       renderHierarchy();
       renderInspector();
       scheduleRender();
@@ -408,7 +564,7 @@ class Abi1StudioApp {
       const script = project.scripts.find(item => item.id === editingScriptId);
       if (!script || !confirm(`Delete "${script.name}" and detach it from every object?`)) return;
       project.scripts = project.scripts.filter(item => item.id !== script.id);
-      for (const object of project.objects)
+      for (const object of allObjects())
         object.scriptIds = object.scriptIds.filter(id => id !== script.id);
       editingScriptId = null;
       scriptDialog.close();
@@ -420,7 +576,7 @@ class Abi1StudioApp {
     $('#generateScript').addEventListener('click', () => {
       try {
         if (!scriptGenerator) throw new Error('The offline script generator did not load.');
-        const result = scriptGenerator.generateScript($('#scriptPrompt').value);
+        const result = scriptGenerator.generateScript($('#scriptPrompt').value, project, activeSceneId);
         if ($('#scriptSource').value.trim() &&
             !confirm('Replace the current script source with generated GLSL?')) return;
         if (/^New Script(?: \d+)?$/.test($('#scriptName').value.trim()))
@@ -476,8 +632,8 @@ class Abi1StudioApp {
         context.strokeStyle = i === 0 ? '#548ad1' : '#263647';
         context.beginPath(); context.moveTo(zLine[0].x, zLine[0].y); context.lineTo(zLine[1].x, zLine[1].y); context.stroke();
       }
-      const worlds = model.worldTransforms(project);
-      const drawables = project.objects.map(object => ({ object, world: worlds.get(object.id) }))
+      const worlds = model.worldTransforms(activeScene());
+      const drawables = activeObjects().map(object => ({ object, world: worlds.get(object.id) }))
         .sort((a, b) => projectPoint(a.world.position, w, h).depth - projectPoint(b.world.position, w, h).depth);
       for (const { object, world } of drawables) drawObject(object, world, w, h);
       drawAxes(w, h);
@@ -578,6 +734,7 @@ class Abi1StudioApp {
 
     function addDraggedType(kind, x, y) {
       const object = addObject(kind, null);
+      if (!object) return;
       const width = canvas.clientWidth, height = canvas.clientHeight;
       const center = projectPoint([0, 0, 0], width, height);
       const position = model.cameraPlaneDelta(camera, x - center.x, y - center.y,
@@ -593,7 +750,7 @@ class Abi1StudioApp {
       const x = event.clientX - rect.left, y = event.clientY - rect.top;
       const worlds = model.worldTransforms(project);
       let hit = null, nearest = 24;
-      for (const object of project.objects) {
+      for (const object of activeObjects()) {
         const point = projectPoint(worlds.get(object.id).position, rect.width, rect.height);
         const distance = Math.hypot(point.x - x, point.y - y);
         if (distance < nearest) { hit = object; nearest = distance; }
@@ -612,7 +769,7 @@ class Abi1StudioApp {
         camera.yaw += dx * .008;
         camera.pitch = Math.max(-1.25, Math.min(1.25, camera.pitch + dy * .006));
       } else {
-        const object = project.objects.find(item => item.id === pointerAction.id);
+        const object = activeObjects().find(item => item.id === pointerAction.id);
         if (object) {
           const worlds = model.worldTransforms(project);
           const center = projectPoint(worlds.get(object.id).position, rect.width, rect.height);
@@ -626,14 +783,14 @@ class Abi1StudioApp {
         }
       }
       pointerAction.x = x; pointerAction.y = y;
-      project.camera = camera;
+      activeScene().camera = camera;
       scheduleRender();
     });
     canvas.addEventListener('pointerup', () => { pointerAction = null; });
     canvas.addEventListener('pointercancel', () => { pointerAction = null; });
     canvas.addEventListener('wheel', event => {
       camera.distance = Math.max(3, Math.min(30, camera.distance + Math.sign(event.deltaY) * .7));
-      project.camera = camera;
+      activeScene().camera = camera;
       scheduleRender();
       event.preventDefault();
     }, { passive: false });
@@ -651,10 +808,21 @@ class Abi1StudioApp {
       const kind = event.dataTransfer.getData('application/x-abi1-kind');
       const rect = canvas.getBoundingClientRect();
       if (kind) addDraggedType(kind, event.clientX - rect.left, event.clientY - rect.top);
-      for (const file of event.dataTransfer.files) {
-        try { await importAsset(file); }
-        catch (error) { message(`${file.name}: ${error.message}`); }
+      const files = Array.from(event.dataTransfer.files);
+      if (!files.length) {
+        for (const item of event.dataTransfer.items || []) {
+          if (item.kind !== 'file') continue;
+          const file = item.getAsFile();
+          if (file) files.push(file);
+        }
       }
+      await importFiles(files);
+    });
+    $('#importAudio').addEventListener('click', () => $('#audioFiles').click());
+    $('#audioFiles').addEventListener('change', async event => {
+      const files = Array.from(event.target.files || []);
+      event.target.value = '';
+      await importFiles(files);
     });
 
     function bytesToBase64(bytes) {
@@ -679,31 +847,15 @@ class Abi1StudioApp {
     }
 
     async function audioAsset(file) {
-      if (file.size > 24 * 1024 * 1024) throw new Error('Audio source exceeds the 24 MiB import limit');
-      const decoder = new AudioContext({ sampleRate: 48000 });
-      let decoded;
-      try { decoded = await decoder.decodeAudioData(await file.arrayBuffer()); }
-      finally { await decoder.close(); }
-      const length = Math.ceil(decoded.duration * 48000);
-      if (!length || length * 4 > 64 * 1024 * 1024) throw new Error('Decoded audio exceeds 64 MiB');
-      const pcm = new Int16Array(length * 2);
-      for (let frame = 0; frame < length; frame++) {
-        const sourcePosition = frame * decoded.sampleRate / 48000;
-        const lower = Math.min(decoded.length - 1, Math.floor(sourcePosition));
-        const upper = Math.min(decoded.length - 1, lower + 1);
-        const blend = sourcePosition - lower;
-        for (let channel = 0; channel < 2; channel++) {
-          const sourceChannel = decoded.numberOfChannels === 1 ? 0 : channel;
-          const samples = decoded.getChannelData(sourceChannel);
-          const sample = samples[lower] * (1 - blend) + samples[upper] * blend;
-          pcm[frame * 2 + channel] = Math.max(-32768, Math.min(32767, Math.round(sample * 32767)));
-        }
-      }
-      return { id: assetId(), kind: 'audio', name: file.name, data: bytesToBase64(new Uint8Array(pcm.buffer)) };
+      if (!window.Abi1AudioDecoder)
+        throw new Error('The offline audio decoder did not load');
+      const pcm = await window.Abi1AudioDecoder.decodeAudioFile(file);
+      return { id: assetId(), kind: 'audio', name: file.name, data: bytesToBase64(pcm) };
     }
 
     async function importAsset(file) {
       if (project.assets.length >= 48) throw new Error('A project can contain at most 48 assets');
+      if (allObjects().length >= 48) throw new Error('A project can contain at most 48 objects across all scenes');
       let object, asset;
       if (file.type.startsWith('image/') || /\.(png|jpe?g)$/i.test(file.name)) {
         asset = await imageAsset(file);
@@ -712,9 +864,9 @@ class Abi1StudioApp {
       } else if (file.type.startsWith('audio/') || /\.(wav|mp3|flac|ogg|m4a|aac|opus)$/i.test(file.name)) {
         asset = await audioAsset(file);
         project.assets.push(asset);
-        object = addObject('audio', null, file.name.replace(/\.[^.]+$/, ''));
+        object = addObject('audio', null, file.name.slice(0, 64));
         asset.eventId = object.audioEventId;
-      } else if (/\.obj$/i.test(file.name)) {
+      } else if (file.type === 'model/obj' || /\.obj$/i.test(file.name)) {
         if (file.size > 8 * 1024 * 1024) throw new Error('OBJ file exceeds 8 MiB');
         asset = { id: assetId(), kind: 'mesh', name: file.name, data: bytesToBase64(new Uint8Array(await file.arrayBuffer())) };
         project.assets.push(asset);
@@ -728,6 +880,15 @@ class Abi1StudioApp {
       renderHierarchy();
       scheduleRender();
       setStatus(`Imported ${file.name}`);
+    }
+
+    async function importFiles(files) {
+      const errors = [];
+      for (const file of files) {
+        try { await importAsset(file); }
+        catch (error) { errors.push(`${file.name}: ${error.message}`); }
+      }
+      if (errors.length) message(errors.join('; '));
     }
 
     function download(filename, contents, type = 'application/json') {
@@ -752,6 +913,50 @@ class Abi1StudioApp {
       const safe = (project.app.id || 'my-gpu-app').replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
       return `${safe || 'my-gpu-app'}.hblproj`;
     }
+
+    $('#sceneSelect').addEventListener('change', event => {
+      selectScene(Number(event.target.value));
+      setStatus(`Editing ${activeScene().name}`);
+    });
+    $('#addScene').addEventListener('click', () => {
+      if (project.scenes.length >= 48) return message('A project can contain at most 48 scenes.');
+      const id = project.nextSceneId;
+      if (id > 65535) return message('The project has reached its scene ID limit.');
+      project.nextSceneId++;
+      const scene = model.createScene(id, `Scene ${id}`);
+      project.scenes.push(scene);
+      selectScene(scene.id);
+      setStatus(`Created ${scene.name}`);
+    });
+    $('#renameScene').addEventListener('click', () => {
+      const scene = activeScene();
+      const name = window.prompt('Scene name', scene.name);
+      if (name === null) return;
+      const previousName = scene.name;
+      scene.name = name.trim();
+      try { model.validateProject(project); }
+      catch (error) {
+        scene.name = previousName;
+        return message(error.message);
+      }
+      renderScenes();
+      setStatus(`Renamed scene to ${scene.name}`);
+    });
+    $('#deleteScene').addEventListener('click', () => {
+      if (project.scenes.length === 1) return message('A project must contain at least one scene.');
+      const removed = activeScene();
+      const removedIndex = project.scenes.indexOf(removed);
+      project.scenes = project.scenes.filter(scene => scene.id !== removed.id);
+      if (project.startupSceneId === removed.id) project.startupSceneId = project.scenes[0].id;
+      const next = project.scenes[Math.min(project.scenes.length - 1, removedIndex)];
+      selectScene(next.id);
+      setStatus(`Deleted ${removed.name}`);
+    });
+    $('#startupScene').addEventListener('change', event => {
+      const scene = project.scenes.find(item => item.id === Number(event.target.value));
+      project.startupSceneId = scene.id;
+      setStatus(`Startup scene set to ${scene.name}`);
+    });
 
     $('#newProject').addEventListener('click', () => setProject(model.createProject()));
     $('#saveProject').addEventListener('click', () => {
@@ -779,13 +984,14 @@ class Abi1StudioApp {
       });
 
     function prefabValue(objectId) {
-      const nodes = model.cloneSubtree(project, objectId, { preserveIds: true });
+      const nodes = model.cloneSubtree(activeScene(), objectId, { preserveIds: true });
       const referencedAssets = new Set(nodes.map(object => object.assetId).filter(Boolean));
       const referencedScripts = new Set(nodes.flatMap(object => object.scriptIds));
       return {
         format: 'brendan-abi1-prefab', version: 1, name: nodes[0].name, objects: nodes,
         assets: project.assets.filter(asset => referencedAssets.has(asset.id)),
-        scripts: project.scripts.filter(script => referencedScripts.has(script.id))
+        scripts: project.scripts.filter(script => referencedScripts.has(script.id)),
+        classes: project.classes
       };
     }
 
@@ -793,12 +999,12 @@ class Abi1StudioApp {
       if (!prefab || prefab.format !== 'brendan-abi1-prefab' || prefab.version !== 1 ||
           !Array.isArray(prefab.objects) || !Array.isArray(prefab.assets))
         throw new Error('Invalid ABI-1 Studio prefab');
-      const normalized = model.normalizeProject({
-        ...model.createProject(),
-        assets: prefab.assets,
-        scripts: Array.isArray(prefab.scripts) ? prefab.scripts : [],
-        objects: prefab.objects
-      });
+      const prefabProject = model.createProject();
+      prefabProject.assets = prefab.assets;
+      prefabProject.scripts = Array.isArray(prefab.scripts) ? prefab.scripts : [];
+      prefabProject.classes = Array.isArray(prefab.classes) ? prefab.classes : [];
+      prefabProject.objects = prefab.objects;
+      const normalized = model.normalizeProject(prefabProject);
       const idMap = new Map(normalized.objects.map(object => [object.id, model.createObject(object.kind).id]));
       const assetMap = new Map(prefab.assets.map(asset => [asset.id, assetId()]));
       const scriptMap = new Map();
@@ -812,6 +1018,19 @@ class Abi1StudioApp {
         const id = existing ? model.createScript().id : script.id;
         scriptMap.set(script.id, id);
         newScripts.push({ ...script, id });
+      }
+      const classMap = new Map();
+      const newClasses = [];
+      for (const item of normalized.classes) {
+        const existing = project.classes.find(entry =>
+          entry.id === item.id && entry.name === item.name && entry.source === item.source);
+        if (existing) classMap.set(item.id, existing.id);
+        else {
+          const id = project.classes.some(entry => entry.id === item.id)
+            ? model.createScript().id : item.id;
+          classMap.set(item.id, id);
+          newClasses.push({ ...item, id });
+        }
       }
       const usedEvents = new Set(project.assets.filter(asset => asset.kind === 'audio').map(asset => asset.eventId));
       const eventMap = new Map();
@@ -839,14 +1058,17 @@ class Abi1StudioApp {
       model.validateProject({
         ...project,
         assets: [...project.assets, ...newAssets],
-        objects: [...project.objects, ...newObjects],
-        scripts: [...project.scripts, ...newScripts]
+        scenes: project.scenes.map(scene => scene.id === activeSceneId
+          ? { ...scene, objects: [...scene.objects, ...newObjects] } : scene),
+        scripts: [...project.scripts, ...newScripts],
+        classes: [...project.classes, ...newClasses]
       });
       project.assets.push(...newAssets);
-      project.objects.push(...newObjects);
+      activeScene().objects.push(...newObjects);
       project.scripts.push(...newScripts);
+      project.classes.push(...newClasses);
       selectedId = newObjects[0].id;
-      renderHierarchy(); renderInspector(); renderScriptLibrary(); scheduleRender();
+      renderHierarchy(); renderInspector(); renderScriptLibrary(); renderClassLibrary(); scheduleRender();
     }
 
     function prefabs() {
@@ -906,7 +1128,7 @@ class Abi1StudioApp {
         setStatus('Compiling GLSL shaders and assembling ABI-1 package…');
         $('#exportApp').disabled = true;
         const result = await builder.build(project);
-        setStatus(`Built ${result.id} · ${result.sceneObjects} objects · ${result.bytes.byteLength} bytes`);
+        setStatus(`Built ${result.id} · ${result.sceneCount} scenes · ${result.sceneObjects} objects · ${result.bytes.byteLength} bytes`);
         message(`ABI-1 app is ready as ${result.id}.zip.\n\nDownload it, then extract the contents into a new folder under BrendanLauncher/apps.`);
         pendingDownload = { filename: `${result.id}.zip`, bytes: result.bytes };
         $('#downloadBuild').hidden = false;

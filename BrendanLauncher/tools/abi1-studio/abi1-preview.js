@@ -22,6 +22,9 @@
     [4, BUTTONS.L], [5, BUTTONS.R], [8, BUTTONS.MINUS], [9, BUTTONS.PLUS],
     [12, BUTTONS.UP], [13, BUTTONS.DOWN], [14, BUTTONS.LEFT], [15, BUTTONS.RIGHT]
   ];
+  const FEEDBACK_STRIDE = 32;
+  const TRANSFORM_STRIDE = 16;
+  const RECORD_WORDS = 20;
 
   class Abi1PreviewRuntime {
     constructor({ model, builder, canvas, onExit = () => {} }) {
@@ -55,8 +58,11 @@
     async start(projectValue) {
       this.stop();
       this.project = this.model.normalizeProject(JSON.parse(JSON.stringify(projectValue)));
-      this.sceneCount = this.project.objects.length;
-      if (!this.sceneCount) throw new Error('Add at least one object before previewing');
+      this.projectObjectCount = this.model.flattenObjects(this.project).length;
+      this.sceneCount = this.project.scenes.length * this.model.OBJECT_CAPACITY;
+      this.activeSceneId = this.project.startupSceneId;
+      if (!this.projectObjectCount) throw new Error('Add at least one object before previewing');
+      this.frameIndex = 0;
 
       this.canvas.width = 960;
       this.canvas.height = 540;
@@ -64,7 +70,7 @@
       if (!this.gl) throw new Error('PC Preview requires a browser with WebGL 2 support');
 
       try {
-        const sceneData = this.model.toSceneData(this.project);
+        const sceneData = this.model.toPreviewSceneData(this.project);
         this.createSceneTexture(sceneData);
         this.createPrograms();
         this.createTransformBuffers(sceneData);
@@ -133,7 +139,9 @@
       const view = new DataView(sceneData.buffer, sceneData.byteOffset, sceneData.byteLength);
       for (let i = 0; i < wordCount; i++) words[i] = view.getUint32(i * 4, true);
 
+      this.sceneData = sceneData;
       this.sceneTextureWidth = width;
+      this.sceneTextureHeight = height;
       this.sceneTexture = gl.createTexture();
       this.textures.push(this.sceneTexture);
       gl.bindTexture(gl.TEXTURE_2D, this.sceneTexture);
@@ -145,9 +153,23 @@
         gl.RGBA_INTEGER, gl.UNSIGNED_INT, words);
     }
 
+    updateSceneTexture() {
+      const gl = this.gl;
+      const wordCount = Math.ceil(this.sceneData.byteLength / 4);
+      const words = new Uint32Array(this.sceneTextureWidth * this.sceneTextureHeight * 4);
+      const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
+      for (let i = 0; i < wordCount; i++) words[i] = view.getUint32(i * 4, true);
+      gl.bindTexture(gl.TEXTURE_2D, this.sceneTexture);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.sceneTextureWidth, this.sceneTextureHeight,
+        gl.RGBA_INTEGER, gl.UNSIGNED_INT, words);
+    }
+
     createPrograms() {
       this.updateProgram = this.linkProgram(this.updateVertexSource(), this.updateFragmentSource(), [
-        'vPosition', 'vRotation', 'vScale', 'vColor', 'vSound', 'vExit'
+        'vPosition', 'vRotation', 'vScale', 'vColor', 'vSound', 'vExit',
+        'vSceneId', 'vSceneRequest', 'vObjectIndex', 'vSpawnShape',
+        'vSpawnPosition', 'vSpawnScale', 'vSpawnColor', 'vSpawnOrigin',
+        'vSpawnOnce', 'vSpawned', 'vAudioEvent'
       ]);
       this.renderProgram = this.linkProgram(this.fullscreenVertexSource(),
         this.previewFragmentSource(), null);
@@ -155,32 +177,47 @@
       this.updateLocations = {
         buttons: gl.getUniformLocation(this.updateProgram, 'uButtons'),
         previousButtons: gl.getUniformLocation(this.updateProgram, 'uPreviousButtons'),
+        sceneId: gl.getUniformLocation(this.updateProgram, 'uSceneId'),
+        frameIndex: gl.getUniformLocation(this.updateProgram, 'uFrameIndex'),
         position: gl.getAttribLocation(this.updateProgram, 'aPosition'),
         rotation: gl.getAttribLocation(this.updateProgram, 'aRotation'),
         scale: gl.getAttribLocation(this.updateProgram, 'aScale'),
-        color: gl.getAttribLocation(this.updateProgram, 'aColor')
+        color: gl.getAttribLocation(this.updateProgram, 'aColor'),
+        objectSceneId: gl.getAttribLocation(this.updateProgram, 'aSceneId'),
+        objectIndex: gl.getAttribLocation(this.updateProgram, 'aObjectIndex'),
+        spawned: gl.getAttribLocation(this.updateProgram, 'aSpawned'),
+        audioEvent: gl.getAttribLocation(this.updateProgram, 'aAudioEvent')
       };
       this.renderLocations = {
         sceneData: gl.getUniformLocation(this.renderProgram, 'uSceneData'),
         sceneWidth: gl.getUniformLocation(this.renderProgram, 'uSceneWidth'),
         transforms: gl.getUniformLocation(this.renderProgram, 'uTransforms'),
         resolution: gl.getUniformLocation(this.renderProgram, 'uResolution'),
+        sceneId: gl.getUniformLocation(this.renderProgram, 'uSceneId'),
+        maxTravel: gl.getUniformLocation(this.renderProgram, 'uMaxTravel'),
         transition: gl.getUniformLocation(this.renderProgram, 'uTransition')
       };
       for (const [location, label] of [
         [this.updateLocations.buttons, 'preview input'],
         [this.updateLocations.previousButtons, 'previous preview input'],
+        [this.updateLocations.sceneId, 'active scene'],
         [this.renderLocations.sceneData, 'scene data'],
         [this.renderLocations.sceneWidth, 'scene texture width'],
         [this.renderLocations.transforms, 'scene transforms'],
         [this.renderLocations.resolution, 'preview resolution'],
+        [this.renderLocations.sceneId, 'active scene'],
+        [this.renderLocations.maxTravel, 'preview ray distance'],
         [this.renderLocations.transition, 'scene transition']
       ]) if (location === null) throw new Error(`PC Preview shader is missing its ${label} uniform`);
       for (const [location, label] of [
         [this.updateLocations.position, 'position'],
         [this.updateLocations.rotation, 'rotation'],
         [this.updateLocations.scale, 'scale'],
-        [this.updateLocations.color, 'color']
+        [this.updateLocations.color, 'color'],
+        [this.updateLocations.objectSceneId, 'object scene'],
+        [this.updateLocations.objectIndex, 'object index'],
+        [this.updateLocations.spawned, 'spawn marker'],
+        [this.updateLocations.audioEvent, 'object audio event']
       ]) if (location < 0) throw new Error(`PC Preview shader is missing its ${label} attribute`);
     }
 
@@ -223,6 +260,13 @@
       const end = compute.indexOf('\nvoid main()', start);
       if (start < 0 || end < 0) throw new Error('Could not extract the ABI-1 object update script');
       const updateObject = compute.slice(start, end);
+      const audioCases = this.model.flattenObjects(this.project)
+        .map(({ object }, index) => object.kind === 'audio' && object.audioEventId
+          ? `if(objectIndex==${index}u)hbSound(${object.audioEventId}u);` : '')
+        .join('');
+      const audioObjectGuard = this.model.flattenObjects(this.project)
+        .map(({ object }, index) => object.kind === 'audio' ? `objectIndex==${index}u` : '')
+        .filter(Boolean).join('||') || 'false';
       return `#version 300 es
 precision highp float;
 precision highp int;
@@ -230,43 +274,136 @@ in vec3 aPosition;
 in vec3 aRotation;
 in vec3 aScale;
 in vec4 aColor;
+in float aSceneId;
+in float aObjectIndex;
+in float aSpawned;
+in float aAudioEvent;
 uniform uint uButtons;
 uniform uint uPreviousButtons;
+uniform uint uSceneId;
+uniform uint uFrameIndex;
 out vec3 vPosition;
 out vec3 vRotation;
 out vec3 vScale;
 out vec4 vColor;
 out float vSound;
 out float vExit;
+out float vSceneId;
+out float vSceneRequest;
+out float vObjectIndex;
+out float vSpawnShape;
+out vec3 vSpawnPosition;
+out vec3 vSpawnScale;
+out vec3 vSpawnColor;
+out float vSpawnOrigin;
+out float vSpawnOnce;
+out float vSpawned;
+out float vAudioEvent;
 const uint HB_A=1u,HB_B=2u,HB_X=4u,HB_Y=8u,HB_L=64u,HB_R=128u;
 const uint HB_PLUS=1024u,HB_MINUS=2048u;
 const uint HB_LEFT=4096u,HB_UP=8192u,HB_RIGHT=16384u,HB_DOWN=32768u;
+const uint HB_SHAPE_BOX=1u,HB_SHAPE_SPHERE=2u,HB_SHAPE_SPRITE=3u,HB_SHAPE_PLANE=4u;
 float previewSound;
 float previewExit;
+uint previewScene;
+uint previewSpawnShape;
+vec3 previewSpawnPosition;
+vec3 previewSpawnScale;
+vec3 previewSpawnColor;
+float previewSpawnOrigin;
+float previewSpawnOnce;
+float previewAudioEvent;
+uint hbHash(uint value){
+    value^=value>>16u;value*=0x7feb352du;value^=value>>15u;
+    value*=0x846ca68bu;value^=value>>16u;return value;
+}
+float hbRandom(uint seed){return float(hbHash(seed^(uFrameIndex*0x9e3779b9u))>>8u)/16777215.0;}
+float hbRandom(){return hbRandom(uint(aObjectIndex)+1u);}
+float hbRandomRange(float minimum,float maximum,uint seed){return mix(minimum,maximum,hbRandom(seed));}
+vec3 hbRandomColor(uint seed){return vec3(hbRandom(seed),hbRandom(seed+1u),hbRandom(seed+2u));}
 uint hbButtons(){return uButtons;}
 uint hbPressed(){return uButtons&~uPreviousButtons;}
 bool hbConnected(){return true;}
 void hbSound(uint id){previewSound=float(id);}
 void hbStopSound(){hbSound(0u);}
+void hbSwitchSound(uint id){previewSound=-float(id+1u);}
+uint hbCurrentScene(){return uSceneId;}
 void hbExit(){previewExit=1.0;}
+bool hbStreamRequest(uint assetId,uint offset,uint length){return false;}
+bool hbStreamReady(){return false;}
+bool hbStreamFailed(){return false;}
+uint hbStreamByte(uint index){return 0u;}
+uint hbSpawnObject(uint shape,vec3 position,vec3 scale,vec3 color){
+    if(shape<HB_SHAPE_BOX||shape>HB_SHAPE_PLANE||previewSpawnShape!=0u)return 0xffffffffu;
+    previewSpawnShape=shape;
+    previewSpawnPosition=position;
+    previewSpawnScale=scale;
+    previewSpawnColor=color;
+    return 0u;
+}
+uint hbSpawnOnce(uint objectIndex,uint shape,vec3 position,vec3 scale,vec3 color){
+    if(aSpawned>0.5)return 0xffffffffu;
+    uint result=hbSpawnObject(shape,position,scale,color);
+    if(result!=0xffffffffu){
+        previewSpawnOnce=1.0;
+        previewSpawnOrigin=float(objectIndex);
+    }
+    return result;
+}
+void hbPlayObjectAudio(uint objectIndex){
+    if(aObjectIndex>=0.0&&objectIndex==uint(aObjectIndex)){
+        uint eventId=uint(previewAudioEvent);
+        if(eventId>0u)hbSound(eventId);
+        return;
+    }
+    ${audioCases}
+}
+bool hbSetObjectAudio(uint objectIndex,uint eventId){
+    if(eventId>31u||aObjectIndex<0.0||objectIndex!=uint(aObjectIndex)||
+       !(${audioObjectGuard}))return false;
+    previewAudioEvent=float(eventId);
+    return true;
+}
+void hbLoadScene(uint id){${this.project.scenes.map(scene => `if(id==${scene.id}u)previewScene=id;`).join('')}}
+${this.project.classes.map(item => item.source).filter(Boolean).join('\n')}
 ${updateObject}
 void main(){
-    uint objectIndex=uint(gl_VertexID);
+    uint objectIndex=uint(max(aObjectIndex,0.0));
     float dt=1.0/60.0;
     uint buttons=hbPressed();
     vec3 position=aPosition;
     vec3 rotation=aRotation;
     vec3 scale=aScale;
     vec4 color=aColor;
-    previewSound=0.0;
+    previewSound=-1.0;
     previewExit=0.0;
-    updateObject(position,rotation,scale,color,objectIndex,dt,buttons);
+    previewScene=uSceneId;
+    previewSpawnShape=0u;
+    previewSpawnPosition=vec3(0.0);
+    previewSpawnScale=vec3(1.0);
+    previewSpawnColor=vec3(1.0);
+    previewSpawnOrigin=-1.0;
+    previewSpawnOnce=0.0;
+    previewAudioEvent=aAudioEvent;
+    vSpawned=aSpawned;
+    if(uint(aSceneId)==uSceneId&&aObjectIndex>=0.0)
+        updateObject(position,rotation,scale,color,objectIndex,dt,buttons);
     vPosition=position;
     vRotation=rotation;
     vScale=scale;
     vColor=color;
     vSound=previewSound;
     vExit=previewExit;
+    vSceneId=aSceneId;
+    vSceneRequest=float(previewScene);
+    vObjectIndex=aObjectIndex;
+    vSpawnShape=float(previewSpawnShape);
+    vSpawnPosition=previewSpawnPosition;
+    vSpawnScale=previewSpawnScale;
+    vSpawnColor=previewSpawnColor;
+    vSpawnOrigin=previewSpawnOrigin;
+    vSpawnOnce=previewSpawnOnce;
+    vAudioEvent=previewAudioEvent;
     gl_Position=vec4(0.0,0.0,0.0,1.0);
 }
 `;
@@ -299,6 +436,8 @@ void main(){outColor=vec4(0.0);}
 uniform int uSceneWidth;
 uniform highp sampler2D uTransforms;
 uniform vec2 uResolution;
+uniform uint uSceneId;
+uniform float uMaxTravel;
 uniform float uTransition;
 uint atlasWord(uint wordIndex){
     uint texelIndex=wordIndex>>2u;
@@ -311,9 +450,13 @@ uint atlasWord(uint wordIndex){
       source = source
         .replace('#version 450', '#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp usampler2D;\n')
         .replace(/^#extension GL_GOOGLE_include_directive : require\s*$/gm, '')
+        .replace(/layout\(set=0,binding=1,std430\) readonly buffer ImageData \{ uint imageData\[\]; \} imageStore;/, '')
+        .replace(/imageStore\.imageData\[([^\]]+)\]/g, 'atlasWord(uint($1))')
         .replace('layout(location=0) out vec4 outColor;', 'out vec4 outColor;')
         .replace(/c\.atlas\[([^\]]+)\]/g, 'atlasWord(uint($1))')
+        .replace(/c\.reserved\.x/g, 'uSceneId')
         .replace(/c\.transition\.x/g, 'uTransition')
+        .replace('if(travel>60.0)', 'if(travel>uMaxTravel)')
         .replace('vec2 screen=(gl_FragCoord.xy-vec2(960.0,540.0))/1080.0;',
           'vec2 screen=(gl_FragCoord.xy-uResolution*0.5)/uResolution.y;');
       const replacements = [
@@ -334,22 +477,40 @@ uint atlasWord(uint wordIndex){
       const gl = this.gl;
       const count = this.sceneCount;
       const view = new DataView(sceneData.buffer, sceneData.byteOffset, sceneData.byteLength);
-      const initial = new Float32Array(count * 15);
-      for (let i = 0; i < count; i++) {
-        const record = (4 + i * 20) * 4;
-        const offset = i * 15;
-        for (let axis = 0; axis < 3; axis++) {
-          initial[offset + axis] = view.getFloat32(record + (5 + axis) * 4, true);
-          initial[offset + 3 + axis] = view.getFloat32(record + (8 + axis) * 4, true);
-          initial[offset + 6 + axis] = view.getFloat32(record + (11 + axis) * 4, true);
+      const initial = new Float32Array(count * FEEDBACK_STRIDE);
+      this.objectSceneIds = new Uint32Array(count);
+      this.staticObjectIndices = new Int32Array(count);
+      this.staticObjectIndices.fill(-1);
+      this.audioEventValues = new Uint32Array(count);
+      for (const [sceneIndex, scene] of this.project.scenes.entries()) {
+        const descriptor = (4 + sceneIndex * 4) * 4;
+        const firstRecord = view.getUint32(descriptor + 12, true);
+        for (let slot = 0; slot < this.model.OBJECT_CAPACITY; slot++) {
+          const index = sceneIndex * this.model.OBJECT_CAPACITY + slot;
+          const record = (firstRecord + slot * RECORD_WORDS) * 4;
+          const offset = index * FEEDBACK_STRIDE;
+          this.objectSceneIds[index] = scene.id;
+          for (let axis = 0; axis < 3; axis++) {
+            initial[offset + axis] = view.getFloat32(record + (5 + axis) * 4, true);
+            initial[offset + 3 + axis] = view.getFloat32(record + (8 + axis) * 4, true);
+            initial[offset + 6 + axis] = view.getFloat32(record + (11 + axis) * 4, true);
+            initial[offset + 9 + axis] = view.getFloat32(record + (1 + axis) * 4, true);
+          }
+          initial[offset + 12] = 1;
+          const objectIndex = view.getUint32(record + 15 * 4, true);
+          initial[offset + 17] = objectIndex === 0xffffffff ? -1 : objectIndex;
+          initial[offset + 30] = (view.getUint32(record + 19 * 4, true) & 0x80000000) ? 1 : 0;
+          if (objectIndex !== 0xffffffff) this.staticObjectIndices[index] = objectIndex;
+          const audioEvent = view.getUint32(record + 14 * 4, true);
+          initial[offset + 31] = audioEvent;
+          this.audioEventValues[index] = audioEvent;
+          initial[offset + 15] = scene.id;
+          initial[offset + 16] = scene.id;
         }
-        for (let component = 0; component < 3; component++)
-          initial[offset + 9 + component] = view.getFloat32(record + (1 + component) * 4, true);
-        initial[offset + 12] = 1;
       }
 
       const locations = this.updateLocations;
-      const stride = 15 * Float32Array.BYTES_PER_ELEMENT;
+      const stride = FEEDBACK_STRIDE * Float32Array.BYTES_PER_ELEMENT;
       for (let index = 0; index < 2; index++) {
         const buffer = gl.createBuffer();
         this.buffers.push(buffer);
@@ -362,7 +523,9 @@ uint atlasWord(uint wordIndex){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         for (const [location, size, offset] of [
           [locations.position, 3, 0], [locations.rotation, 3, 3],
-          [locations.scale, 3, 6], [locations.color, 4, 9]
+          [locations.scale, 3, 6], [locations.color, 4, 9],
+          [locations.objectSceneId, 1, 15], [locations.objectIndex, 1, 17],
+          [locations.spawned, 1, 30], [locations.audioEvent, 1, 31]
         ]) {
           gl.enableVertexAttribArray(location);
           gl.vertexAttribPointer(location, size, gl.FLOAT, false, stride,
@@ -372,25 +535,29 @@ uint atlasWord(uint wordIndex){
       gl.bindVertexArray(null);
       gl.bindBuffer(gl.ARRAY_BUFFER, null);
       this.transformFeedback = gl.createTransformFeedback();
-      this.buffers = this.buffers;
     }
 
     createTransformTexture(sceneData) {
       const gl = this.gl;
       const view = new DataView(sceneData.buffer, sceneData.byteOffset, sceneData.byteLength);
       const values = new Float32Array(this.sceneCount * 16);
-      for (let i = 0; i < this.sceneCount; i++) {
-        const record = (4 + i * 20) * 4;
-        const base = i * 16;
-        for (let axis = 0; axis < 3; axis++) {
-          values[base + axis] = view.getFloat32(record + (5 + axis) * 4, true);
-          values[base + 4 + axis] = view.getFloat32(record + (8 + axis) * 4, true);
-          values[base + 8 + axis] = view.getFloat32(record + (11 + axis) * 4, true);
-          values[base + 12 + axis] = view.getFloat32(record + (1 + axis) * 4, true);
+      for (const [sceneIndex] of this.project.scenes.entries()) {
+        const descriptor = (4 + sceneIndex * 4) * 4;
+        const firstRecord = view.getUint32(descriptor + 12, true);
+        for (let slot = 0; slot < this.model.OBJECT_CAPACITY; slot++) {
+          const index = sceneIndex * this.model.OBJECT_CAPACITY + slot;
+          const record = (firstRecord + slot * RECORD_WORDS) * 4;
+          const base = index * 16;
+          for (let axis = 0; axis < 3; axis++) {
+            values[base + axis] = view.getFloat32(record + (5 + axis) * 4, true);
+            values[base + 4 + axis] = view.getFloat32(record + (8 + axis) * 4, true);
+            values[base + 8 + axis] = view.getFloat32(record + (11 + axis) * 4, true);
+            values[base + 12 + axis] = view.getFloat32(record + (1 + axis) * 4, true);
+          }
+          values[base + 3] = 1;
+          values[base + 11] = 1;
+          values[base + 15] = 1;
         }
-        values[base + 3] = 1;
-        values[base + 11] = 1;
-        values[base + 15] = 1;
       }
       this.transformValues = values;
       this.transformTexture = gl.createTexture();
@@ -419,6 +586,8 @@ uint atlasWord(uint wordIndex){
       gl.useProgram(this.updateProgram);
       gl.uniform1ui(this.updateLocations.buttons, buttons >>> 0);
       gl.uniform1ui(this.updateLocations.previousButtons, this.previousButtons >>> 0);
+      gl.uniform1ui(this.updateLocations.sceneId, this.activeSceneId >>> 0);
+      gl.uniform1ui(this.updateLocations.frameIndex, this.frameIndex++ >>> 0);
       gl.bindVertexArray(this.vertexArrays[this.currentBuffer]);
       gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.transformFeedback);
       gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, this.buffers[outputIndex]);
@@ -428,28 +597,162 @@ uint atlasWord(uint wordIndex){
       gl.endTransformFeedback();
       gl.disable(gl.RASTERIZER_DISCARD);
 
-      const output = new Float32Array(this.sceneCount * 15);
+      const output = new Float32Array(this.sceneCount * FEEDBACK_STRIDE);
       gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, this.buffers[outputIndex]);
       gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, output);
       gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
       gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
       gl.bindVertexArray(null);
       this.currentBuffer = outputIndex;
+      let requestedScene = this.activeSceneId;
+      let sceneDataChanged = false;
       for (let i = 0; i < this.sceneCount; i++) {
-        const inputOffset = i * 15, textureOffset = i * 16;
+        const inputOffset = i * FEEDBACK_STRIDE, textureOffset = i * TRANSFORM_STRIDE;
         this.transformValues.set(output.subarray(inputOffset, inputOffset + 3), textureOffset);
         this.transformValues.set(output.subarray(inputOffset + 3, inputOffset + 6), textureOffset + 4);
         this.transformValues.set(output.subarray(inputOffset + 6, inputOffset + 9), textureOffset + 8);
         this.transformValues.set(output.subarray(inputOffset + 9, inputOffset + 13), textureOffset + 12);
-        const soundId = Math.max(0, Math.trunc(output[inputOffset + 13]));
-        if (soundId) this.playSound(soundId);
+        const soundSignal = Math.trunc(output[inputOffset + 13]);
+        if (soundSignal === 0) this.playSound(0);
+        else if (soundSignal < -1) {
+          this.playSound(0);
+          this.playSound(-soundSignal - 1);
+        } else if (soundSignal > 0) this.playSound(soundSignal);
         if (output[inputOffset + 14] !== 0) return true;
+        const sceneRequest = Math.trunc(output[inputOffset + 16]);
+        if (sceneRequest !== this.activeSceneId &&
+            this.project.scenes.some(scene => scene.id === sceneRequest))
+          requestedScene = sceneRequest;
+        const spawnShape = Math.trunc(output[inputOffset + 18]);
+        if (spawnShape > 0) {
+          const sceneId = Math.trunc(output[inputOffset + 16]);
+          const spawnedIndex = this.recordSpawn(sceneId, spawnShape,
+            output.subarray(inputOffset + 19, inputOffset + 22),
+            output.subarray(inputOffset + 22, inputOffset + 25),
+            output.subarray(inputOffset + 25, inputOffset + 28),
+            output);
+          if (spawnedIndex >= 0) {
+            sceneDataChanged = true;
+            if (output[inputOffset + 29] !== 0)
+              this.markSpawnOnce(Math.trunc(output[inputOffset + 15]),
+                output[inputOffset + 28], output);
+          }
+        }
+        const audioEvent = Math.max(0, Math.trunc(output[inputOffset + 31]));
+        if (audioEvent !== this.audioEventValues[i] && this.staticObjectIndices[i] >= 0) {
+          this.writeObjectAudioEvent(this.objectSceneIds[i], this.staticObjectIndices[i], audioEvent);
+          this.audioEventValues[i] = audioEvent;
+          sceneDataChanged = true;
+        }
+      }
+      this.activeSceneId = requestedScene;
+      if (sceneDataChanged) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers[outputIndex]);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, output);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        this.updateSceneTexture();
       }
       gl.bindTexture(gl.TEXTURE_2D, this.transformTexture);
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.sceneCount * 4, 1,
         gl.RGBA, gl.FLOAT, this.transformValues);
       this.previousButtons = buttons;
       return false;
+    }
+
+    recordSpawn(sceneId, shape, position, scale, color, output) {
+      const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
+      if (sceneIndex < 0 || shape > 4) return -1;
+      const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
+      const descriptor = (4 + sceneIndex * 4) * 4;
+      const firstObject = view.getUint32(descriptor + 4, true);
+      const objectCount = view.getUint32(descriptor + 8, true);
+      const firstRecord = view.getUint32(descriptor + 12, true);
+      let slot = -1;
+      for (let candidate = 0; candidate < this.model.OBJECT_CAPACITY; candidate++) {
+        const record = (firstRecord + candidate * RECORD_WORDS) * 4;
+        if (view.getUint32(record, true) === 0 &&
+            view.getUint32(record + 15 * 4, true) === 0xffffffff) {
+          slot = candidate;
+          break;
+        }
+      }
+      if (slot < 0) return -1;
+      if (slot >= objectCount) view.setUint32(descriptor + 8, slot + 1, true);
+
+      const record = (firstRecord + slot * RECORD_WORDS) * 4;
+      view.setUint32(record, shape, true);
+      for (let axis = 0; axis < 3; axis++) {
+        view.setFloat32(record + (1 + axis) * 4, Math.max(0, Math.min(1, color[axis])), true);
+        view.setFloat32(record + (5 + axis) * 4, position[axis], true);
+        view.setFloat32(record + (8 + axis) * 4, 0, true);
+        view.setFloat32(record + (11 + axis) * 4, Math.max(0.001, Math.abs(scale[axis])), true);
+      }
+      view.setUint32(record + 4 * 4, 0, true);
+      view.setUint32(record + 14 * 4, 0, true);
+      view.setUint32(record + 15 * 4, 0xffffffff, true);
+      view.setUint32(record + 16 * 4, 0, true);
+      view.setUint32(record + 17 * 4, 0, true);
+      view.setUint32(record + 18 * 4, 0, true);
+      view.setUint32(record + 19 * 4, sceneId, true);
+
+      const index = firstObject + slot;
+      const offset = index * FEEDBACK_STRIDE;
+      output[offset] = position[0];
+      output[offset + 1] = position[1];
+      output[offset + 2] = position[2];
+      output[offset + 3] = output[offset + 4] = output[offset + 5] = 0;
+      output[offset + 6] = Math.max(0.001, Math.abs(scale[0]));
+      output[offset + 7] = Math.max(0.001, Math.abs(scale[1]));
+      output[offset + 8] = Math.max(0.001, Math.abs(scale[2]));
+      output[offset + 9] = color[0];
+      output[offset + 10] = color[1];
+      output[offset + 11] = color[2];
+      output[offset + 12] = 1;
+      output[offset + 15] = sceneId;
+      output[offset + 16] = sceneId;
+      output[offset + 17] = -1;
+      output[offset + 30] = 0;
+      output[offset + 31] = 0;
+      this.objectSceneIds[index] = sceneId;
+      this.staticObjectIndices[index] = -1;
+      this.audioEventValues[index] = 0;
+      return index;
+    }
+
+    writeObjectAudioEvent(sceneId, objectIndex, eventId) {
+      const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
+      if (sceneIndex < 0) return;
+      const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
+      const descriptor = (4 + sceneIndex * 4) * 4;
+      const count = view.getUint32(descriptor + 8, true);
+      const firstRecord = view.getUint32(descriptor + 12, true);
+      for (let slot = 0; slot < count; slot++) {
+        const record = (firstRecord + slot * RECORD_WORDS) * 4;
+        if (view.getUint32(record + 15 * 4, true) === objectIndex &&
+            view.getUint32(record, true) === 0) {
+          view.setUint32(record + 14 * 4, eventId, true);
+          return;
+        }
+      }
+    }
+
+    markSpawnOnce(sceneId, objectIndex, output) {
+      const sceneIndex = this.project.scenes.findIndex(scene => scene.id === sceneId);
+      if (sceneIndex < 0 || !Number.isInteger(objectIndex) || objectIndex < 0) return;
+      const view = new DataView(this.sceneData.buffer, this.sceneData.byteOffset, this.sceneData.byteLength);
+      const descriptor = (4 + sceneIndex * 4) * 4;
+      const count = view.getUint32(descriptor + 8, true);
+      const firstRecord = view.getUint32(descriptor + 12, true);
+      for (let slot = 0; slot < count; slot++) {
+        const record = (firstRecord + slot * RECORD_WORDS) * 4;
+        if (view.getUint32(record + 15 * 4, true) === objectIndex) {
+          const flags = view.getUint32(record + 19 * 4, true);
+          view.setUint32(record + 19 * 4, flags | 0x80000000, true);
+          const index = view.getUint32(descriptor + 4, true) + slot;
+          output[index * FEEDBACK_STRIDE + 30] = 1;
+          break;
+        }
+      }
     }
 
     draw() {
@@ -466,8 +769,27 @@ uint atlasWord(uint wordIndex){
       gl.uniform1i(this.renderLocations.sceneData, 1);
       gl.uniform1i(this.renderLocations.sceneWidth, this.sceneTextureWidth);
       gl.uniform2f(this.renderLocations.resolution, this.canvas.width, this.canvas.height);
+      gl.uniform1ui(this.renderLocations.sceneId, this.activeSceneId >>> 0);
+      gl.uniform1f(this.renderLocations.maxTravel, this.maxTravelDistance());
       gl.uniform1f(this.renderLocations.transition, 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    maxTravelDistance() {
+      let maxTravel = 60;
+      for (let i = 0; i < this.sceneCount; i++) {
+        const offset = i * 16;
+        const x = this.transformValues[offset];
+        const y = this.transformValues[offset + 1];
+        const z = this.transformValues[offset + 2];
+        const sx = this.transformValues[offset + 8];
+        const sy = this.transformValues[offset + 9];
+        const sz = this.transformValues[offset + 10];
+        const centerDistance = Math.hypot(x, y, z - 9);
+        const objectRadius = Math.hypot(sx, sy, sz);
+        maxTravel = Math.max(maxTravel, centerDistance + objectRadius);
+      }
+      return maxTravel;
     }
 
     frame(time) {

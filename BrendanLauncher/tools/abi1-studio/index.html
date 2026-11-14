@@ -19,11 +19,21 @@
   </header>
   <main class="workspace">
     <aside class="left-panel panel">
+      <div class="scene-controls">
+        <select id="sceneSelect" aria-label="Editing scene"></select>
+        <button id="addScene" type="button" title="Add scene">+</button>
+        <button id="renameScene" type="button" title="Rename scene">R</button>
+        <button id="deleteScene" type="button" title="Delete scene">×</button>
+      </div>
       <div class="panel-heading"><h2>Hierarchy</h2><button id="addRoot" title="Add object">+</button></div>
       <div class="object-palette">
         <button draggable="true" data-create="mesh"><span class="palette-icon cube"></span>Mesh</button>
         <button draggable="true" data-create="sprite"><span class="palette-icon sprite"></span>Sprite</button>
         <button draggable="true" data-create="audio"><span class="palette-icon audio"></span>Audio</button>
+      </div>
+      <div class="audio-import">
+        <button id="importAudio" type="button">Import Audio…</button>
+        <input id="audioFiles" type="file" accept=".mp3,.wav,.wave,.flac,.m4a,.aac,.ogg,.oga,.opus,audio/*" multiple hidden>
       </div>
       <div id="hierarchy" class="hierarchy" aria-label="Object hierarchy"></div>
       <div class="prefab-section">
@@ -33,6 +43,12 @@
       <div class="script-library">
         <div class="panel-heading"><h2>Scripts</h2><button id="newScript" title="Create reusable script">+</button></div>
         <div id="scriptLibrary" class="script-library-list"></div>
+      </div>
+      <div class="class-library">
+        <div class="panel-heading"><h2>GLSL Classes</h2><button id="newClass" title="Create GLSL class file">+</button></div>
+        <button id="importClass" class="wide-button" type="button">Import .glsl…</button>
+        <input id="classFile" type="file" accept=".glsl,text/plain" hidden>
+        <div id="classLibrary" class="script-library-list"></div>
       </div>
       <div class="drop-hint">Drag a type into the viewport. Drop PNG/JPG, OBJ, or audio files to add assets.</div>
     </aside>
@@ -55,6 +71,7 @@
         <fieldset><legend>Position (local)</legend><div class="triple"><label>X<input name="x" type="number" step="0.1"></label><label>Y<input name="y" type="number" step="0.1"></label><label>Z<input name="z" type="number" step="0.1"></label></div></fieldset>
         <fieldset><legend>Rotation (degrees)</legend><div class="triple"><label>X<input name="rx" type="number" step="5"></label><label>Y<input name="ry" type="number" step="5"></label><label>Z<input name="rz" type="number" step="5"></label></div></fieldset>
         <fieldset><legend>Scale (local)</legend><div class="triple"><label>X<input name="sx" type="number" step="0.1"></label><label>Y<input name="sy" type="number" step="0.1"></label><label>Z<input name="sz" type="number" step="0.1"></label></div></fieldset>
+        <label id="audioAssetLabel" class="audio-setting">Audio asset<output id="audioAssetName">No asset assigned</output></label>
         <label class="audio-setting">Sound event ID<input name="audioEventId" type="number" min="1" max="31" step="1"></label>
         <fieldset class="script-attachments"><legend>Attached scripts</legend>
           <div id="attachedScripts" class="attached-scripts"></div>
@@ -64,6 +81,7 @@
         <button type="button" id="deleteObject" class="danger wide-button">Delete Object</button>
       </form>
       <section class="app-settings"><div class="panel-heading"><h2>App Details</h2></div>
+        <label>Startup scene<select id="startupScene"></select></label>
         <label>Description<textarea id="appDescription" rows="3" maxlength="160">Created with ABI-1 Studio</textarea></label>
         <label>Version<input id="appVersion" value="1.0.0"></label>
       </section>
@@ -82,9 +100,11 @@
         <p id="generatorMessage" role="status"></p>
         <details><summary>Supported prompt examples</summary>
           <ul>
-            <li>Move left, right, up, down, forward, or back; optionally give a speed and button.</li>
-            <li>Rotate around X, Y, or Z; optionally give degrees per second and a button.</li>
-            <li>Set a named color or #RRGGBB color, play a sound event, grow or shrink, or exit on a button.</li>
+            <li>Move or rotate along an axis; set scale or color, including random values and colors.</li>
+            <li>Spawn a box, sphere, sprite, or plane at a position, with optional color, scale, and button condition.</li>
+            <li>Switch to a named, numbered, next, previous, or random scene in this project.</li>
+            <li>Set an audio object's event ID, play or stop an event, play attached audio, or switch sounds.</li>
+            <li>Exit on a button; movement, rotation, spawning, and audio can also use button conditions.</li>
           </ul>
         </details>
       </section>
@@ -94,13 +114,23 @@
       <div class="script-dialog-actions"><button type="button" id="deleteScript" class="danger">Delete Script</button><span></span><button value="cancel">Cancel</button><button type="button" id="saveScript" class="primary">Save Script</button></div>
     </form>
   </dialog>
+  <dialog id="classDialog" class="script-dialog">
+    <form method="dialog" id="classEditor">
+      <h2>Reusable GLSL Class File</h2>
+      <label>File name<input id="className" maxlength="64" required></label>
+      <label>GLSL declarations and helper functions<textarea id="classSource" rows="18" maxlength="16384" spellcheck="false"></textarea></label>
+      <div class="script-dialog-note">GLSL has no class keyword; these files provide reusable structs, constants, and functions to scripts in every scene.</div>
+      <p id="classError" class="script-error" role="alert"></p>
+      <div class="script-dialog-actions"><button type="button" id="deleteClass" class="danger">Delete File</button><button type="button" id="downloadClass">Download .glsl</button><span></span><button value="cancel">Cancel</button><button type="button" id="saveClass" class="primary">Save File</button></div>
+    </form>
+  </dialog>
   <dialog id="previewDialog" class="preview-dialog">
     <div class="preview-heading"><strong>PC Preview · ABI-1 renderer</strong><span>PC WebGL2 and audio may differ from NS2 hardware.</span></div>
     <canvas id="previewCanvas" width="960" height="540" aria-label="App runtime preview" tabindex="0"></canvas>
     <p class="preview-input-help">Keyboard: Space=A · X=B · Z=X · C=Y · arrows=D-pad · Enter=Plus · Esc=Minus. A standard gamepad is also supported.</p>
     <form method="dialog"><button class="primary">Stop Preview</button></form>
   </dialog>
-  <script src="./scene-model.js"></script><script src="./glslang.js"></script>
+  <script src="./scene-model.js"></script><script src="./audio-decoder.js"></script><script src="./glslang.js"></script>
   <script src="./abi1-build.js"></script><script src="./abi1-preview.js"></script>
   <script src="./script-generator.js"></script>
   <script src="./studio.js"></script>

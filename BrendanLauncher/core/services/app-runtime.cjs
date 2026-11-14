@@ -37,7 +37,7 @@ async function create({rpc,menu,directory,prepareApp=prepare,prepareMenu=async()
  // The frame loop pauses rendering before servicing a module's GPU mailbox.
  // No app names or mailbox offsets belong to the common scheduler.
  function unsafe(error){return error?.restartRequired===true||error?.resourcesRetained===true||/restore scratch|scratch restoration|did not join|join failed|worker stop timed out|allocations retained|buffers retained/i.test(error?.message||'');}
- function closeService(active){if(!active)return Promise.resolve();let closing=closings.get(active);if(!closing){closing=Promise.resolve().then(()=>active.service?.close());closings.set(active,closing);}return closing;}
+ function closeService(active){if(!active)return Promise.resolve();let closing=closings.get(active);if(!closing){closing=Promise.resolve().then(async()=>{await active.assetStream?.close?.();await active.service?.close();});closings.set(active,closing);}return closing;}
  runtime.pending=async state=>{const active=runtime.active;if(!active)return false;if(boundaryFailure?.owner===active)return true;
   try{return !!await active.service?.pending?.(state);}catch(error){if(unsafe(error))throw error;if(runtime.active!==active)return false;boundaryFailure={owner:active,error};return true;}
  };
@@ -77,6 +77,7 @@ async function create({rpc,menu,directory,prepareApp=prepare,prepareMenu=async()
    if(boundaryFailure?.owner===runtime.active)return returnToMenu(boundaryFailure.error);
    let outcome;try{outcome=await runtime.active.service?.afterBatch(state);}catch(error){if(unsafe(error))throw error;return returnToMenu(error);}
    if(outcome?.returnToMenu===true)return returnToMenu(outcome.error);
+   try{await runtime.active.assetStream?.afterBatch(state);}catch(error){if(unsafe(error))throw error;return returnToMenu(error);}
    await streamMediaFrame(runtime.active,state);
    return runtime.active.gpu.commands[0];
   }
@@ -101,7 +102,9 @@ async function create({rpc,menu,directory,prepareApp=prepare,prepareMenu=async()
       const component=await require('../components.cjs').get(match[1],match[2]);
       service=await component.create({rpc,mapped,directory,app});
     }
-    runtime.active={app,gpu,service};mediaLastFrame=null;
+    const assetStream=app.streamedAssets?.length
+      ? require('./app-asset-stream.cjs').create({rpc,mapped,app}) : null;
+    runtime.active={app,gpu,service,assetStream};mediaLastFrame=null;
     runtime.report.active={id:app.id,fingerprint:app.fingerprint};runtime.report.transitions.push({event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()});await save();
     return gpu.commands[0];
    }catch(error){

@@ -10,7 +10,7 @@ GUIDE:
 -
 4th make a pairing pin
 -
-5th on your ns2 run ns2jb exploit then the V=START(39380,10,0,0,X,P,I,N,#) line displayed on pc as V=START(39380,10,0,0,X,*,*,*,*)
+5th on your ns2 run ns2jb exploit then the V=START(39380,10,0,0,X,P,I,N,#) line displayed on pc as V=START(39380,10,0,0,X,`*`,`*`,`*`,`*`)
 -
 6th be patient while the pc does its stuff
 -

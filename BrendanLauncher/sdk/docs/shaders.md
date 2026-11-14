@@ -6,6 +6,32 @@ fields. Application data starts at byte 1024 and retains its existing 7 MiB
 limit. **Bytes `0x7f0000..0x7fffff` are SDK-owned**. Do not use them for app data.
 The extension does not change the manifest's `abi: 1` value.
 
+## Local streamed assets
+
+Apps may declare `streamedAssets` in `app.json`, as an ordered list of
+`{"id":1,"file":"assets/model.obj"}` entries. IDs must be sequential starting
+at 1. The launcher fingerprints and serves the files locally while the app is
+running; no external server is required. Streamed files are limited to 512 MiB
+total per app. Apps using this facility may store at most 6 MiB in inline `data`.
+
+The ABI-1 Studio header and `sdk/include/hb.glsl` provide:
+
+| Function | Meaning |
+| --- | --- |
+| `bool hbStreamRequest(uint assetId, uint offset, uint length)` | Request up to 64 KiB from a declared file; returns false if a request is still in flight |
+| `bool hbStreamReady()` | The latest request completed successfully |
+| `bool hbStreamFailed()` | The latest request was rejected |
+| `uint hbStreamByte(uint index)` | Read a byte from the latest response, or zero outside its requested length |
+
+Requests are serviced at the next host frame boundary. The returned bytes are
+available on a later frame, so check `hbStreamReady()` before reading them.
+The transfer window occupies the final 1 MiB of the 7 MiB app-data region;
+each request transfers at most 64 KiB. For this protocol, `c.stats` is the
+request mailbox and `c.reserved.y` / `c.reserved.w` are the response sequence
+and status. Do not use those fields for other purposes in a streaming app.
+Image data may instead use private GPU storage (binding 1); Studio packages
+generated textures there, separately from the 7 MiB inline-data budget.
+
 ## Frame and input functions
 
 | Function | Meaning |
