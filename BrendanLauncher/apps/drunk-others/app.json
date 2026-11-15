@@ -1,0 +1,26 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "drunk-others",
+  "name": "brendan",
+  "description": "Created with ABI-1 Studio",
+  "version": "1.0.0",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/scene.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  },
+  "memory": {
+    "bytes": 5238784,
+    "initial": "assets/image-data.bin"
+  },
+  "audio": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "format": "s16le",
+    "effects": {}
+  }
+}

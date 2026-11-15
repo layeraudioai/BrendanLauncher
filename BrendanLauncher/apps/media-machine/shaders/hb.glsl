@@ -34,6 +34,14 @@ bool hbBusy(){return hbWord(2048u)!=hbWord(4096u);}
 uint hbResult(){return hbWord(4100u);}
 uint hbResponseBytes(){return min(hbWord(4104u),1024u);}
 uint hbResponseByte(uint index){return index<hbResponseBytes()?(hbWord(4128u+(index/4u)*4u)>>((index%4u)*8u))&255u:0u;}
+const uint HB_STREAM_WINDOW_WORD=1572864u,HB_STREAM_WINDOW_BYTES=65536u;
+bool hbStreamReady(){return c.stats.w!=0u&&c.reserved.y==c.stats.w&&c.reserved.w==1u;}
+bool hbStreamFailed(){return c.stats.w!=0u&&c.reserved.y==c.stats.w&&c.reserved.w==2u;}
+uint hbStreamByte(uint index){
+ if(index>=c.stats.z)return 0u;
+ uint word=c.atlas[HB_STREAM_WINDOW_WORD+index/4u];
+ return (word>>((index&3u)*8u))&255u;
+}
 // Native optical ring: 8 players x 2 sides. Side 0/1 matches Jcms handles.
 // Keep a separate previous sequence for each player/side in your app state.
 vec2 hbJoyMouseDelta(uint player,uint side,inout uint previous){
@@ -59,6 +67,12 @@ void hbEndFrame(){c.state.y=hbButtons();}
 void hbExit(){c.reserved.z=1u;}
 void hbSound(uint id){c.events.x++;c.events.y=id;}
 void hbStopSound(){hbSound(0u);}
+bool hbStreamRequest(uint assetId,uint offset,uint length){
+ if(assetId==0u||length==0u||length>HB_STREAM_WINDOW_BYTES||
+    (c.stats.x!=0u&&c.stats.w!=c.reserved.y))return false;
+ uint sequence=c.stats.w+1u;if(sequence==0u)sequence=1u;
+ c.stats=uvec4(assetId,offset,length,sequence);c.reserved.w=0u;return true;
+}
 bool hbRequest(uint op,uint a,uint b,uint d){
  if(!hbAvailable()||hbBusy())return false;
  uint o=HB_EXT+2048u/4u;c.atlas[o+1u]=op;c.atlas[o+2u]=a;c.atlas[o+3u]=b;c.atlas[o+4u]=d;
