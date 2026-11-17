@@ -22,7 +22,7 @@
     [4, BUTTONS.L], [5, BUTTONS.R], [8, BUTTONS.MINUS], [9, BUTTONS.PLUS],
     [12, BUTTONS.UP], [13, BUTTONS.DOWN], [14, BUTTONS.LEFT], [15, BUTTONS.RIGHT]
   ];
-  const FEEDBACK_STRIDE = 32;
+  const FEEDBACK_STRIDE = 33;
   const TRANSFORM_STRIDE = 16;
   const RECORD_WORDS = 20;
 
@@ -169,7 +169,7 @@
         'vPosition', 'vRotation', 'vScale', 'vColor', 'vSound', 'vExit',
         'vSceneId', 'vSceneRequest', 'vObjectIndex', 'vSpawnShape',
         'vSpawnPosition', 'vSpawnScale', 'vSpawnColor', 'vSpawnOrigin',
-        'vSpawnOnce', 'vSpawned', 'vAudioEvent'
+        'vSpawnOnce', 'vSpawned', 'vAudioEvent', 'vOnceFlags'
       ]);
       this.renderProgram = this.linkProgram(this.fullscreenVertexSource(),
         this.previewFragmentSource(), null);
@@ -186,7 +186,8 @@
         objectSceneId: gl.getAttribLocation(this.updateProgram, 'aSceneId'),
         objectIndex: gl.getAttribLocation(this.updateProgram, 'aObjectIndex'),
         spawned: gl.getAttribLocation(this.updateProgram, 'aSpawned'),
-        audioEvent: gl.getAttribLocation(this.updateProgram, 'aAudioEvent')
+        audioEvent: gl.getAttribLocation(this.updateProgram, 'aAudioEvent'),
+        onceFlags: gl.getAttribLocation(this.updateProgram, 'aOnceFlags')
       };
       this.renderLocations = {
         sceneData: gl.getUniformLocation(this.renderProgram, 'uSceneData'),
@@ -217,7 +218,8 @@
         [this.updateLocations.objectSceneId, 'object scene'],
         [this.updateLocations.objectIndex, 'object index'],
         [this.updateLocations.spawned, 'spawn marker'],
-        [this.updateLocations.audioEvent, 'object audio event']
+        [this.updateLocations.audioEvent, 'object audio event'],
+        [this.updateLocations.onceFlags, 'once execution state']
       ]) if (location < 0) throw new Error(`PC Preview shader is missing its ${label} attribute`);
     }
 
@@ -278,6 +280,7 @@ in float aSceneId;
 in float aObjectIndex;
 in float aSpawned;
 in float aAudioEvent;
+in float aOnceFlags;
 uniform uint uButtons;
 uniform uint uPreviousButtons;
 uniform uint uSceneId;
@@ -299,6 +302,7 @@ out float vSpawnOrigin;
 out float vSpawnOnce;
 out float vSpawned;
 out float vAudioEvent;
+out float vOnceFlags;
 const uint HB_A=1u,HB_B=2u,HB_X=4u,HB_Y=8u,HB_L=64u,HB_R=128u;
 const uint HB_PLUS=1024u,HB_MINUS=2048u;
 const uint HB_LEFT=4096u,HB_UP=8192u,HB_RIGHT=16384u,HB_DOWN=32768u;
@@ -366,9 +370,28 @@ bool hbSetObjectAudio(uint objectIndex,uint eventId){
 }
 void hbLoadScene(uint id){${this.project.scenes.map(scene => `if(id==${scene.id}u)previewScene=id;`).join('')}}
 ${this.project.classes.map(item => item.source).filter(Boolean).join('\n')}
+float hbRoot(float degree,float value){
+    if(degree==0.0)return 0.0;
+    float rounded=round(degree);
+    if(value<0.0&&abs(degree-rounded)<0.00001&&mod(abs(rounded),2.0)==1.0)
+        return -pow(-value,1.0/degree);
+    return pow(value,1.0/degree);
+}
+float hbFactorial(float inputValue){
+    if(inputValue<0.0||inputValue>32.0||abs(inputValue-floor(inputValue+0.5))>0.00001)return 0.0;
+    int n=int(floor(inputValue+0.5));
+    float value=1.0;
+    for(int i=1;i<=32;i++){if(i>n)break;value*=float(i);}
+    return value;
+}
+bool hbRunOnce(inout uint flags,uint slot){
+    if(slot>=23u)return false;
+    uint mask=1u<<slot;bool run=(flags&mask)==0u;flags|=mask;return run;
+}
 ${updateObject}
 void main(){
     uint objectIndex=uint(max(aObjectIndex,0.0));
+    uint onceFlags=uint(aOnceFlags);
     float dt=1.0/60.0;
     uint buttons=hbPressed();
     vec3 position=aPosition;
@@ -387,7 +410,8 @@ void main(){
     previewAudioEvent=aAudioEvent;
     vSpawned=aSpawned;
     if(uint(aSceneId)==uSceneId&&aObjectIndex>=0.0)
-        updateObject(position,rotation,scale,color,objectIndex,dt,buttons);
+        updateObject(position,rotation,scale,color,objectIndex,dt,buttons,onceFlags);
+    vOnceFlags=float(onceFlags);
     vPosition=position;
     vRotation=rotation;
     vScale=scale;
@@ -503,6 +527,7 @@ uint atlasWord(uint wordIndex){
           if (objectIndex !== 0xffffffff) this.staticObjectIndices[index] = objectIndex;
           const audioEvent = view.getUint32(record + 14 * 4, true);
           initial[offset + 31] = audioEvent;
+          initial[offset + 32] = view.getUint32(record + 4 * 4, true) & 0x7fffff;
           this.audioEventValues[index] = audioEvent;
           initial[offset + 15] = scene.id;
           initial[offset + 16] = scene.id;
@@ -525,7 +550,8 @@ uint atlasWord(uint wordIndex){
           [locations.position, 3, 0], [locations.rotation, 3, 3],
           [locations.scale, 3, 6], [locations.color, 4, 9],
           [locations.objectSceneId, 1, 15], [locations.objectIndex, 1, 17],
-          [locations.spawned, 1, 30], [locations.audioEvent, 1, 31]
+          [locations.spawned, 1, 30], [locations.audioEvent, 1, 31],
+          [locations.onceFlags, 1, 32]
         ]) {
           gl.enableVertexAttribArray(location);
           gl.vertexAttribPointer(location, size, gl.FLOAT, false, stride,
@@ -713,6 +739,7 @@ uint atlasWord(uint wordIndex){
       output[offset + 17] = -1;
       output[offset + 30] = 0;
       output[offset + 31] = 0;
+      output[offset + 32] = 0;
       this.objectSceneIds[index] = sceneId;
       this.staticObjectIndices[index] = -1;
       this.audioEventValues[index] = 0;

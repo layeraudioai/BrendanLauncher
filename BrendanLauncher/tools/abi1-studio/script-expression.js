@@ -5,7 +5,7 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Abi1ScriptExpression = api;
 })(globalThis, function () {
-  const SPECIAL = /(?:\^|\*\*|%|!|\b(?:random|factorial|root|cbrt|log10|ln)\s*\()/i;
+  const SPECIAL = /(?:\^|\*\*|%|!|\b(?:random|rand|factorial|fact|root|cbrt|sqrt|abs|log|log10|ln)\s*\()/i;
   const TOKEN_RE = /\s+|(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*|\*\*|\|\||&&|==|!=|<=|>=|[()+\-*/%^!,?:<>]/y;
   const PRECEDENCE = { '||': 1, '&&': 2, '==': 3, '!=': 3, '<': 4, '<=': 4, '>': 4, '>=': 4, '+': 5, '-': 5, '*': 6, '/': 6, '%': 6, '^': 7, '**': 7 };
 
@@ -34,7 +34,7 @@
     function primary() {
       const token = take();
       let node;
-      if (token === '+' || token === '-' || token === '!') node = { type: 'unary', op: token, value: expression(8) };
+      if (token === '+' || token === '-' || token === '!') node = { type: 'unary', op: token, value: expression(7) };
       else if (token === '(') { node = expression(0); expect(')'); }
       else if (/^(?:\d|\.)/.test(token)) node = { type: 'atom', value: token };
       else if (/^[A-Za-z_]/.test(token)) {
@@ -102,27 +102,57 @@
       }
       if (name === 'root') {
         if (args.length !== 2) throw new Error('root(degree, value) takes two arguments');
-        return `pow(float(${args[1]}), 1.0 / float(${args[0]}))`;
+        return `hbRoot(float(${args[0]}), float(${args[1]}))`;
       }
       if (name === 'cbrt') {
         if (args.length !== 1) throw new Error('cbrt() takes one argument');
         return `(sign(float(${args[0]})) * pow(abs(float(${args[0]})), 0.3333333333333333))`;
       }
-      if (name === 'log10') {
-        if (args.length !== 1) throw new Error('log10() takes one argument');
-        return `(log(float(${args[0]})) / log(10.0))`;
+      if (name === 'ln' || name === 'log10' || name === 'sqrt' || name === 'abs') {
+        if (args.length !== 1) throw new Error(`${node.name}() takes one argument`);
+        if (name === 'ln') return `log(float(${args[0]}))`;
+        if (name === 'log10') return `(log(float(${args[0]})) / log(10.0))`;
+        return `${name}(float(${args[0]}))`;
       }
-      if (name === 'ln') {
-        if (args.length !== 1) throw new Error('ln() takes one argument');
-        return `log(float(${args[0]}))`;
+      if (name === 'log') {
+        if (args.length === 1) return `log(float(${args[0]}))`;
+        if (args.length === 2) return `(log(float(${args[1]})) / log(float(${args[0]})))`;
+        throw new Error('log() takes one value or a base and value');
       }
-      if (name === 'log' && args.length === 2) return `(log(float(${args[1]})) / log(float(${args[0]})))`;
       return `${node.name}(${args.join(', ')})`;
     }
     throw new Error('Invalid math expression');
   }
 
-  function transpileExpression(source) { return render(parseExpression(source)); }
+  function extractComments(source) {
+    let code = '', i = 0;
+    const comments = [];
+    while (i < source.length) {
+      if (source.startsWith('//', i)) {
+        const end = source.indexOf('\n', i + 2);
+        const stop = end < 0 ? source.length : end;
+        comments.push(source.slice(i, stop));
+        code += ' ';
+        i = stop;
+      } else if (source.startsWith('/*', i)) {
+        const end = source.indexOf('*/', i + 2);
+        if (end < 0) throw new Error('Unclosed comment in math expression');
+        comments.push(source.slice(i, end + 2));
+        code += ' ';
+        i = end + 2;
+      } else code += source[i++];
+    }
+    return { code, comments };
+  }
+
+  function transpileExpression(source) {
+    const { code, comments } = extractComments(source);
+    const leading = code.match(/^\s*/)[0];
+    const trailing = code.match(/\s*$/)[0];
+    const result = render(parseExpression(code.trim()));
+    const preserved = `${leading}${result}${trailing}`;
+    return comments.length ? `${comments.join('\n')}\n${preserved}` : preserved;
+  }
 
   function wrapOnceBlocks(source, allocateOnceSlot) {
     const replacements = [];
@@ -152,7 +182,8 @@
           const slot = allocateOnceSlot();
           if (!Number.isInteger(slot) || slot < 0 || slot > 22)
             throw new Error('One-time script slots must be between 0 and 22 per object');
-          replacements.push({ start: i, end, value: `if (hbRunOnce(onceFlags, ${slot}u)) {${source.slice(open + 1, end - 1)}}` });
+          const body = wrapOnceBlocks(source.slice(open + 1, end - 1), allocateOnceSlot);
+          replacements.push({ start: i, end, value: `if (hbRunOnce(onceFlags, ${slot}u)) {${body}}` });
           i = end;
           continue;
         }

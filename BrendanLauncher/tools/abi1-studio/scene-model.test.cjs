@@ -385,7 +385,7 @@ test('PC preview spawn records consume reserved scene slots and preserve spawn-o
   preview.staticObjectIndices = new Int32Array(model.OBJECT_CAPACITY);
   preview.staticObjectIndices.fill(-1);
   preview.audioEventValues = new Uint32Array(model.OBJECT_CAPACITY);
-  const output = new Float32Array(model.OBJECT_CAPACITY * 32);
+  const output = new Float32Array(model.OBJECT_CAPACITY * 33);
 
   const spawned = preview.recordSpawn(1, 2, [1, 2, 3], [1, 1, 1], [0.2, 0.4, 0.6], output);
   assert.equal(spawned, 1);
@@ -393,7 +393,7 @@ test('PC preview spawn records consume reserved scene slots and preserve spawn-o
   const record = (4 + model.SCENE_DESCRIPTOR_WORDS + 1 * 20) * 4;
   assert.equal(uint32(preview.sceneData, record), 2);
   assert.equal(uint32(preview.sceneData, record + 15 * 4), 0xffffffff);
-  assert.equal(output[32], 1);
+  assert.equal(output[33], 1);
 
   preview.markSpawnOnce(1, 0, output);
   assert.equal(uint32(preview.sceneData, record - 20 * 4 + 19 * 4) >>> 31, 1);
@@ -417,7 +417,7 @@ test('PC preview adapts ABI-1 scene and script shaders to WebGL2', () => {
   const project = model.createProject();
   const object = model.createObject('mesh', 'Spinner');
   const script = model.createScript('Rotate');
-  script.source = 'rotation.y += dt;';
+  script.source = 'rotation.y += dt;\nonce { color.r = 1.0; }';
   project.scripts.push(script);
   object.scriptIds.push(script.id);
   project.objects.push(object);
@@ -436,6 +436,13 @@ test('PC preview adapts ABI-1 scene and script shaders to WebGL2', () => {
   assert.match(fragment, /vec3 position=texelFetch\(uTransforms/);
   assert.doesNotMatch(fragment, /c\.atlas\[/);
   assert.match(vertex, /rotation\.y \+= dt/);
+  assert.match(vertex, /in float aOnceFlags/);
+  assert.match(vertex, /out float vOnceFlags/);
+  assert.match(vertex, /float hbFactorial\(float inputValue\)/);
+  assert.match(vertex, /float hbRoot\(float degree,float value\)/);
+  assert.match(vertex, /updateObject\(position,rotation,scale,color,objectIndex,dt,buttons,onceFlags\)/);
+  assert.match(vertex, /vOnceFlags=float\(onceFlags\)/);
+  assert.match(vertex, /hbRunOnce\(onceFlags, 0u\)/);
   assert.match(vertex, /bool hbSetObjectAudio\(uint objectIndex,uint eventId\)/);
   assert.match(vertex, /vExit=previewExit/);
   assert.match(preview.updateFragmentSource(), /out vec4 outColor/);
@@ -515,11 +522,13 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   project.scripts.push(movement);
   sprite.scriptIds.push(movement.id);
   const math = model.createScript('Math expressions');
-  math.source = ['position.x = abs(-2.0) + sqrt(4.0) + log10(100.0) + root(3.0, 8.0) + 5.0! % 7.0 + random(-1.0, 1.0) + dt * 2.0^3.0;', 'for (int i = 0; i < 3; i++) { position.z += float(i); }', 'once { position.y = 1.0; }'].join(String.fromCharCode(10));
+  math.source = ['position.x = abs(-2) /* power marker ^ is only a comment */ + sqrt(4) + log(2, 8) + log10(100.0) + root(3.0, -8.0) + 5.0! % 7.0 + random(-1.0, 1.0) + rand() + fact(5) + dt * 2.0^3.0;', 'for (int i = 0; i < 3; i++) { position.z += float(i); }', 'int j = 0; while (j < 2) { position.z += 0.25; j++; }', 'once { position.y = 1.0; once { position.z = 0.0; } }'].join(String.fromCharCode(10));
   project.scripts.push(math);
   sprite.scriptIds.push(math.id);
   const compiledSource = builder.shaderSources(project).compute;
   assert.match(compiledSource, /hbFactorial\(float\(5\.0\)\)/);
+  assert.match(compiledSource, /float hbRoot\(float degree,float value\)/);
+  assert.match(compiledSource, /hbRoot\(float\(3\.0\), float\(\(-8\.0\)\)\)/);
   assert.match(compiledSource, /pow\(float\(2\.0\), float\(3\.0\)\)/);
   assert.match(compiledSource, /hbRandomRange\(float\(\(-1\.0\)\), float\(1\.0\), objectIndex\)/);
   assert.match(compiledSource, /for \(int i = 0; i < 3; i\+\+\)/);

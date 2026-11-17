@@ -64,6 +64,13 @@ float hbFactorial(float inputValue){
     for(int i=1;i<=32;i++){if(i>n)break;value*=float(i);}
     return value;
 }
+float hbRoot(float degree,float value){
+    if(degree==0.0)return 0.0;
+    float rounded=round(degree);
+    if(value<0.0&&abs(degree-rounded)<0.00001&&mod(abs(rounded),2.0)==1.0)
+        return -pow(-value,1.0/degree);
+    return pow(value,1.0/degree);
+}
 bool hbRunOnce(inout uint flags,uint slot){
     if(slot>=23u)return false;
     uint mask=1u<<slot;bool run=(flags&mask)==0u;flags|=mask;return run;
