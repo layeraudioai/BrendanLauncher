@@ -41,3 +41,6 @@ dialog{color:var(--text);background:var(--panel);border:1px solid var(--line);bo
 .seed-actions button{flex:1;min-width:0;padding:5px 3px;font-size:9px;overflow-wrap:anywhere}
 .seed-actions button:disabled{opacity:.5;cursor:not-allowed}
 #projectSeedStatus{margin:5px 0 0;color:var(--muted);font-size:9px;line-height:1.35;overflow-wrap:anywhere}
+/* .music-dialog opts into flex layout when open; explicitly preserve the native closed-dialog hiding rule. */
+.music-dialog:not([open]){display:none}
+.music-dialog[open]{display:flex}
