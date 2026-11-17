@@ -27,3 +27,6 @@ dialog{color:var(--text);background:var(--panel);border:1px solid var(--line);bo
 .preview-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.preview-heading span,.preview-input-help{color:var(--muted);font-size:11px}
 #previewCanvas{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#07101a;border:1px solid var(--line);touch-action:none}
 .preview-dialog form{margin-top:8px}
+.import-log-section{border-top:1px solid var(--line);padding-bottom:10px}
+.import-log-content{padding:6px 9px;max-height:140px;overflow:auto;font-family:Consolas,monospace;font-size:10px;color:#ffb4bc;background:#080d14;border-top:1px solid var(--line);word-break:break-all}
+.import-log-entry{margin-bottom:3px;border-bottom:1px dotted #27384a;padding-bottom:2px}

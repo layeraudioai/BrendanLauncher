@@ -315,6 +315,17 @@ test('offline prompt generator creates supported individual GLSL behaviors', () 
   const attachedAudio = generateScript('Play audio attached to this object');
   assert.match(attachedAudio.source, /hbPlayObjectAudio\(objectIndex\)/);
 
+  const oscillate = generateScript('Oscillate on Y at 3 units per second');
+  assert.match(oscillate.source, /sin\(hbTime\(\) \* 3\)/);
+  assert.match(oscillate.source, /position\.y \+=/);
+
+  const orbit = generateScript('Orbit around Y at 90 degrees per second');
+  assert.match(orbit.source, /cos\(a\)/);
+  assert.match(orbit.source, /position\.x =/);
+
+  const rainbow = generateScript('Rainbow color');
+  assert.match(rainbow.source, /color\.rgb = vec3\(sin\(hbTime\(\)/);
+
   const scenes = model.createProject();
   scenes.scenes.push(model.createScene(7, 'Boss Room'));
   scenes.nextSceneId = 8;

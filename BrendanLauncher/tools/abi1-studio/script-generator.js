@@ -29,9 +29,9 @@
   };
   const SUPPORTED_EXAMPLE = 'Try “move right at 2 units per second when pressing A”, ' +
     '“rotate around Y at 90 degrees per second”, “set color to blue”, ' +
-    '“spawn a red sphere at (1, 2, 3) when pressing A”, ' +
-    '“set color to a random color”, “switch to the next scene”, ' +
-    '“play the audio attached to this object”, or “exit when pressing B”.';
+    '“oscillate on Y at 2 units per second”, “orbit around Y at 90 degrees per second”, ' +
+    '“rainbow color”, “spawn a red sphere at (1, 2, 3) when pressing A”, ' +
+    '“switch to the next scene”, or “exit when pressing B”.';
 
   function parseControl(text) {
     const patterns = [
@@ -124,10 +124,36 @@
       `rotation.${axis} += dt * ${numberText(speed)};`, control);
   }
 
+  function makeOscillate(text, control) {
+    const axisMatch = text.match(/\b(?:on|along)\s+([xyz])\b|\b([xyz])\s+axis\b/);
+    const axis = axisMatch ? axisMatch[1] || axisMatch[2] : 'y';
+    const speed = ratePerSecond(text, 2);
+    return generated(`Oscillate ${axis.toUpperCase()}`,
+      `position.${axis} += sin(hbTime() * ${numberText(speed)}) * dt * 2.0;`, control);
+  }
+
+  function makeOrbit(text, control) {
+    const axisMatch = text.match(/\b(?:around|about|on)\s+([xyz])\b/);
+    const axis = axisMatch ? axisMatch[1] : 'y';
+    const speed = ratePerSecond(text, 1);
+    const code = axis === 'x'
+      ? `float a = dt * ${numberText(speed)}; float c = cos(a), s = sin(a); float y = position.y * c - position.z * s; float z = position.y * s + position.z * c; position.y = y; position.z = z;`
+      : axis === 'z'
+      ? `float a = dt * ${numberText(speed)}; float c = cos(a), s = sin(a); float x = position.x * c - position.y * s; float y = position.x * s + position.y * c; position.x = x; position.y = y;`
+      : `float a = dt * ${numberText(speed)}; float c = cos(a), s = sin(a); float x = position.x * c - position.z * s; float z = position.x * s + position.z * c; position.x = x; position.z = z;`;
+    return generated(`Orbit ${axis.toUpperCase()}`, code, control);
+  }
+
+  function makeRainbow(text, control) {
+    return generated('Rainbow color',
+      `color.rgb = vec3(sin(hbTime() + float(objectIndex)), cos(hbTime() * 1.3 + float(objectIndex)), sin(hbTime() * 0.7)) * 0.5 + 0.5;`, control);
+  }
+
   function makeColor(text, control) {
     if (/\brandom(?:ly)?\s+colou?r\b/.test(text))
       return generated('Set random color',
         'color.rgb = hbRandomColor(objectIndex);', control);
+    if (/\brainbow\b/.test(text)) return makeRainbow(text, control);
     let rgb;
     const hex = text.match(/#([0-9a-f]{6})\b/i);
     if (hex) {
@@ -135,7 +161,7 @@
       rgb = [(value >> 16 & 255) / 255, (value >> 8 & 255) / 255, (value & 255) / 255];
     } else {
       const color = Object.keys(COLORS).find(name => new RegExp(`\\b${name}\\b`).test(text));
-      if (!color) throw new Error('Choose a supported color name or provide a #RRGGBB value.');
+      if (!color) throw new Error('Choose a supported color name, #RRGGBB, or say “rainbow color”.');
       rgb = COLORS[color];
     }
     const colorName = Object.entries(COLORS).find(([, value]) =>
@@ -173,18 +199,6 @@
       return generated('Randomize rotation', `rotation = vec3(${randomRange(text, 3)});`, control);
     }
     throw new Error('Name position, scale, or rotation, such as “set position x to a random number between -2 and 2”.');
-  }
-
-  function colorExpression(text) {
-    if (/\brandom(?:ly)?\s+colou?r\b/.test(text)) return 'hbRandomColor(objectIndex)';
-    const hex = text.match(/#([0-9a-f]{6})\b/i);
-    if (hex) {
-      const value = Number.parseInt(hex[1], 16);
-      return `vec3(${numberText((value >> 16 & 255) / 255)}, ${numberText((value >> 8 & 255) / 255)}, ${numberText((value & 255) / 255)})`;
-    }
-    const color = Object.keys(COLORS).find(name => new RegExp(`\\b${name}\\b`).test(text));
-    if (!color) return 'vec3(1.0)';
-    return `vec3(${COLORS[color].map(numberText).join(', ')})`;
   }
 
   function makeObjectAudio(text, control, project) {
@@ -235,6 +249,19 @@
       ? `objectIndex, ${shapeConstant}, ${position}, ${scale}, ${color}`
       : `${shapeConstant}, ${position}, ${scale}, ${color}`;
     return generated(`Spawn ${shapeName}`, `${helper}(${args});`, control);
+  }
+
+  function colorExpression(text) {
+    if (/\brandom(?:ly)?\s+colou?r\b/.test(text)) return 'hbRandomColor(objectIndex)';
+    if (/\brainbow\b/.test(text)) return 'vec3(sin(hbTime()), cos(hbTime() * 1.3), sin(hbTime() * 0.7)) * 0.5 + 0.5';
+    const hex = text.match(/#([0-9a-f]{6})\b/i);
+    if (hex) {
+      const value = Number.parseInt(hex[1], 16);
+      return `vec3(${numberText((value >> 16 & 255) / 255)}, ${numberText((value >> 8 & 255) / 255)}, ${numberText((value & 255) / 255)})`;
+    }
+    const color = Object.keys(COLORS).find(name => new RegExp(`\\b${name}\\b`).test(text));
+    if (!color) return 'vec3(1.0)';
+    return `vec3(${COLORS[color].map(numberText).join(', ')})`;
   }
 
   function makeSceneSwitch(text, control, project, currentSceneId) {
@@ -294,15 +321,17 @@
       Boolean(namesScene && /\b(switch|change|load|go)\b/.test(text));
     const isRandomValue = !isSpawn && /\brandom\b/.test(text) &&
       /\b(position|coordinate|scale|rotation)\b/.test(text);
-    const hasColor = /\b(color|colour)\b/.test(text) ||
+    const hasColor = /\b(color|colour|rainbow)\b/.test(text) ||
       /\b(?:make|turn|change|set)\b[\s\S]{0,20}\b(red|green|blue|yellow|cyan|magenta|white|black|orange|purple|#[0-9a-f]{6})\b/i.test(text);
     const isColor = !isSpawn && hasColor &&
-      /\b(set|change|make|turn|become|colou?r)\b/.test(text);
+      /\b(set|change|make|turn|become|colou?r|rainbow)\b/.test(text);
     const isRotate = /\b(rotate|spin)\b/.test(text) ||
       (/\bturn\b/.test(text) && !isColor);
+    const isOscillate = /\boscillate|bob|bounce\b/.test(text);
+    const isOrbit = /\borbit\b/.test(text);
     const isScale = !isRandomValue && /\b(scale|resize|grow|shrink)\b/.test(text);
-    const isMove = !isRandomValue && /\b(move|translate|slide)\b/.test(text);
-    const intents = [isExit, isSound, isStopSound, isSetObjectAudio, isColor, isRotate, isScale,
+    const isMove = !isRandomValue && !isOscillate && !isOrbit && /\b(move|translate|slide)\b/.test(text);
+    const intents = [isExit, isSound, isStopSound, isSetObjectAudio, isColor, isRotate, isOscillate, isOrbit, isScale,
       isMove, isSpawn, isSceneSwitch, isRandomValue].filter(Boolean).length;
     if (intents !== 1)
       throw new Error(`${intents ? 'Describe one behavior per script.' : 'I could not identify a supported behavior.'} ${SUPPORTED_EXAMPLE}`);
@@ -334,6 +363,8 @@
     }
     if (isColor) return makeColor(text, control);
     if (isRotate) return makeRotate(text, control);
+    if (isOscillate) return makeOscillate(text, control);
+    if (isOrbit) return makeOrbit(text, control);
     if (isScale) {
       const match = text.match(/\b(?:scale|size)\b[\s\S]{0,20}?\bto\s+(\d+(?:\.\d+)?)/);
       if (match) {

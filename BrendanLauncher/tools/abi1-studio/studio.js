@@ -987,6 +987,44 @@ class Abi1StudioApp {
       catch (error) { message(`Could not open project: ${error.message}`); }
       event.target.value = '';
     });
+
+    function logImportWarning(text) {
+      const container = $('#importLogContent');
+      if (!container) return;
+      if (container.textContent.includes('No imports or warnings yet')) {
+        container.replaceChildren();
+      }
+      const entry = document.createElement('div');
+      entry.className = 'import-log-entry';
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+      container.prepend(entry);
+    }
+
+    $('#importProjectBtn').addEventListener('click', () => $('#importProjectFile').click());
+    $('#importProjectFile').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      event.target.value = '';
+      try {
+        const text = await file.text();
+        const { project: imported, warnings } = window.Abi1ProjectImporter.importProject(text, file.name);
+        setProject(imported);
+        if (warnings && warnings.length) {
+          for (const w of warnings) logImportWarning(w);
+          message(`Imported ${file.name} with ${warnings.length} warning(s). Check the Import Log & Warnings panel.`);
+        } else {
+          setStatus(`Successfully imported ${file.name}`);
+        }
+      } catch (err) {
+        message(`Could not import project: ${err.message}`);
+        logImportWarning(`Import failed for ${file.name}: ${err.message}`);
+      }
+    });
+
+    $('#clearImportLog')?.addEventListener('click', () => {
+      const container = $('#importLogContent');
+      if (container) container.textContent = 'No imports or warnings yet.';
+    });
     for (const field of ['appName', 'appId', 'appDescription', 'appVersion'])
       $(`#${field}`).addEventListener('input', () => {
         syncProjectFields();

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" name="viewport" content="script-src 'self' 'unsafe-eval';">
   <title>ABI-1 Studio</title>
   <link rel="stylesheet" href="./studio.css">
@@ -13,9 +13,12 @@
     <div class="project-fields"><input id="appName" aria-label="App name" value="My GPU App"><input id="appId" aria-label="App ID" value="my-gpu-app"></div>
     <div class="toolbar">
       <button id="newProject">New</button><button id="openProject">Open</button>
+      <button id="importProjectBtn">Import Project…</button>
       <button id="saveProject" class="quiet">Save Project</button>
       <button id="previewApp">Preview</button><button id="exportApp" class="primary">Build ABI-1 App</button>
-      <input id="projectFile" type="file" accept=".json,.hblproj" hidden><input id="prefabFile" type="file" accept=".json,.hblprefab" hidden>
+      <input id="projectFile" type="file" accept=".json,.hblproj" hidden>
+      <input id="prefabFile" type="file" accept=".json,.hblprefab" hidden>
+      <input id="importProjectFile" type="file" accept=".json,.tscn,.unity,.prefab,.gltf,.glb,.obj,.gd,.cs,.py,.txt" hidden>
     </div>
   </header>
   <main class="workspace">
@@ -50,6 +53,10 @@
         <button id="importClass" class="wide-button" type="button">Import .glsl…</button>
         <input id="classFile" type="file" accept=".glsl,text/plain" hidden>
         <div id="classLibrary" class="script-library-list"></div>
+      </div>
+      <div class="import-log-section">
+        <div class="panel-heading"><h2>Import Log & Warnings</h2><button id="clearImportLog" title="Clear log">×</button></div>
+        <div id="importLogContent" class="import-log-content">No imports or warnings yet.</div>
       </div>
       <div class="drop-hint">Drag a type into the viewport. Drop PNG/JPG, OBJ, or audio files to add assets.</div>
     </aside>
@@ -144,9 +151,13 @@
     <p class="preview-input-help">Keyboard: Space=A · X=B · Z=X · C=Y · arrows=D-pad · Enter=Plus · Esc=Minus. A standard gamepad is also supported.</p>
     <form method="dialog"><button class="primary">Stop Preview</button></form>
   </dialog>
-  <script src="./scene-model.js"></script><script src="./audio-decoder.js"></script><script src="./glslang.js"></script>
-  <script src="./abi1-build.js"></script><script src="./abi1-preview.js"></script>
+  <script src="./scene-model.js"></script>
+  <script src="./audio-decoder.js"></script>
+  <script src="./glslang.js"></script>
+  <script src="./abi1-build.js"></script>
+  <script src="./abi1-preview.js"></script>
   <script src="./script-generator.js"></script>
+  <script src="./project-importer.js"></script>
   <script src="./studio.js"></script>
 </body>
 </html>
