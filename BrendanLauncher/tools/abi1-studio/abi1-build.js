@@ -1,10 +1,14 @@
 'use strict';
 
 (function (root, factory) {
-  const api = factory(root);
+  const expressions = typeof module === 'object' && module.exports
+    ? require('./script-expression.js') : root.Abi1ScriptExpression;
+  const music = typeof module === 'object' && module.exports
+    ? require('./music-engine.js') : root.Abi1Music;
+  const api = factory(root, expressions, music);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Abi1Build = api;
-})(globalThis, function (root) {
+})(globalThis, function (root, expressions, musicApi) {
   const encoder = new TextEncoder();
   const DEFAULT_ICON = 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAASElEQVR42mOQVDb5P5CYYdQBow7AJRHd8Z9qeHg44Ot3wnjUAbgcM3IcMLzTwGg5MOqA0aJ4tCgeLYpHHTDyCqLRfsGoA+iFAdGEnibx5lwkAAAAAElFTkSuQmCC';
   const STATE_GLSL = `// ABI-1 controls layout; app-owned atlas starts at byte 1024.
@@ -53,6 +57,17 @@ float hbRandom(uint seed){return float(hbHash(seed^(c.state.z*0x9e3779b9u))>>8u)
 float hbRandom(){return hbRandom(c.state.z);}
 float hbRandomRange(float minimum,float maximum,uint seed){return mix(minimum,maximum,hbRandom(seed));}
 vec3 hbRandomColor(uint seed){return vec3(hbRandom(seed),hbRandom(seed+1u),hbRandom(seed+2u));}
+float hbFactorial(float inputValue){
+    if(inputValue<0.0||inputValue>32.0||abs(inputValue-floor(inputValue+0.5))>0.00001)return 0.0;
+    int n=int(floor(inputValue+0.5));
+    float value=1.0;
+    for(int i=1;i<=32;i++){if(i>n)break;value*=float(i);}
+    return value;
+}
+bool hbRunOnce(inout uint flags,uint slot){
+    if(slot>=23u)return false;
+    uint mask=1u<<slot;bool run=(flags&mask)==0u;flags|=mask;return run;
+}
 `;
   const CRC_TABLE = (() => {
     const table = new Uint32Array(256);
@@ -169,10 +184,23 @@ vec3 hbRandomColor(uint seed){return vec3(hbRandom(seed),hbRandom(seed+1u),hbRan
         project.assets.some(item => item.id === object.assetId && item.kind === 'image'));
       const sceneObjects = this.model.flattenObjects(project);
       const objectScripts = sceneObjects.map(({ object }, index) => {
+        let onceSlot = 0;
         return object.scriptIds.map(scriptId => {
           const script = scriptsById.get(scriptId);
           if (!script.source.trim()) return '';
-          return `if (objectIndex == ${index}u) {\n${script.source}\n}`;
+          if (!expressions || typeof expressions.transpileSource !== 'function')
+            throw new Error('ABI-1 script expression support is not loaded');
+          let source;
+          try {
+            source = expressions.transpileSource(script.source, {
+              allocateOnceSlot: () => {
+                if (onceSlot >= 23)
+                  throw new Error(`Object “${object.name}” uses more than 23 one-time code blocks`);
+                return onceSlot++;
+              }
+            });
+          } catch (error) { throw new Error(`Script “${script.name}”: ${error.message}`); }
+          return `if (objectIndex == ${index}u) {\n${source}\n}`;
         }).filter(Boolean).join('\n');
       }).filter(Boolean).join('\n');
       const classSources = project.classes.map(item => item.source).filter(Boolean).join('\n');
@@ -390,7 +418,7 @@ bool hbSetObjectAudio(uint objectIndex,uint eventId){
 }
 ${classSources}
 void updateObject(inout vec3 position,inout vec3 rotation,inout vec3 scale,inout vec4 color,
-                  uint objectIndex,float dt,uint buttons) {
+                  uint objectIndex,float dt,uint buttons,inout uint onceFlags) {
 ${objectScripts || '    // Attach GLSL statements to objects in the editor.'}
 }
 void main(){
@@ -405,7 +433,9 @@ void main(){
         vec3 rotation=vec3(uintBitsToFloat(c.atlas[record+8u]),uintBitsToFloat(c.atlas[record+9u]),uintBitsToFloat(c.atlas[record+10u]));
         vec3 scale=vec3(uintBitsToFloat(c.atlas[record+11u]),uintBitsToFloat(c.atlas[record+12u]),uintBitsToFloat(c.atlas[record+13u]));
         vec4 color=vec4(uintBitsToFloat(c.atlas[record+1u]),uintBitsToFloat(c.atlas[record+2u]),uintBitsToFloat(c.atlas[record+3u]),1.0);
-        updateObject(position,rotation,scale,color,objectIndex,dt,buttons);
+        uint onceFlags=c.atlas[record+4u]&0x7fffffu;
+        updateObject(position,rotation,scale,color,objectIndex,dt,buttons,onceFlags);
+        c.atlas[record+4u]=(c.atlas[record+4u]&0xff800000u)|(onceFlags&0x7fffffu);
         c.atlas[record+1u]=floatBitsToUint(color.r);c.atlas[record+2u]=floatBitsToUint(color.g);c.atlas[record+3u]=floatBitsToUint(color.b);
         c.atlas[record+5u]=floatBitsToUint(position.x);c.atlas[record+6u]=floatBitsToUint(position.y);c.atlas[record+7u]=floatBitsToUint(position.z);
         c.atlas[record+8u]=floatBitsToUint(rotation.x);c.atlas[record+9u]=floatBitsToUint(rotation.y);c.atlas[record+10u]=floatBitsToUint(rotation.z);
@@ -490,7 +520,14 @@ void main(){
         imageData.set(scene.images);
         archive.add('assets/image-data.bin', imageData);
       }
-      archive.add('project.json', JSON.stringify(project, null, 2) + '\n');
+      const packagedProject = { ...project };
+      if (project.music) {
+        if (!musicApi) throw new Error('ABIM music support is unavailable to the package builder');
+        archive.add('assets/music.abim', musicApi.encodeAbim(project.music));
+        delete packagedProject.music;
+        packagedProject.musicFile = 'assets/music.abim';
+      }
+      archive.add('project.json', JSON.stringify(packagedProject, null, 2) + '\n');
       project.classes.forEach((item, index) => {
         const name = item.name.replace(/[^a-z0-9_-]/gi, '-') || 'class';
         archive.add(`classes/${index + 1}-${name}.glsl`, item.source);
@@ -529,6 +566,7 @@ void main(){
         data: 'assets/scene.bin',
         shaders: { vertex: 'app.vert.spv', fragment: 'app.frag.spv', compute: 'app.comp.spv' }
       };
+      if (project.music) manifest.music = 'assets/music.abim';
       if (scene.images.length) {
         manifest.memory = {
           bytes: Math.ceil(scene.images.length / 4096) * 4096,

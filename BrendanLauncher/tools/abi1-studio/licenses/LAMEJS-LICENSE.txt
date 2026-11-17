@@ -1,0 +1,9 @@
+lamejs 1.2.1 — bundled MP3 encoder
+Copyright (c) 2011 Alex Zhukov
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, version 3 of the License or (at your option) any later version.
+
+This bundled library is distributed as a separate JavaScript file (lame.min.js) and is not modified. The corresponding source is available at https://github.com/zhuker/lamejs (tag v1.2.1); A copy of LGPL-3.0 is included as LGPL-3.0.txt in this directory.
+
+Project page: https://github.com/zhuker/lamejs
+LAME: https://lame.sourceforge.net/

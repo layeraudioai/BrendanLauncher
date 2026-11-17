@@ -9,6 +9,7 @@ require('./glslang.js');
 const { Abi1PackageBuilder, crc32 } = require('./abi1-build.js');
 const { Abi1PreviewRuntime } = require('./abi1-preview.js');
 const { generateScript } = require('./script-generator.js');
+const musicEngine = require('./music-engine.js');
 const builder = new Abi1PackageBuilder({ model });
 const uint32 = (bytes, offset) =>
   new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getUint32(offset, true);
@@ -297,8 +298,12 @@ test('offline prompt generator creates supported individual GLSL behaviors', () 
 
   const sound = generateScript('Play sound event 3 when pressing A');
   assert.match(sound.source, /hbSound\(3u\)/);
+  const defaultMove = generateScript('Move right when pressing A');
+  assert.match(defaultMove.source, /position\.x \+= dt;/);
+  assert.doesNotMatch(defaultMove.source, /position\.x \+= dt \* 1(?:\.0)?;/);
   const held = generateScript('Move left while holding the left arrow');
   assert.match(held.source, /hbButtons\(\) & HB_LEFT/);
+  assert.match(held.source, /position\.x -= dt;/);
   const exit = generateScript('Exit when pressing B');
   assert.match(exit.source, /buttons & HB_B/);
   assert.match(exit.source, /hbExit\(\)/);
@@ -495,6 +500,7 @@ test('PC preview raymarch range expands to include distant scene objects', () =>
 test('browser builder compiles and packages a catalog-valid ABI-1 app', async t => {
   const project = model.createProject();
   project.app.id = `abi1-studio-test-${process.pid}`;
+  project.music = musicEngine.createSeededMusic('builder-test');
   const sprite = model.createObject('sprite', 'Sprite');
   sprite.assetId = 'image-asset';
   project.objects.push(sprite);
@@ -508,6 +514,17 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   movement.source = generateScript('move right at 2 units per second when pressing A').source;
   project.scripts.push(movement);
   sprite.scriptIds.push(movement.id);
+  const math = model.createScript('Math expressions');
+  math.source = ['position.x = abs(-2.0) + sqrt(4.0) + log10(100.0) + root(3.0, 8.0) + 5.0! % 7.0 + random(-1.0, 1.0) + dt * 2.0^3.0;', 'for (int i = 0; i < 3; i++) { position.z += float(i); }', 'once { position.y = 1.0; }'].join(String.fromCharCode(10));
+  project.scripts.push(math);
+  sprite.scriptIds.push(math.id);
+  const compiledSource = builder.shaderSources(project).compute;
+  assert.match(compiledSource, /hbFactorial\(float\(5\.0\)\)/);
+  assert.match(compiledSource, /pow\(float\(2\.0\), float\(3\.0\)\)/);
+  assert.match(compiledSource, /hbRandomRange\(float\(\(-1\.0\)\), float\(1\.0\), objectIndex\)/);
+  assert.match(compiledSource, /for \(int i = 0; i < 3; i\+\+\)/);
+  assert.match(compiledSource, /hbRunOnce\(onceFlags, 0u\)/);
+  assert.match(compiledSource, /inout uint onceFlags/);
   const sound = model.createObject('audio', 'Click');
   sound.audioEventId = 1;
   const rotation = model.createScript('Prompt rotation');
@@ -531,6 +548,12 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   assert.equal(result.sceneObjects, 2);
   assert.equal(uint32(result.entries.get('assets/scene.bin'), 0), 2);
   assert.ok(result.entries.has('assets/image-data.bin'));
+  assert.ok(result.entries.has('assets/music.abim'));
+  assert.equal(musicEngine.decodeAbim(new TextDecoder().decode(result.entries.get('assets/music.abim'))).patterns.length, 1);
+  assert.match(new TextDecoder().decode(result.entries.get('app.json')), /"music": "assets\/music.abim"/);
+  const packagedProjectJson = new TextDecoder().decode(result.entries.get('project.json'));
+  assert.match(packagedProjectJson, /"musicFile": "assets\/music.abim"/);
+  assert.doesNotMatch(packagedProjectJson, /"music": \{/);
   assert.ok(result.entries.has('assets/stream/mesh_1.obj'));
   assert.match(new TextDecoder().decode(result.entries.get('app.json')), /"streamedAssets"/);
   assert.equal(uint32(result.bytes, 0), 0x04034b50);

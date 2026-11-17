@@ -107,8 +107,9 @@
       throw new Error('Specify a movement direction such as left, right, up, down, forward, or back.');
     const [axis, operator] = axes[direction];
     const speed = ratePerSecond(text, 1);
+    const delta = speed === 1 ? 'dt' : `dt * ${numberText(speed)}`;
     return generated(`Move ${direction[0].toUpperCase()}${direction.slice(1)}`,
-      `position.${axis} ${operator}= dt * ${numberText(speed)};`, control);
+      `position.${axis} ${operator}= ${delta};`, control);
   }
 
   function makeRotate(text, control) {

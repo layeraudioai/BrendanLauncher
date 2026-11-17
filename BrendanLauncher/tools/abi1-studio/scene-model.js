@@ -2,10 +2,10 @@
 // Shared, browser-safe scene graph model for the editor and package builder.
 
 (function (root, factory) {
-  const model = factory();
+  const model = factory(root);
   if (typeof module === 'object' && module.exports) module.exports = model;
   else root.Abi1SceneModel = model;
-})(globalThis, function () {
+})(globalThis, function (root) {
   const ID_RE = /^[a-z0-9][a-z0-9-]{0,47}$/;
   const OBJECT_CAPACITY = 48;
   const SCENE_DESCRIPTOR_WORDS = 10;
@@ -277,6 +277,11 @@
     for (const object of project.scenes.flatMap(scene => scene.objects))
       if (object.assetId && !assetIds.has(object.assetId))
         throw new Error(`Object ${object.name} references a missing asset`);
+    if (project.music !== undefined) {
+      const music = root.Abi1Music || (typeof require === 'function' ? require('./music-engine.js') : null);
+      if (!music) throw new Error('ABIM music support is unavailable');
+      project.music = music.validateProject(project.music);
+    }
     return true;
   }
 

@@ -7,7 +7,8 @@
 })(globalThis, function (root) {
   const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
   const HEADER_SIZE = 22; // p + codec flag + seven base36 length digits + 64-bit checksum
-  const MAX_BYTES = 32 * 1024 * 1024;
+  const MAX_BYTES = 40 * 1024 * 1024;
+  const MAX_PROCEDURAL_SEED_CHARS = 65536;
   const MAX_SEED_CHARS = Math.ceil(MAX_BYTES / 4) * 7 + HEADER_SIZE;
   const encoder = new TextEncoder();
   const decoder = new TextDecoder('utf-8', { fatal: true });
@@ -134,10 +135,20 @@
     return model.normalizeProject(value);
   }
 
+  function isShortSeed(seed) {
+    const value = String(seed || '').trim();
+    return value.length > 0 && value.length <= MAX_PROCEDURAL_SEED_CHARS && /^[a-z0-9]+$/i.test(value);
+  }
+
+  function seededMusic(seed) {
+    const music = root.Abi1Music || (typeof require === 'function' ? require('./music-engine.js') : null);
+    return music ? music.createSeededMusic(seed) : undefined;
+  }
+
   function normalizeShortSeed(seed) {
     const value = String(seed || '').trim().toLowerCase();
-    if (!/^[a-z0-9]{1,2048}$/.test(value))
-      throw new Error('A procedural seed must be 1–2048 characters using only a-z and 0-9');
+    if (!value || value.length > MAX_PROCEDURAL_SEED_CHARS || !/^[a-z0-9]+$/.test(value))
+      throw new Error(`A procedural seed must be 1–${MAX_PROCEDURAL_SEED_CHARS} characters using only a-z and 0-9`);
     return value;
   }
 
@@ -173,7 +184,7 @@
     return `${left[Math.floor(random() * left.length)]} ${right[Math.floor(random() * right.length)]} ${index + 1}`;
   }
 
-  function generateProject(seed, model) {
+  function generateProject(seed, model, scriptGenerator = root.Abi1ScriptGenerator || null) {
     seed = normalizeShortSeed(seed);
     const random = createRandom(seed);
     const project = model.createProject();
@@ -198,6 +209,33 @@
       object.transform.sz = scale;
       project.scenes[0].objects.push(object);
     }
+
+    const scriptPrefix = `seed-${hashSeed(seed).toString(36)}-s`;
+    const player = project.scenes[0].objects[0];
+    const startup = model.createScript('Seeded one-time setup');
+    startup.id = `${scriptPrefix}1`;
+    startup.source = 'once { position.y += 0.25; }';
+    project.scripts.push(startup);
+    player.scriptIds.push(startup.id);
+
+    if (scriptGenerator && typeof scriptGenerator.generateScript === 'function') {
+      const behaviorPrompts = [
+        `move right at ${1 + Math.floor(random() * 3)} units per second when pressing A`,
+        `rotate around Y at ${45 + Math.floor(random() * 4) * 45} degrees per second when pressing B`,
+        'set color to random color when pressing X'
+      ];
+      const behaviorCount = 1 + Math.floor(random() * 2);
+      for (let i = 0; i < behaviorCount; i++) {
+        const prompt = behaviorPrompts[Math.floor(random() * behaviorPrompts.length)];
+        const generated = scriptGenerator.generateScript(prompt, project, project.scenes[0].id);
+        const script = model.createScript(generated.name);
+        script.id = `${scriptPrefix}${(i + 2).toString(36)}`;
+        script.source = generated.source;
+        project.scripts.push(script);
+        project.scenes[0].objects[i % project.scenes[0].objects.length].scriptIds.push(script.id);
+      }
+    }
+    project.music = seededMusic(seed);
     return model.normalizeProject(project);
   }
 
@@ -222,11 +260,13 @@
     project.app.id = `seed-${hashSeed(seed).toString(36)}`;
     project.app.name = generatedName(createRandom(seed), 0).slice(0, 64);
     project.app.description = `Generated from prompt seed ${seed}`.slice(0, 160);
+    project.music = seededMusic(seed);
     return model.normalizeProject(project);
   }
 
   return {
-    ALPHABET, MAX_BYTES, MAX_SEED_CHARS, encodeProject, decodeProject, isProjectSeed,
+    ALPHABET, MAX_BYTES, MAX_SEED_CHARS, MAX_PROCEDURAL_SEED_CHARS,
+    encodeProject, decodeProject, isProjectSeed, isShortSeed,
     normalizeShortSeed, hashSeed, generateProject, deriveSeedFromPrompt, createFromPrompt
   };
 });

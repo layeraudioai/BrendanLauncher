@@ -83,6 +83,11 @@ class Abi1StudioApp {
 
     function setProject(value) {
       project = model.normalizeProject(value);
+      musicProject = project.music ? music.validateProject(project.music) : music.createSeededMusic(project.app.id || 'studio-starter');
+      project.music = musicProject;
+      selectedMelodyId = musicProject.melodies[0]?.id || '';
+      selectedPatternId = musicProject.patterns[0]?.id || '';
+      selectedMusicTrackId = musicProject.tracks[0]?.id || '';
       thisApp.project = project;
       activeSceneId = project.startupSceneId;
       camera = activeScene().camera;
@@ -1128,6 +1133,185 @@ class Abi1StudioApp {
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
+    const musicDialog = $('#musicDialog');
+    const music = window.Abi1Music;
+    let musicProject = music.createSeededMusic('studio-starter');
+    let selectedMelodyId = musicProject.melodies[0].id;
+    let selectedPatternId = musicProject.patterns[0].id;
+    let selectedMusicTrackId = musicProject.tracks[0].id;
+    let musicPlayback = null, musicIdCounter = 0;
+    const musicStatus = text => { $('#musicStatus').textContent = text; };
+    const selectedMelody = () => musicProject.melodies.find(item => item.id === selectedMelodyId);
+    const selectedPattern = () => musicProject.patterns.find(item => item.id === selectedPatternId);
+    const selectedMusicTrack = () => musicProject.tracks.find(item => item.id === selectedMusicTrackId);
+    function musicId(prefix) {
+      let id;
+      do { id = `${prefix}-${Date.now().toString(36)}-${(++musicIdCounter).toString(36)}`; }
+      while ([...musicProject.melodies, ...musicProject.patterns, ...musicProject.tracks].some(item => item.id === id));
+      return id;
+    }
+    function commitMusicFields() {
+      musicProject.title = $('#musicTitle').value.trim() || 'Untitled Music';
+      musicProject.bpm = Math.max(20, Math.min(300, Number($('#musicTempo').value) || 120));
+      const melody = selectedMelody();
+      if (melody) { melody.name = $('#melodyName').value.trim() || 'Melody'; melody.source = $('#musicMml').value; }
+      const pattern = selectedPattern(); if (pattern) pattern.name = $('#patternName').value.trim() || 'Pattern';
+    }
+    function renderMusicEditor() {
+      $('#musicTitle').value = musicProject.title; $('#musicTempo').value = musicProject.bpm;
+      if (!musicProject.melodies.some(m => m.id === selectedMelodyId)) selectedMelodyId = musicProject.melodies[0]?.id || '';
+      if (!musicProject.patterns.some(p => p.id === selectedPatternId)) selectedPatternId = musicProject.patterns[0]?.id || '';
+      if (!musicProject.tracks.some(t => t.id === selectedMusicTrackId)) selectedMusicTrackId = musicProject.tracks[0]?.id || '';
+      const fill = (select, items, selected, label) => { select.replaceChildren(); items.forEach(item => select.add(new Option(label(item), item.id))); select.value = selected; };
+      fill($('#melodySelect'), musicProject.melodies, selectedMelodyId, m => `${m.name} (${m.id})`);
+      fill($('#patternMelodyChoice'), musicProject.melodies, musicProject.melodies[0]?.id || '', m => m.name);
+      fill($('#patternSelect'), musicProject.patterns, selectedPatternId, p => `${p.name} (${p.id})`);
+      fill($('#musicTrack'), musicProject.tracks, selectedMusicTrackId, t => `${t.name}${t.type === 'audio' ? ' [audio]' : ''}`);
+      const melody = selectedMelody(); $('#melodyName').value = melody?.name || ''; $('#musicMml').value = melody?.source || '';
+      $('#removeMelody').disabled = !melody || musicProject.melodies.length <= 1;
+      const melodyChoice = $('#patternMelodyChoice');
+      melodyChoice.replaceChildren();
+      musicProject.melodies.forEach(item => melodyChoice.add(new Option(item.name, item.id)));
+      const pattern = selectedPattern(); $('#patternName').value = pattern?.name || '';
+      $('#removePattern').disabled = !pattern || musicProject.patterns.length <= 1;
+      const steps = $('#patternSteps'); steps.replaceChildren();
+      for (let index = 0; index < (pattern?.steps.length || 0); index++) {
+        const step = pattern.steps[index], item = document.createElement('li'); item.className = 'music-list-item';
+        const title = document.createElement('strong'); title.textContent = `${index + 1}. ${musicProject.melodies.find(m => m.id === step.melodyId)?.name || step.melodyId}`;
+        const delta = document.createElement('label'); delta.textContent = 'Δ semitones';
+        const input = document.createElement('input'); input.type = 'number'; input.min = '-48'; input.max = '48'; input.value = step.delta; input.setAttribute('aria-label', `Step ${index + 1} pitch delta`);
+        input.addEventListener('change', () => { step.delta = Number(input.value) || 0; }); delta.append(input);
+        const repeat = document.createElement('label'); repeat.textContent = 'Repeat';
+        const repeatInput = document.createElement('input'); repeatInput.type = 'number'; repeatInput.min = '1'; repeatInput.max = '64'; repeatInput.value = step.repeat; repeatInput.setAttribute('aria-label', `Step ${index + 1} repeat`);
+        repeatInput.addEventListener('change', () => { step.repeat = Math.max(1, Math.min(64, Number(repeatInput.value) || 1)); }); repeat.append(repeatInput);
+        const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Remove'; remove.addEventListener('click', () => { pattern.steps.splice(index, 1); renderMusicEditor(); });
+        item.append(title, delta, repeat, remove); steps.append(item);
+      }
+      const track = selectedMusicTrack(), calls = $('#trackCalls'); calls.replaceChildren();
+      if (track?.type === 'audio') {
+        const note = document.createElement('p'); note.className = 'music-help'; note.textContent = `Imported audio clip: ${track.name} (${track.mime}). This source is stored once and retained in ABIM.`; calls.append(note);
+        const label = document.createElement('label'); label.className = 'audio-start'; label.textContent = 'Audio start beat'; const input = document.createElement('input'); input.type = 'number'; input.min = '0'; input.step = '0.25'; input.value = track.startBeat; input.addEventListener('change', () => { track.startBeat = Math.max(0, Number(input.value) || 0); }); label.append(input); calls.append(label);
+      } else if (track) {
+        track.clips.forEach((clip, index) => {
+          const row = document.createElement('div'); row.className = 'music-list-item';
+          const ref = clip.kind === 'melody' ? musicProject.melodies.find(m => m.id === clip.ref) : musicProject.patterns.find(p => p.id === clip.ref);
+          const title = document.createElement('strong'); title.textContent = `${clip.kind}: ${ref?.name || clip.ref}`;
+          const meta = document.createElement('span'); meta.textContent = `beat ${clip.startBeat} · Δ ${clip.delta} · ×${clip.repeat}`;
+          const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Remove'; remove.addEventListener('click', () => { track.clips.splice(index, 1); renderMusicEditor(); });
+          row.append(title, meta, remove); calls.append(row);
+        });
+        if (!track.clips.length) calls.textContent = 'No calls yet. Add a melody or pattern call below.';
+      }
+      updateClipReferences();
+    }
+    function updateClipReferences() {
+      const kind = $('#clipKind').value, select = $('#clipReference'); select.replaceChildren();
+      const items = kind === 'melody' ? musicProject.melodies : musicProject.patterns;
+      items.forEach(item => select.add(new Option(item.name, item.id)));
+    }
+    function replaceMusicProject(value) {
+      musicProject = music.validateProject(value);
+      project.music = musicProject;
+      thisApp.project = project;
+      selectedMelodyId = musicProject.melodies[0]?.id || '';
+      selectedPatternId = musicProject.patterns[0]?.id || '';
+      selectedMusicTrackId = musicProject.tracks[0]?.id || '';
+      renderMusicEditor();
+    }
+    document.querySelectorAll('[data-music-tab]').forEach(button => button.addEventListener('click', () => {
+      commitMusicFields();
+      document.querySelectorAll('[data-music-tab]').forEach(item => item.setAttribute('aria-selected', String(item === button)));
+      for (const panel of ['melodies', 'patterns', 'tracks']) $(`#${panel}Pane`).hidden = panel !== button.dataset.musicTab;
+      renderMusicEditor();
+    }));
+    $('#openMusicEditor').addEventListener('click', () => { renderMusicEditor(); musicDialog.showModal(); });
+    $('#closeMusicEditor').addEventListener('click', () => musicDialog.close());
+    $('#melodySelect').addEventListener('change', () => { commitMusicFields(); selectedMelodyId = $('#melodySelect').value; renderMusicEditor(); });
+    $('#patternSelect').addEventListener('change', () => { commitMusicFields(); selectedPatternId = $('#patternSelect').value; renderMusicEditor(); });
+    $('#musicTrack').addEventListener('change', () => { commitMusicFields(); selectedMusicTrackId = $('#musicTrack').value; renderMusicEditor(); });
+    $('#musicMml').addEventListener('input', () => { if (selectedMelody()) selectedMelody().source = $('#musicMml').value; });
+    $('#melodyName').addEventListener('input', () => { if (selectedMelody()) selectedMelody().name = $('#melodyName').value; });
+    $('#patternName').addEventListener('input', () => { if (selectedPattern()) selectedPattern().name = $('#patternName').value; });
+    $('#musicTitle').addEventListener('input', () => { musicProject.title = $('#musicTitle').value; });
+    $('#musicTempo').addEventListener('change', () => { musicProject.bpm = Math.max(20, Math.min(300, Number($('#musicTempo').value) || 120)); });
+    $('#addMelody').addEventListener('click', () => {
+      commitMusicFields(); const melody = { id: musicId('melody'), name: `Melody ${musicProject.melodies.length + 1}`, source: `t${musicProject.bpm} o4 l8 c e g c5` };
+      musicProject.melodies.push(melody); selectedMelodyId = melody.id; renderMusicEditor(); musicStatus('Added reusable melody.');
+    });
+    $('#removeMelody').addEventListener('click', () => {
+      commitMusicFields(); const melody = selectedMelody(); if (!melody || musicProject.melodies.length <= 1) return;
+      if (musicProject.patterns.some(p => p.steps.some(s => s.melodyId === melody.id)) || musicProject.tracks.some(t => t.type === 'sequence' && t.clips.some(c => c.kind === 'melody' && c.ref === melody.id))) return musicStatus('This melody is still called by a pattern or track. Remove those references first.');
+      musicProject.melodies = musicProject.melodies.filter(m => m.id !== melody.id); selectedMelodyId = musicProject.melodies[0].id; renderMusicEditor();
+    });
+    $('#addPattern').addEventListener('click', () => {
+      commitMusicFields(); const pattern = { id: musicId('pattern'), name: `Pattern ${musicProject.patterns.length + 1}`, steps: [] };
+      musicProject.patterns.push(pattern); selectedPatternId = pattern.id; renderMusicEditor(); musicStatus('Added pattern. Use Add melody step to reference shared melodies with transposition deltas.');
+    });
+    $('#removePattern').addEventListener('click', () => {
+      commitMusicFields(); const pattern = selectedPattern(); if (!pattern || musicProject.patterns.length <= 1) return;
+      if (musicProject.tracks.some(t => t.type === 'sequence' && t.clips.some(c => c.kind === 'pattern' && c.ref === pattern.id))) return musicStatus('This pattern is called by a track. Remove those calls first.');
+      musicProject.patterns = musicProject.patterns.filter(p => p.id !== pattern.id); selectedPatternId = musicProject.patterns[0].id; renderMusicEditor();
+    });
+    $('#addPatternStep').addEventListener('click', () => {
+      const pattern = selectedPattern(), melodyId = $('#patternMelodyChoice').value; if (!pattern || !melodyId) return musicStatus('Add a melody before adding pattern steps.');
+      pattern.steps.push({ melodyId, delta: Math.max(-48, Math.min(48, Number($('#patternDelta').value) || 0)), repeat: 1 }); renderMusicEditor();
+    });
+    $('#clipKind').addEventListener('change', updateClipReferences);
+    $('#addMusicTrack').addEventListener('click', () => {
+      commitMusicFields(); if (musicProject.tracks.length >= 64) return musicStatus('A music file can contain at most 64 tracks.');
+      const track = { type: 'sequence', id: musicId('track'), name: `Track ${musicProject.tracks.length + 1}`, clips: [] };
+      musicProject.tracks.push(track); selectedMusicTrackId = track.id; renderMusicEditor();
+    });
+    $('#removeMusicTrack').addEventListener('click', () => {
+      if (musicProject.tracks.length <= 1) return;
+      musicProject.tracks = musicProject.tracks.filter(track => track.id !== selectedMusicTrackId); selectedMusicTrackId = musicProject.tracks[0].id; renderMusicEditor();
+    });
+    $('#addTrackCall').addEventListener('click', () => {
+      const track = selectedMusicTrack(), ref = $('#clipReference').value;
+      if (!track || track.type !== 'sequence' || !ref) return musicStatus('Select a sequence track and a melody or pattern to call.');
+      track.clips.push({ kind: $('#clipKind').value, ref, startBeat: Math.max(0, Number($('#clipStart').value) || 0), delta: Math.max(-48, Math.min(48, Number($('#clipDelta').value) || 0)), repeat: Math.max(1, Math.min(64, Number($('#clipRepeat').value) || 1)) });
+      renderMusicEditor(); musicStatus('Added a reference call. Melody/pattern source remains stored once.');
+    });
+    $('#saveAbim').addEventListener('click', () => {
+      try { commitMusicFields(); const text = music.encodeAbim(musicProject); download(`${musicProject.title.replace(/[^a-z0-9_-]+/gi, '-') || 'music'}.abim`, text, 'application/x-abim+json'); musicStatus(`Saved ${musicProject.melodies.length} melody(s), ${musicProject.patterns.length} pattern(s), and ${musicProject.tracks.length} track(s) as ABIM.`); }
+      catch (error) { musicStatus(error.message); }
+    });
+    $('#loadMusicFile').addEventListener('click', () => $('#musicFile').click());
+    $('#musicFile').addEventListener('change', async event => {
+      const file = event.target.files[0]; event.target.value = ''; if (!file) return;
+      try {
+        commitMusicFields();
+        if (/\.abim$/i.test(file.name)) {
+          replaceMusicProject(music.decodeAbim(await file.text())); musicStatus(`Loaded ${musicProject.title} from ABIM: ${musicProject.melodies.length} melody(s), ${musicProject.patterns.length} pattern(s).`);
+        } else if (/\.(mid|midi)$/i.test(file.name) || /midi/i.test(file.type)) {
+          if (file.size > 16 * 1024 * 1024) throw new Error('MIDI file exceeds the 16 MiB import limit.');
+          const imported = music.importMidi(new Uint8Array(await file.arrayBuffer()));
+          imported.title = file.name.replace(/\.[^.]+$/, '').slice(0, 128) || 'Imported MIDI'; replaceMusicProject(imported); musicStatus(`Imported MIDI as ${musicProject.melodies.length} reusable melody(s) on ${musicProject.tracks.length} track(s).`);
+        } else {
+          const audioTrack = await music.decodeAudioFile(file);
+          if (musicProject.tracks.length >= 64) throw new Error('A music file can contain at most 64 tracks.');
+          audioTrack.id = musicId('audio'); audioTrack.startBeat = Math.max(0, Number($('#clipStart').value) || 0);
+          musicProject.tracks.push(audioTrack); selectedMusicTrackId = audioTrack.id; renderMusicEditor();
+          musicStatus(`Imported ${file.name} as an audio clip. It is retained in ABIM and mixed into MP3 exports; audio is not transcribed to notes.`);
+        }
+      } catch (error) { musicStatus(`Import failed: ${error.message}`); }
+    });
+    $('#exportMidi').addEventListener('click', () => {
+      try { commitMusicFields(); const bytes = music.exportMidi(musicProject); download(`${musicProject.title.replace(/[^a-z0-9_-]+/gi, '-') || 'music'}.mid`, bytes, 'audio/midi'); musicStatus('Exported Standard MIDI (.mid). Imported audio clips are not represented in MIDI.'); }
+      catch (error) { musicStatus(`MIDI export failed: ${error.message}`); }
+    });
+    $('#exportMp3').addEventListener('click', async () => {
+      const button = $('#exportMp3'); button.disabled = true;
+      try { commitMusicFields(); musicStatus('Rendering and encoding MP3…'); const blob = await music.exportMp3(musicProject); download(`${musicProject.title.replace(/[^a-z0-9_-]+/gi, '-') || 'music'}.mp3`, blob, 'audio/mpeg'); musicStatus('Exported MP3 audio.'); }
+      catch (error) { musicStatus(`MP3 export failed: ${error.message}`); }
+      finally { button.disabled = false; }
+    });
+    $('#playMusic').addEventListener('click', async () => {
+      try { commitMusicFields(); music.validateProject(musicProject); $('#playMusic').disabled = true; $('#stopMusic').disabled = false; musicPlayback = await music.play(musicProject, musicStatus); musicPlayback.done.finally(() => { musicPlayback = null; $('#playMusic').disabled = false; $('#stopMusic').disabled = true; }); }
+      catch (error) { $('#playMusic').disabled = false; $('#stopMusic').disabled = true; musicStatus(`Playback failed: ${error.message}`); }
+    });
+    $('#stopMusic').addEventListener('click', () => { if (musicPlayback) musicPlayback.stop(); musicPlayback = null; $('#playMusic').disabled = false; $('#stopMusic').disabled = true; });
+    musicDialog.addEventListener('close', () => { if (musicPlayback) { musicPlayback.stop(); musicPlayback = null; $('#playMusic').disabled = false; $('#stopMusic').disabled = true; } });
     $('#downloadBuild').addEventListener('click', () => {
       if (!pendingDownload) return;
       download(pendingDownload.filename, pendingDownload.bytes, 'application/zip');
@@ -1215,9 +1399,9 @@ class Abi1StudioApp {
         let reportedSeed = text;
         if (isEncoded) {
           throw new Error('This looks like a full project seed; use Import Seed to restore it exactly.');
-        } else if (/^[a-z0-9]{1,2048}$/i.test(text)) {
+        } else if (seedTools.isShortSeed(text)) {
           reportedSeed = text.toLowerCase();
-          nextProject = seedTools.generateProject(reportedSeed, model);
+          nextProject = seedTools.generateProject(reportedSeed, model, scriptGenerator);
         } else {
           reportedSeed = seedTools.deriveSeedFromPrompt(text);
           nextProject = seedTools.createFromPrompt(text, reportedSeed, model,

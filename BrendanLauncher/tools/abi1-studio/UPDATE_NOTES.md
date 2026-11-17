@@ -2,6 +2,11 @@
 
 ## Highlights
 
+- Added Music Studio with multi-track MML editing and Web Audio playback, `.abim` save/load, MIDI import/export, MP3/audio import, and mixed MP3 export via the bundled separately licensed lamejs encoder.
+
+- Procedural seeds now accept up to 65,536 `a-z0-9` characters and generate deterministic starter scripts, scenes, and ABIM soundtracks. Full-project seed export/import preserves the music graph and exact project content.
+- ABIM now stores reusable MML melodies once, patterns as melody references with semitone deltas/repeats, and arrangement tracks as melody/pattern calls. MIDI import/export, MP3 render, playback, ABIM save/load, and ABI app packaging operate on the shared arrangement without copying melody text into each track.
+
 - Scene-view navigation now includes right-button drag panning and arrow-key panning. Left drag on empty space still orbits, left drag on an object still moves it, and the wheel still zooms.
 - The editor view target is saved in project JSON. Older v1/v2 projects without a view target normalize to the origin and continue to open.
 - A reviewed, offline project-prompt workflow splits input in this order: newlines, periods, commas, then standalone `and`. Each resulting instruction is globally numbered and labeled with its last splitting delimiter and local part position.

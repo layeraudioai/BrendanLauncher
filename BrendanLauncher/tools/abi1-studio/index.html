@@ -15,7 +15,7 @@
       <button id="newProject">New</button><button id="openProject">Open</button>
       <button id="importProjectBtn">Import Project…</button>
       <button id="saveProject" class="quiet">Save Project</button>
-      <button id="previewApp">Preview</button><button id="exportApp" class="primary">Build ABI-1 App</button>
+      <button id="openMusicEditor" type="button">Music Editor</button><button id="previewApp">Preview</button><button id="exportApp" class="primary">Build ABI-1 App</button>
       <input id="projectFile" type="file" accept=".json,.hblproj" hidden>
       <input id="prefabFile" type="file" accept=".json,.hblprefab" hidden>
       <input id="importProjectFile" type="file" accept=".json,.tscn,.unity,.prefab,.gltf,.glb,.obj,.gd,.cs,.py,.txt" hidden>
@@ -38,10 +38,10 @@
       <section class="project-seeds" aria-labelledby="projectSeedsHeading">
         <strong id="projectSeedsHeading">Share or generate from a project seed</strong>
         <label for="projectSeedInput">Paste a full project seed, short seed, or project prompt</label>
-        <textarea id="projectSeedInput" rows="3" maxlength="60000000" spellcheck="false" placeholder="Short seed: abc123xyz · Prompt: Create a blue player and a red enemy · Paste a full encoded seed to import"></textarea>
+        <textarea id="projectSeedInput" rows="3" maxlength="80000000" spellcheck="false" placeholder="Short seed: abc123xyz · Prompt: Create a blue player and a red enemy · Paste a full encoded seed to import"></textarea>
         <div class="seed-actions"><button id="generateSeedProject" type="button">Generate Project</button><button id="importSeedProject" type="button">Import Seed</button><button id="openSeedFile" type="button">Open File</button></div>
         <div class="seed-actions"><button id="exportProjectSeed" type="button">Export Current Project Seed</button><button id="copyProjectSeed" type="button" disabled>Copy Seed</button></div>
-        <p id="projectSeedStatus" role="status" aria-live="polite">Full project seeds use only a-z and 0-9. Short seeds generate a deterministic starter; project prompts use the offline NLP generator with a repeatable derived seed.</p>
+        <p id="projectSeedStatus" role="status" aria-live="polite">Full project seeds use only a-z and 0-9. Short seeds (up to 65,536 chars) generate deterministic scenes, scripts, and an ABIM soundtrack with reusable melodies, patterns, and tracks; prompts use the offline NLP generator with a repeatable derived seed.</p>
         <input id="projectSeedFile" type="file" accept=".hblseed,.txt" hidden>
       </section>
       <section class="project-generator">
@@ -154,6 +154,7 @@
         </details>
       </section>
       <label>GLSL source<textarea id="scriptSource" rows="18" maxlength="8192" spellcheck="false" placeholder="// Runs once per frame for each attached object&#10;// position, rotation (radians), scale, color, dt, buttons, objectIndex"></textarea></label>
+      <div class="script-dialog-note">Right-hand sides support normal GLSL arithmetic plus ^/** power, % remainder, postfix factorial (integer 0–32), sqrt, root(degree, value), log/log10/ln, abs, and deterministic random()/random(min, max). Example: position.x += dt * (2 ^ 3); Standard GLSL for/while loops work too. Wrap initialization in once { position.x = 0.0; } to run it only once per object (up to 23 once blocks per object).</div>
       <div class="script-dialog-note">Edits apply to every object and prefab attachment that references this script.</div>
       <p id="scriptError" class="script-error" role="alert"></p>
       <div class="script-dialog-actions"><button type="button" id="deleteScript" class="danger">Delete Script</button><span></span><button value="cancel">Cancel</button><button type="button" id="saveScript" class="primary">Save Script</button></div>
@@ -169,6 +170,43 @@
       <div class="script-dialog-actions"><button type="button" id="deleteClass" class="danger">Delete File</button><button type="button" id="downloadClass">Download .glsl</button><span></span><button value="cancel">Cancel</button><button type="button" id="saveClass" class="primary">Save File</button></div>
     </form>
   </dialog>
+  <dialog id="musicDialog" class="music-dialog">
+    <div class="music-dialog-header"><div><h2>Music Studio</h2><p>Compose with MML, preview, and exchange ABIM, Standard MIDI, and MP3 files.</p></div><button id="closeMusicEditor" type="button" aria-label="Close music editor">Close</button></div>
+    <div class="music-modal-content">
+    <div class="music-toolbar">
+      <label>Song title<input id="musicTitle" maxlength="128" value="Untitled Music"></label>
+      <label>Tempo<input id="musicTempo" type="number" min="20" max="300" value="120"></label>
+    </div>
+    <nav class="music-tabs" aria-label="Music editor panels">
+      <button type="button" data-music-tab="melodies" aria-selected="true">Melodies</button><button type="button" data-music-tab="patterns" aria-selected="false">Patterns</button><button type="button" data-music-tab="tracks" aria-selected="false">Tracks / arrangement</button>
+    </nav>
+    <section class="music-pane" id="melodiesPane">
+      <div class="music-toolbar"><label>Melody<select id="melodySelect"></select></label><button id="addMelody" type="button">+ Melody</button><button id="removeMelody" type="button">Remove Melody</button><label>Melody name<input id="melodyName" maxlength="64"></label></div>
+      <label class="mml-label" for="musicMml">MML source<textarea id="musicMml" rows="9" spellcheck="false" aria-label="MML melody source"></textarea></label>
+      <div class="music-help"><strong>MML quick reference</strong><code>t120</code> tempo, <code>o4</code> octave, <code>l8</code> default note length, <code>c d e f g a b</code> notes, <code>c+ / d-</code> accidentals, <code>r8</code> rest, <code>&gt; / &lt;</code> octave, dots extend notes, <code>[ceg]4</code> chord, <code>v80</code> velocity. Example: <code>t120 o4 l8 [ceg] g e c</code>.</div>
+    </section>
+    <section class="music-pane" id="patternsPane" hidden>
+      <div class="music-toolbar"><label>Pattern<select id="patternSelect"></select></label><button id="addPattern" type="button">+ Pattern</button><button id="removePattern" type="button">Remove Pattern</button><label>Pattern name<input id="patternName" maxlength="64"></label></div>
+      <div class="pattern-step-toolbar"><label>Use melody<select id="patternMelodyChoice"></select></label><label>Pitch delta (semitones)<input id="patternDelta" type="number" min="-48" max="48" value="0"></label><button id="addPatternStep" type="button">Add melody step</button></div>
+      <ol id="patternSteps" class="music-item-list" aria-label="Pattern melody steps"></ol>
+      <p class="music-help">Patterns call shared melody definitions in order. Pitch delta transposes a call without copying or editing its melody. Steps can repeat; melody source stays stored once.</p>
+    </section>
+    <section class="music-pane" id="tracksPane" hidden>
+      <div class="music-toolbar"><label>Track<select id="musicTrack"></select></label><button id="addMusicTrack" type="button">+ Track</button><button id="removeMusicTrack" type="button">Remove Track</button></div>
+      <div id="trackCalls"></div>
+      <div class="pattern-step-toolbar"><label>Call type<select id="clipKind"><option value="melody">Melody</option><option value="pattern">Pattern</option></select></label><label>Shared item<select id="clipReference"></select></label><label>Start beat<input id="clipStart" type="number" min="0" step="0.25" value="0"></label><label>Pitch delta<input id="clipDelta" type="number" min="-48" max="48" value="0"></label><label>Repeats<input id="clipRepeat" type="number" min="1" max="64" value="1"></label><button id="addTrackCall" type="button">Add call</button></div>
+      <p class="music-help">Each sequence track arranges references to shared melodies and patterns by start beat. No melody or pattern source is duplicated in tracks. Imported audio clips are represented as audio tracks.</p>
+    </section>
+    <div class="music-help"><strong>Project tempo</strong> Set BPM above; melodies may also use <code>tNNN</code> commands. Playback, MIDI, and MP3 render the same shared melody/pattern arrangement.</div>
+    <div class="music-actions">
+      <button id="playMusic" class="primary" type="button">▶ Play</button><button id="stopMusic" type="button" disabled>■ Stop</button><span></span>
+      <button id="saveAbim" type="button">Save .abim</button><button id="loadMusicFile" type="button">Import MIDI / MP3 / ABIM</button>
+      <button id="exportMidi" type="button">Export .mid</button><button id="exportMp3" type="button">Export .mp3</button>
+      <input id="musicFile" type="file" accept=".mid,.midi,.mp3,.wav,.m4a,.aac,.ogg,.opus,.flac,.abim,audio/midi,audio/mpeg" hidden>
+    </div>
+    <p id="musicStatus" role="status" aria-live="polite">Ready. Melodies are stored once; patterns and arrangement tracks reference them with deltas. MIDI imports become editable melody definitions; imported audio is stored in ABIM and mixed into MP3 exports, not transcribed into notes.</p>
+    </div>
+  </dialog>
   <dialog id="previewDialog" class="preview-dialog">
     <div class="preview-heading"><strong>PC Preview · ABI-1 renderer</strong><span>PC WebGL2 and audio may differ from NS2 hardware.</span></div>
     <canvas id="previewCanvas" width="960" height="540" aria-label="App runtime preview" tabindex="0"></canvas>
@@ -176,8 +214,11 @@
     <form method="dialog"><button class="primary">Stop Preview</button></form>
   </dialog>
   <script src="./scene-model.js"></script>
+  <script src="./lame.min.js"></script>
+  <script src="./music-engine.js"></script>
   <script src="./audio-decoder.js"></script>
   <script src="./glslang.js"></script>
+  <script src="./script-expression.js"></script>
   <script src="./abi1-build.js"></script>
   <script src="./abi1-preview.js"></script>
   <script src="./script-generator.js"></script>
