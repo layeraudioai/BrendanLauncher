@@ -16,6 +16,7 @@
       yaw: 0.68,
       pitch: 0.48,
       distance: 9,
+      target: [0, 0, 0],
       transform: { x: 0, y: 0, z: 9, rx: 0, ry: 0, rz: 0 }
     };
   }
@@ -105,6 +106,8 @@
         camera: {
           ...defaultSceneCamera(),
           ...(scene.camera || {}),
+          target: Array.isArray(scene.camera?.target) && scene.camera.target.length === 3
+            ? scene.camera.target.map(Number) : defaultSceneCamera().target,
           transform: { ...defaultSceneCamera().transform, ...(scene.camera?.transform || {}) }
         },
         objects: Array.isArray(scene.objects) ? scene.objects.map(object => ({
@@ -118,6 +121,8 @@
         camera: {
           ...defaultSceneCamera(),
           ...(value.camera || {}),
+          target: Array.isArray(value.camera?.target) && value.camera.target.length === 3
+            ? value.camera.target.map(Number) : defaultSceneCamera().target,
           transform: { ...defaultSceneCamera().transform, ...(value.camera?.transform || {}) }
         },
         objects: Array.isArray(value.objects) ? value.objects.map(object => ({
@@ -173,6 +178,8 @@
       if (typeof scene.name !== 'string' || !scene.name.trim() || scene.name.length > 64)
         throw new Error('Scene names must be between 1 and 64 characters');
       if (!scene.camera || ![scene.camera.yaw, scene.camera.pitch, scene.camera.distance].every(Number.isFinite) ||
+          !Array.isArray(scene.camera.target) || scene.camera.target.length !== 3 ||
+          scene.camera.target.some(value => !Number.isFinite(value)) ||
           !scene.camera.transform || Object.values(scene.camera.transform).some(value => !Number.isFinite(value)))
         throw new Error(`Scene ${scene.name} has an invalid camera`);
       if (!Array.isArray(scene.objects) || scene.objects.length > 48)

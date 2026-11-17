@@ -5,11 +5,37 @@ BrendanLauncher. Open `index.html` in a current desktop browser; no local server
 Node.js, network connection, or package installation is required. The GLSL
 compiler is bundled as WebAssembly and runs in the browser.
 
+## Project seeds
+
+The **Share or generate from a project seed** panel supports two related workflows:
+
+- Enter a short 1–2048 character seed using only letters or digits to create a deterministic starter project. The same seed reproduces the same scene and object layout.
+- Enter a natural-language project prompt to derive a stable `prompt...` seed and run it through the offline project prompt generator. Supported object and behavior instructions are generated; unsupported instructions remain notes rather than being guessed.
+- Export the current project as a compact `.hblseed` string/file. It uses only the case-insensitive base-36 alphabet `a-z0-9` and includes a versioned project payload (deflate-compressed when smaller and supported) with an integrity checksum, so importing the seed restores the project data and detects accidental corruption.
+- Import a full seed by pasting it or opening an `.hblseed` / text file. Invalid or truncated seeds are rejected before replacing the open project.
+
+A full project seed is a sharing/serialization format, not a small procedural seed: its length depends on project size. Seed payloads are capped at 32 MiB decoded size.
+
 ## Editing
 
 - Drag Mesh, Sprite, or Audio from the palette into the viewport. Drag an
   existing hierarchy row onto another row to parent it; drop it in the
   hierarchy background to make it a root object.
+- In the scene viewport, drag empty space with the left mouse button to orbit,
+  right-click and drag to pan the vector space, and use the arrow keys to pan
+  when the viewport has focus. Wheel zoom and object dragging are unchanged.
+- Use **Refine the project with a prompt** to split instructions in order by
+  newlines, periods, commas, then “and”. The default mode applies changes to a
+  copy of the current project and preserves existing content unless a reviewed
+  instruction explicitly adds, edits, or deletes it. The optional new-project
+  mode remains available. Each piece is editable, removable, addable, and
+  reorderable by drag/drop or accessible up/down controls; reordering reruns
+  analysis so target references follow the new order. Review the summary before
+  confirming. The constrained offline parser supports common mesh/sprite/audio
+  additions, named colors, basic transforms/renaming/deletion, and behaviors
+  handled by the reusable-script generator. Unsupported or unmatched steps
+  remain visible instead of being silently guessed. The operation applies to
+  the currently selected scene and selected object context.
 - Object transforms are local to the selected object's parent. The preview
   composes parent translation, rotation, and scale.
 - Projects can contain up to 48 independent scenes, each with its own camera

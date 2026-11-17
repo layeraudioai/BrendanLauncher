@@ -1,0 +1,51 @@
+'use strict';
+const assert = require('node:assert/strict');
+const model = require('./scene-model.js');
+const seeds = require('./project-seeds.js');
+const generator = require('./project-generator.js');
+const scripts = require('./script-generator.js');
+
+(async () => {
+  const project = model.createProject();
+  project.app.name = 'Seed Round Trip';
+  const player = model.createObject('mesh', 'Player');
+  player.id = 'player-a';
+  project.scenes[0].objects.push(player);
+  const fullSeed = await seeds.encodeProject(project);
+  assert.match(fullSeed, /^[a-z0-9]+$/);
+  assert.equal(seeds.isProjectSeed(fullSeed), true);
+  assert.equal(seeds.isProjectSeed('pcr1234567'), false);
+  const restored = await seeds.decodeProject(fullSeed, model);
+  assert.equal(restored.app.name, project.app.name);
+  assert.equal(restored.scenes[0].objects[0].id, 'player-a');
+  assert.equal(restored.scenes[0].objects[0].name, 'Player');
+  assert.deepEqual(await seeds.decodeProject(fullSeed.toUpperCase(), model), restored);
+  await assert.rejects(() => seeds.decodeProject(fullSeed.slice(0, -1), model), /truncated|length/i);
+  const corrupt = `${fullSeed.slice(0, 10)}${fullSeed[10] === '0' ? '1' : '0'}${fullSeed.slice(11)}`;
+  await assert.rejects(() => seeds.decodeProject(corrupt, model), /checksum/i);
+  await assert.rejects(() => seeds.decodeProject('notaprojectseed', model), /not an encoded/i);
+
+  const first = seeds.generateProject('abc123', model);
+  const second = seeds.generateProject('abc123', model);
+  assert.deepEqual(JSON.parse(JSON.stringify(first)), JSON.parse(JSON.stringify(second)));
+  assert.notDeepEqual(JSON.parse(JSON.stringify(first)), JSON.parse(JSON.stringify(seeds.generateProject('abc124', model))));
+  model.validateProject(first);
+  assert.throws(() => seeds.generateProject('bad seed!', model), /only a-z and 0-9/i);
+  assert.equal(seeds.generateProject('a'.repeat(2048), model).scenes[0].objects.length > 0, true);
+  assert.throws(() => seeds.generateProject('a'.repeat(2049), model), /1–2048 characters/i);
+
+  const prompt = 'Create a blue player cube and add a red enemy sphere';
+  assert.equal(seeds.deriveSeedFromPrompt(prompt), seeds.deriveSeedFromPrompt(prompt));
+  const promptProject = seeds.createFromPrompt(prompt, seeds.deriveSeedFromPrompt(prompt), model, generator, scripts);
+  assert.equal(promptProject.scenes[0].objects.length, 2);
+  assert.deepEqual(promptProject.scenes[0].objects.map(object => object.color), ['#4287ff', '#ff3b4f']);
+  const promptProject2 = seeds.createFromPrompt(prompt, seeds.deriveSeedFromPrompt(prompt), model, generator, scripts);
+  assert.deepEqual(JSON.parse(JSON.stringify(promptProject)), JSON.parse(JSON.stringify(promptProject2)));
+  model.validateProject(promptProject);
+  const behaviorPrompt = 'Create a player and move right at 2 units per second when pressing A';
+  const behaviorProject = seeds.createFromPrompt(behaviorPrompt, seeds.deriveSeedFromPrompt(behaviorPrompt), model, generator, scripts);
+  assert.equal(behaviorProject.scripts.length, 1);
+  assert.equal(behaviorProject.scenes[0].objects[0].scriptIds[0], behaviorProject.scripts[0].id);
+  model.validateProject(behaviorProject);
+  console.log('ABI-1 project seed tests passed');
+})().catch(error => { console.error(error); process.exitCode = 1; });

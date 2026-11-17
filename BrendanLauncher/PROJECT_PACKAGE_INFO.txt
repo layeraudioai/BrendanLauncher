@@ -1,0 +1,9 @@
+BrendanLauncher complete project source snapshot
+
+This archive contains the full BrendanLauncher project tree at package time, including current local ABI-1 Studio changes. Git metadata and transient Python caches are excluded. No application/source files have been intentionally omitted.
+
+ABI-1 Studio tests:
+  cd BrendanLauncher/tools/abi1-studio
+  node --test *.test.cjs
+
+The Studio works in a modern browser without Node. See tools/abi1-studio/README.md and tools/abi1-studio/UPDATE_NOTES.md for usage and update notes.

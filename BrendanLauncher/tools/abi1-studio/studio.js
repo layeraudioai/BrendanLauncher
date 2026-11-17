@@ -12,6 +12,7 @@ class Abi1StudioApp {
     const model = this.model;
     const builder = this.builder;
     const scriptGenerator = window.Abi1ScriptGenerator;
+    const projectGenerator = window.Abi1ProjectGenerator;
     const $ = selector => document.querySelector(selector);
     const canvas = $('#sceneCanvas');
     const context = canvas.getContext('2d');
@@ -594,7 +595,205 @@ class Abi1StudioApp {
       }
     });
 
+    let reviewedProjectPlan = null;
+    let promptContextProject = null;
+    let promptSceneId = null;
+    let promptSelectedId = null;
+    let draggingPlanIndex = null;
+
+    function promptMode() { return $('#projectPromptMode').value; }
+
+    function refreshPlanAnalysis() {
+      if (!reviewedProjectPlan) return;
+      const analysis = projectGenerator.analyzePieces(reviewedProjectPlan, scriptGenerator, model,
+        promptContextProject, promptSceneId, promptSelectedId);
+      analysis.forEach((step, index) => {
+        const current = reviewedProjectPlan[index];
+        for (const key of Object.keys(current)) delete current[key];
+        Object.assign(current, step);
+      });
+    }
+
+    function updatePlanControls() {
+      const hasSteps = Boolean(reviewedProjectPlan?.length);
+      $('#addProjectStep').disabled = !hasSteps;
+      $('#acceptProjectPlan').disabled = !hasSteps || reviewedProjectPlan.some(step => !step.text.trim());
+      $('#acceptProjectPlan').textContent = promptMode() === 'new'
+        ? 'Create new project from reviewed steps' : 'Apply reviewed changes to current project';
+    }
+
+    function renderProjectPlan(focusIndex = -1) {
+      const list = $('#projectPlan');
+      list.replaceChildren();
+      if (!reviewedProjectPlan) { updatePlanControls(); return; }
+      reviewedProjectPlan.forEach((step, index) => {
+        const item = document.createElement('li');
+        item.className = 'project-plan-item';
+        item.draggable = true;
+        item.dataset.index = String(index);
+        const row = document.createElement('div');
+        row.className = 'project-plan-heading';
+        const heading = document.createElement('strong');
+        heading.className = `plan-${step.type}`;
+        const splitLabel = step.delimiter === 'prompt' ? 'prompt' :
+          `${step.delimiter} ${step.part}/${step.partCount}`;
+        heading.textContent = `${step.order}. [${splitLabel}] ${step.summary}`;
+        const actions = document.createElement('div');
+        actions.className = 'project-plan-actions';
+        const button = (label, action, title, disabled = false) => {
+          const control = document.createElement('button');
+          control.type = 'button';
+          control.textContent = label;
+          control.title = title;
+          control.setAttribute('aria-label', `${title}, step ${index + 1}`);
+          control.dataset.planAction = action;
+          control.disabled = disabled;
+          return control;
+        };
+        actions.append(button('↑', 'up', 'Move step up', index === 0),
+          button('↓', 'down', 'Move step down', index === reviewedProjectPlan.length - 1),
+          button('×', 'remove', 'Remove step'));
+        row.append(heading, actions);
+        const editor = document.createElement('textarea');
+        editor.rows = 2;
+        editor.maxLength = 6000;
+        editor.value = step.text;
+        editor.setAttribute('aria-label', `Edit instruction ${index + 1}`);
+        editor.title = 'Edit only this instruction; it will not be split again';
+        editor.addEventListener('input', () => {
+          step.text = editor.value;
+          refreshPlanAnalysis();
+          heading.textContent = `${step.order}. [${splitLabel}] ${step.summary}`;
+          heading.className = `plan-${step.type}`;
+          updatePlanControls();
+        });
+        item.append(row, editor);
+        item.addEventListener('dragstart', event => {
+          if (event.target.closest('textarea,button')) { event.preventDefault(); return; }
+          draggingPlanIndex = index;
+          item.classList.add('dragging');
+          event.dataTransfer.effectAllowed = 'move';
+          event.dataTransfer.setData('text/plain', String(index));
+        });
+        item.addEventListener('dragend', () => {
+          draggingPlanIndex = null;
+          item.classList.remove('dragging');
+          list.querySelectorAll('.drag-target').forEach(node => node.classList.remove('drag-target'));
+        });
+        item.addEventListener('dragover', event => { event.preventDefault(); item.classList.add('drag-target'); });
+        item.addEventListener('dragleave', () => item.classList.remove('drag-target'));
+        item.addEventListener('drop', event => {
+          event.preventDefault();
+          item.classList.remove('drag-target');
+          const from = draggingPlanIndex ?? Number(event.dataTransfer.getData('text/plain'));
+          movePlanStep(from, index);
+        });
+        list.append(item);
+      });
+      updatePlanControls();
+      if (focusIndex >= 0) list.querySelector(`li[data-index="${focusIndex}"] textarea`)?.focus();
+    }
+
+    function movePlanStep(from, to) {
+      if (!reviewedProjectPlan || !Number.isInteger(from) || !Number.isInteger(to) ||
+          from < 0 || to < 0 || from >= reviewedProjectPlan.length || to >= reviewedProjectPlan.length || from === to) return;
+      const [step] = reviewedProjectPlan.splice(from, 1);
+      reviewedProjectPlan.splice(to, 0, step);
+      refreshPlanAnalysis();
+      renderProjectPlan(to);
+    }
+
+    $('#projectPlan').addEventListener('click', event => {
+      const control = event.target.closest('button[data-plan-action]');
+      if (!control || !reviewedProjectPlan) return;
+      const item = control.closest('.project-plan-item');
+      const index = Number(item.dataset.index);
+      const action = control.dataset.planAction;
+      if (action === 'up') movePlanStep(index, index - 1);
+      else if (action === 'down') movePlanStep(index, index + 1);
+      else if (action === 'remove') {
+        reviewedProjectPlan.splice(index, 1);
+        refreshPlanAnalysis();
+        renderProjectPlan(Math.min(index, reviewedProjectPlan.length - 1));
+      }
+    });
+
+    $('#projectPrompt').addEventListener('input', () => {
+      reviewedProjectPlan = null;
+      $('#projectPlan').replaceChildren();
+      updatePlanControls();
+    });
+    $('#projectPromptMode').addEventListener('change', () => {
+      reviewedProjectPlan = null;
+      $('#projectPlan').replaceChildren();
+      updatePlanControls();
+    });
+    $('#reviewProjectPrompt').addEventListener('click', () => {
+      try {
+        if (!projectGenerator) throw new Error('The offline project generator did not load.');
+        const isNew = promptMode() === 'new';
+        promptContextProject = isNew ? model.createProject() : project;
+        promptSceneId = isNew ? promptContextProject.startupSceneId : activeSceneId;
+        promptSelectedId = isNew ? null : selectedId;
+        reviewedProjectPlan = projectGenerator.createPlan($('#projectPrompt').value, scriptGenerator,
+          model, promptContextProject, promptSceneId, promptSelectedId);
+        if (!reviewedProjectPlan.length) throw new Error('Enter a prompt with at least one instruction.');
+        renderProjectPlan();
+        setStatus(`Reviewed ${reviewedProjectPlan.length} editable prompt steps`);
+      } catch (error) {
+        reviewedProjectPlan = null;
+        $('#projectPlan').replaceChildren();
+        const item = document.createElement('li');
+        item.className = 'project-plan-empty';
+        item.textContent = error.message;
+        $('#projectPlan').append(item);
+        updatePlanControls();
+      }
+    });
+    $('#addProjectStep').addEventListener('click', () => {
+      if (!reviewedProjectPlan) return;
+      reviewedProjectPlan.push({ text: '', delimiter: 'manual', part: 1, partCount: 1, path: [] });
+      refreshPlanAnalysis();
+      renderProjectPlan(reviewedProjectPlan.length - 1);
+    });
+    $('#acceptProjectPlan').addEventListener('click', () => {
+      if (!reviewedProjectPlan || reviewedProjectPlan.some(step => !step.text.trim())) return;
+      const isNew = promptMode() === 'new';
+      const summary = reviewedProjectPlan.map(step => `${step.order}. ${step.summary}`).join('\n');
+      const confirmation = isNew
+        ? `Create a new project from these reviewed steps? The current project will be replaced.\n\n${summary}`
+        : `Apply these reviewed refinements to the current project? Existing content will be preserved unless a step explicitly changes or deletes it.\n\n${summary}`;
+      if (!confirm(confirmation)) return;
+      try {
+        if (isNew) {
+          const generatedProject = projectGenerator.generateProject(reviewedProjectPlan, model, scriptGenerator, 'Generated Project');
+          setProject(generatedProject);
+          setStatus(`Created new project: ${allObjects().length} object(s), ${project.scripts.length} script(s)`);
+        } else {
+          const result = projectGenerator.applyPlan(reviewedProjectPlan, project, model, scriptGenerator,
+            { sceneId: promptSceneId, selectedId: promptSelectedId });
+          const oldSceneId = activeSceneId;
+          const nextSceneId = result.project.scenes.some(scene => scene.id === oldSceneId) ? oldSceneId : result.project.startupSceneId;
+          setProject(result.project);
+          activeSceneId = nextSceneId;
+          camera = activeScene().camera;
+          selectedId = result.selectedId && activeObjects().some(object => object.id === result.selectedId)
+            ? result.selectedId : (activeObjects()[0]?.id || null);
+          renderScenes(); renderHierarchy(); renderInspector(); scheduleRender();
+          const counts = result.counts;
+          setStatus(`Refined project · ${counts.created} added · ${counts.modified} edited · ${counts.removed} removed · ${counts.attached} script(s) attached · ${counts.skipped} note(s) skipped`);
+        }
+        $('#projectPrompt').value = '';
+        reviewedProjectPlan = null;
+        promptContextProject = null;
+        $('#projectPlan').replaceChildren();
+        updatePlanControls();
+      } catch (error) { message(`Could not apply prompt plan; no partial project changes were kept: ${error.message}`); }
+    });
+
     function projectPoint(point, width, height) {
+      const target = camera.target || [0, 0, 0];
+      point = point.map((value, index) => value - target[index]);
       const yaw = camera.yaw, pitch = camera.pitch;
       const cy = Math.cos(yaw), sy = Math.sin(yaw);
       const cp = Math.cos(pitch), sp = Math.sin(pitch);
@@ -747,10 +946,25 @@ class Abi1StudioApp {
       scheduleRender();
     }
 
+    function panCamera(dx, dy, width, height) {
+      const delta = model.cameraPlaneDelta(camera, dx, dy, camera.distance, width, height);
+      camera.target = camera.target || [0, 0, 0];
+      camera.target = camera.target.map((value, index) => value - delta[index]);
+      activeScene().camera = camera;
+      scheduleRender();
+    }
+
+    canvas.addEventListener('contextmenu', event => event.preventDefault());
     canvas.addEventListener('pointerdown', event => {
+      canvas.focus();
       canvas.setPointerCapture(event.pointerId);
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left, y = event.clientY - rect.top;
+      if (event.button === 2) {
+        pointerAction = { mode: 'pan', x, y };
+        event.preventDefault();
+        return;
+      }
       const worlds = model.worldTransforms(project);
       let hit = null, nearest = 24;
       for (const object of activeObjects()) {
@@ -768,7 +982,9 @@ class Abi1StudioApp {
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left, y = event.clientY - rect.top;
       const dx = x - pointerAction.x, dy = y - pointerAction.y;
-      if (pointerAction.mode === 'orbit') {
+      if (pointerAction.mode === 'pan') {
+        panCamera(dx, dy, rect.width, rect.height);
+      } else if (pointerAction.mode === 'orbit') {
         camera.yaw += dx * .008;
         camera.pitch = Math.max(-1.25, Math.min(1.25, camera.pitch + dy * .006));
       } else {
@@ -791,6 +1007,14 @@ class Abi1StudioApp {
     });
     canvas.addEventListener('pointerup', () => { pointerAction = null; });
     canvas.addEventListener('pointercancel', () => { pointerAction = null; });
+    canvas.addEventListener('keydown', event => {
+      const directions = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+      const direction = directions[event.key];
+      if (!direction) return;
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      panCamera(-direction[0] * 28, -direction[1] * 28, rect.width, rect.height);
+    });
     canvas.addEventListener('wheel', event => {
       camera.distance = Math.max(3, Math.min(30, camera.distance + Math.sign(event.deltaY) * .7));
       activeScene().camera = camera;
@@ -979,6 +1203,96 @@ class Abi1StudioApp {
         setStatus(`Project downloaded; browser storage unavailable: ${error.message}`);
       }
     });
+    const seedInput = $('#projectSeedInput');
+    const seedStatus = $('#projectSeedStatus');
+    const seedTools = window.Abi1ProjectSeeds;
+    $('#generateSeedProject').addEventListener('click', () => {
+      try {
+        const text = seedInput.value.trim();
+        if (!text) throw new Error('Enter a short seed or a project prompt first.');
+        const isEncoded = seedTools.isProjectSeed(text);
+        let nextProject;
+        let reportedSeed = text;
+        if (isEncoded) {
+          throw new Error('This looks like a full project seed; use Import Seed to restore it exactly.');
+        } else if (/^[a-z0-9]{1,2048}$/i.test(text)) {
+          reportedSeed = text.toLowerCase();
+          nextProject = seedTools.generateProject(reportedSeed, model);
+        } else {
+          reportedSeed = seedTools.deriveSeedFromPrompt(text);
+          nextProject = seedTools.createFromPrompt(text, reportedSeed, model,
+            window.Abi1ProjectGenerator, scriptGenerator);
+          seedInput.value = reportedSeed;
+        }
+        if (!confirm(`Replace the open project with a deterministic project generated from seed ${reportedSeed}?`)) return;
+        setProject(nextProject);
+        seedStatus.textContent = `Generated project from seed ${reportedSeed}. Enter the same seed again to reproduce it.`;
+        setStatus(`Generated project from seed ${reportedSeed}`);
+      } catch (error) {
+        seedStatus.textContent = error.message;
+        message(`Could not generate project: ${error.message}`);
+      }
+    });
+    $('#importSeedProject').addEventListener('click', async () => {
+      try {
+        const text = seedInput.value.trim();
+        if (!text) throw new Error('Paste a full encoded project seed first.');
+        const restored = await seedTools.decodeProject(text, model);
+        if (!confirm(`Import “${restored.app.name}” from this project seed and replace the open project?`)) return;
+        setProject(restored);
+        seedStatus.textContent = `Imported ${restored.app.name} from project seed (${text.length.toLocaleString()} characters).`;
+        setStatus(`Imported project seed: ${restored.app.name}`);
+      } catch (error) {
+        seedStatus.textContent = error.message;
+        message(`Could not import project seed: ${error.message}`);
+      }
+    });
+    $('#exportProjectSeed').addEventListener('click', async () => {
+      const button = $('#exportProjectSeed');
+      button.disabled = true;
+      seedStatus.textContent = 'Compressing and encoding the current project…';
+      try {
+        syncProjectFields();
+        model.validateProject(project);
+        const seed = await seedTools.encodeProject(project);
+        seedInput.value = seed;
+        $('#copyProjectSeed').disabled = false;
+        download(`${project.app.id || 'project'}.hblseed`, seed, 'text/plain');
+        seedStatus.textContent = `Exported exact project seed: ${seed.length.toLocaleString()} characters. Copy/share the seed or keep the downloaded .hblseed file.`;
+        setStatus(`Exported project seed (${seed.length.toLocaleString()} characters)`);
+      } catch (error) {
+        seedStatus.textContent = error.message;
+        message(`Could not export project seed: ${error.message}`);
+      } finally { button.disabled = false; }
+    });
+    $('#copyProjectSeed').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(seedInput.value);
+        seedStatus.textContent = 'Full project seed copied to clipboard.';
+      } catch (_) {
+        seedInput.focus(); seedInput.select();
+        seedStatus.textContent = 'Clipboard access unavailable; the seed is selected so you can copy it manually.';
+      }
+    });
+    $('#openSeedFile').addEventListener('click', () => $('#projectSeedFile').click());
+    $('#projectSeedFile').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      event.target.value = '';
+      if (!file) return;
+      try {
+        const text = (await file.text()).trim();
+        seedInput.value = text;
+        const restored = await seedTools.decodeProject(text, model);
+        if (!confirm(`Import “${restored.app.name}” from ${file.name} and replace the open project?`)) return;
+        setProject(restored);
+        seedStatus.textContent = `Imported ${restored.app.name} from ${file.name}.`;
+        setStatus(`Imported project seed from ${file.name}`);
+      } catch (error) {
+        seedStatus.textContent = error.message;
+        message(`Could not read project seed: ${error.message}`);
+      }
+    });
+
     $('#openProject').addEventListener('click', () => $('#projectFile').click());
     $('#projectFile').addEventListener('change', async event => {
       const file = event.target.files[0];

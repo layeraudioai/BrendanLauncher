@@ -58,6 +58,15 @@ test('parent transforms compose position, rotation, and scale for descendants', 
   assert.deepEqual(world.scale, [2, 2, 2]);
 });
 
+test('editor camera pan target survives normalization and rejects invalid values', () => {
+  const project = model.createProject();
+  project.scenes[0].camera.target = [2, -1.5, 4];
+  const normalized = model.normalizeProject(JSON.parse(JSON.stringify(project)));
+  assert.deepEqual(normalized.scenes[0].camera.target, [2, -1.5, 4]);
+  normalized.scenes[0].camera.target[1] = Number.NaN;
+  assert.throws(() => model.validateProject(normalized), /invalid camera/i);
+});
+
 test('camera drag deltas follow yaw and pitch, then convert to parent-local coordinates', () => {
   const horizontal = model.cameraPlaneDelta({ yaw: Math.PI / 2, pitch: 0 },
     10, 0, 10, 100, 100);

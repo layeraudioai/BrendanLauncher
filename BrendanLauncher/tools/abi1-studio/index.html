@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" name="viewport" content="script-src 'self' 'unsafe-eval';">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval';">
   <title>ABI-1 Studio</title>
   <link rel="stylesheet" href="./studio.css">
 </head>
@@ -35,6 +35,30 @@
         <button draggable="true" data-create="sprite"><span class="palette-icon sprite"></span>Sprite</button>
         <button draggable="true" data-create="audio"><span class="palette-icon audio"></span>Audio</button>
       </div>
+      <section class="project-seeds" aria-labelledby="projectSeedsHeading">
+        <strong id="projectSeedsHeading">Share or generate from a project seed</strong>
+        <label for="projectSeedInput">Paste a full project seed, short seed, or project prompt</label>
+        <textarea id="projectSeedInput" rows="3" maxlength="60000000" spellcheck="false" placeholder="Short seed: abc123xyz · Prompt: Create a blue player and a red enemy · Paste a full encoded seed to import"></textarea>
+        <div class="seed-actions"><button id="generateSeedProject" type="button">Generate Project</button><button id="importSeedProject" type="button">Import Seed</button><button id="openSeedFile" type="button">Open File</button></div>
+        <div class="seed-actions"><button id="exportProjectSeed" type="button">Export Current Project Seed</button><button id="copyProjectSeed" type="button" disabled>Copy Seed</button></div>
+        <p id="projectSeedStatus" role="status" aria-live="polite">Full project seeds use only a-z and 0-9. Short seeds generate a deterministic starter; project prompts use the offline NLP generator with a repeatable derived seed.</p>
+        <input id="projectSeedFile" type="file" accept=".hblseed,.txt" hidden>
+      </section>
+      <section class="project-generator">
+        <strong>Refine the project with a prompt</strong>
+        <label class="prompt-mode-label" for="projectPromptMode">Apply prompt to
+          <select id="projectPromptMode">
+            <option value="refine" selected>Current project (preserve existing content)</option>
+            <option value="new">A new project</option>
+          </select>
+        </label>
+        <textarea id="projectPrompt" rows="3" maxlength="6000" aria-label="Project refinement prompt" placeholder="Change Player color to red, add a blue enemy sphere and move enemy left when pressing B"></textarea>
+        <button id="reviewProjectPrompt" type="button">Split &amp; review steps</button>
+        <div class="project-plan-toolbar"><span>Click a step to edit it; reorder with arrows or drag.</span><button id="addProjectStep" type="button" disabled>Add step</button></div>
+        <ol id="projectPlan" class="project-plan" aria-live="polite"></ol>
+        <button id="acceptProjectPlan" class="primary" type="button" disabled>Apply reviewed changes</button>
+        <small>Splits by newlines, periods, commas, then “and”. Add/edit/remove/reorder each piece before applying. Recognizes common objects, colors, direct property edits, deletes, and supported script actions. Unsupported steps stay visible; changes are validated and applied to a project copy before commit.</small>
+      </section>
       <div class="audio-import">
         <button id="importAudio" type="button">Import Audio…</button>
         <input id="audioFiles" type="file" accept=".mp3,.wav,.wave,.flac,.m4a,.aac,.ogg,.oga,.opus,audio/*" multiple hidden>
@@ -61,9 +85,9 @@
       <div class="drop-hint">Drag a type into the viewport. Drop PNG/JPG, OBJ, or audio files to add assets.</div>
     </aside>
     <section class="center-panel">
-      <div class="viewport-toolbar"><div><strong>Scene</strong><span id="sceneCount">0 objects</span></div><div class="viewport-help">Drag object: move on camera plane · Drag empty space: orbit · Wheel: zoom</div></div>
+      <div class="viewport-toolbar"><div><strong>Scene</strong><span id="sceneCount">0 objects</span></div><div class="viewport-help">Drag object: move · Drag empty space: orbit · Right-drag: pan · Arrows: pan · Wheel: zoom</div></div>
       <div id="viewport" class="viewport">
-        <canvas id="sceneCanvas" aria-label="3D scene view"></canvas>
+        <canvas id="sceneCanvas" aria-label="3D scene view. Use arrow keys to pan; right-click and drag to pan." tabindex="0"></canvas>
         <div class="axis-legend"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div>
         <div id="emptyState" class="empty-state">Drag an object here or use the object buttons.</div>
       </div>
@@ -157,7 +181,9 @@
   <script src="./abi1-build.js"></script>
   <script src="./abi1-preview.js"></script>
   <script src="./script-generator.js"></script>
+  <script src="./project-generator.js"></script>
   <script src="./project-importer.js"></script>
+  <script src="./project-seeds.js"></script>
   <script src="./studio.js"></script>
 </body>
 </html>

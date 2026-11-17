@@ -1,5 +1,7 @@
 BRENDANLAUNCHER
 -
+for media-machine place music in BrendanLauncher/apps/media-machine/content/ then run build.bat in BrendanLauncher/apps/media-machine/ without media-machine running on NS2, you do not need to reset the server, just close media-machine and leave BrendanLauncher on the NS2 running then run build.bat for media-machine then open media-machine on the NS2 again, you might need to try booting it from BrendanLauncher on the NS2 twice
+-
 GUIDE:
 -
 1st go into BrendanLauncher/ and double click build-aio.bat
