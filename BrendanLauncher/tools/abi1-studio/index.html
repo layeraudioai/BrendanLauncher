@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval';">
   <title>ABI-1 Studio</title>
-  <link rel="stylesheet" href="./studio.css">
+  <link rel="stylesheet" href="./studio.css?v=1.5.4">
 </head>
 <body>
   <header class="topbar">
@@ -15,7 +15,7 @@
       <button id="newProject">New</button><button id="openProject">Open</button>
       <button id="importProjectBtn">Import Project…</button>
       <button id="saveProject" class="quiet">Save Project</button>
-      <button id="openMusicEditor" type="button">Music Editor</button><button id="previewApp">Preview</button><button id="exportApp" class="primary">Build ABI-1 App</button>
+      <button id="openMusicEditor" type="button">Music Editor</button><button id="previewApp">Preview</button><button id="exportApp" class="primary">Build ABI-1 App</button><button id="updateCacheButton" type="button" title="Save your project, fetch fresh Studio files, clear this app's caches, and reload">Update Cache</button>
       <input id="projectFile" type="file" accept=".json,.hblproj" hidden>
       <input id="prefabFile" type="file" accept=".json,.hblprefab" hidden>
       <input id="importProjectFile" type="file" accept=".json,.tscn,.unity,.prefab,.gltf,.glb,.obj,.gd,.cs,.py,.txt" hidden>
@@ -213,18 +213,18 @@
     <p class="preview-input-help">Keyboard: Space=A · X=B · Z=X · C=Y · arrows=D-pad · Enter=Plus · Esc=Minus. A standard gamepad is also supported.</p>
     <form method="dialog"><button class="primary">Stop Preview</button></form>
   </dialog>
-  <script src="./scene-model.js"></script>
-  <script src="./lame.min.js"></script>
-  <script src="./music-engine.js"></script>
-  <script src="./audio-decoder.js"></script>
-  <script src="./glslang.js"></script>
-  <script src="./script-expression.js"></script>
-  <script src="./abi1-build.js"></script>
-  <script src="./abi1-preview.js"></script>
-  <script src="./script-generator.js"></script>
-  <script src="./project-generator.js"></script>
-  <script src="./project-importer.js"></script>
-  <script src="./project-seeds.js"></script>
-  <script src="./studio.js"></script>
+  <script src="./scene-model.js?v=1.5.4"></script>
+  <script src="./lame.min.js?v=1.5.4"></script>
+  <script src="./music-engine.js?v=1.5.4"></script>
+  <script src="./audio-decoder.js?v=1.5.4"></script>
+  <script src="./glslang.js?v=1.5.4"></script>
+  <script src="./script-expression.js?v=1.5.4"></script>
+  <script src="./abi1-build.js?v=1.5.4"></script>
+  <script src="./abi1-preview.js?v=1.5.4"></script>
+  <script src="./script-generator.js?v=1.5.4"></script>
+  <script src="./project-generator.js?v=1.5.4"></script>
+  <script src="./project-importer.js?v=1.5.4"></script>
+  <script src="./project-seeds.js?v=1.5.4"></script>
+  <script src="./studio.js?v=1.5.4"></script>
 </body>
 </html>

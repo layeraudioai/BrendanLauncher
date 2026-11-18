@@ -100,7 +100,7 @@ assert.equal(newProject.scenes[0].objects.length, 1);
 assert.equal(newProject.scenes[0].objects[0].color, '#4287ff');
 const combinedInstruction = generator.createPlan('make a player move right at 2 units per second', scriptGenerator, model);
 assert.equal(combinedInstruction[0].type, 'object');
-assert.ok(combinedInstruction[0].script.source.includes('position.x += dt * 2;'));
+assert.ok(combinedInstruction[0].script.source.includes('position.x += dt * 2.0;'));
 const defaultMovement = scriptGenerator.generateScript('Move right');
 assert.ok(defaultMovement.source.includes('position.x += dt;'));
 assert.ok(!defaultMovement.source.includes('dt * 1'));

@@ -61,7 +61,8 @@
   }
 
   function numberText(value) {
-    return Number(value.toFixed(6)).toString();
+    const text = Number(value.toFixed(6)).toString();
+    return /[.eE]/.test(text) ? text : `${text}.0`;
   }
 
   function ratePerSecond(text, fallback) {

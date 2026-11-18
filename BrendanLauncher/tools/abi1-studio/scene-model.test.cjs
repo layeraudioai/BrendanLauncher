@@ -293,7 +293,7 @@ test('offline prompt generator creates supported individual GLSL behaviors', () 
   assert.match(rotation.source, /rotation\.z \+= dt \* -3\.141593/);
 
   const color = generateScript('Set color to #FF0000 when pressing the A button');
-  assert.match(color.source, /color\.rgb = vec3\(1, 0, 0\)/);
+  assert.match(color.source, /color\.rgb = vec3\(1\.0, 0\.0, 0\.0\)/);
   assert.match(color.source, /buttons & HB_A/);
 
   const sound = generateScript('Play sound event 3 when pressing A');
@@ -311,12 +311,12 @@ test('offline prompt generator creates supported individual GLSL behaviors', () 
   const randomColor = generateScript('Set color to a random color');
   assert.match(randomColor.source, /color\.rgb = hbRandomColor\(objectIndex\)/);
   const randomPosition = generateScript('Set position x to a random number between -2 and 2');
-  assert.match(randomPosition.source, /position\.x = hbRandomRange\(-2, 2, objectIndex \+ 1u\)/);
+  assert.match(randomPosition.source, /position\.x = hbRandomRange\(-2\.0, 2\.0, objectIndex \+ 1u\)/);
   const randomScale = generateScript('Set scale to a random number between 1 and 3');
-  assert.match(randomScale.source, /scale = vec3\(hbRandomRange\(1, 3, objectIndex \+ 2u\)\)/);
+  assert.match(randomScale.source, /scale = vec3\(hbRandomRange\(1\.0, 3\.0, objectIndex \+ 2u\)\)/);
   const spawn = generateScript('Spawn a red sphere at (1, 2, 3)');
   assert.match(spawn.source, /hbSpawnOnce\(objectIndex, HB_SHAPE_SPHERE/);
-  assert.match(spawn.source, /vec3\(1, 2, 3\)/);
+  assert.match(spawn.source, /vec3\(1\.0, 2\.0, 3\.0\)/);
   const spawnOnPress = generateScript('Spawn a box when pressing A');
   assert.match(spawnOnPress.source, /hbSpawnObject\(HB_SHAPE_BOX/);
   assert.match(spawnOnPress.source, /buttons & HB_A/);
@@ -330,7 +330,7 @@ test('offline prompt generator creates supported individual GLSL behaviors', () 
   assert.match(attachedAudio.source, /hbPlayObjectAudio\(objectIndex\)/);
 
   const oscillate = generateScript('Oscillate on Y at 3 units per second');
-  assert.match(oscillate.source, /sin\(hbTime\(\) \* 3\)/);
+  assert.match(oscillate.source, /sin\(hbTime\(\) \* 3\.0\)/);
   assert.match(oscillate.source, /position\.y \+=/);
 
   const orbit = generateScript('Orbit around Y at 90 degrees per second');
@@ -522,7 +522,7 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   project.scripts.push(movement);
   sprite.scriptIds.push(movement.id);
   const math = model.createScript('Math expressions');
-  math.source = ['position.x = abs(-2) /* power marker ^ is only a comment */ + sqrt(4) + log(2, 8) + log10(100.0) + root(3.0, -8.0) + 5.0! % 7.0 + random(-1.0, 1.0) + rand() + fact(5) + dt * 2.0^3.0;', 'for (int i = 0; i < 3; i++) { position.z += float(i); }', 'int j = 0; while (j < 2) { position.z += 0.25; j++; }', 'once { position.y = 1.0; once { position.z = 0.0; } }'].join(String.fromCharCode(10));
+  math.source = ['position.x = abs(-2) /* power marker ^ is only a comment */ + sqrt(4) + log(2, 8) + log10(100.0) + root(3.0, -8.0) + 5.0! % 7.0 + random(-1.0, 1.0) + rand() + fact(5) + dt * 2.0^3.0;', 'for (int i = 0; i < 3; i++) { position.z += float(i); }', 'int j = 0; while (j < 2) { position.z += 0.25; j++; }', 'position.y += dt * 2;', 'once { position.y = 1.0; once { position.z = 0.0; } }'].join(String.fromCharCode(10));
   project.scripts.push(math);
   sprite.scriptIds.push(math.id);
   const compiledSource = builder.shaderSources(project).compute;

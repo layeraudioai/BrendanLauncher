@@ -2,6 +2,10 @@
 
 ## Highlights
 
+- Added an **Update Cache** toolbar button that saves the current project locally, fetches the page and its CSS/JavaScript with a unique `?i=` URL, clears this app's Cache Storage entries/service-worker registration, and automatically reloads the page at that same unique URL. CSS and JavaScript URLs are versioned per release as an additional stale-cache safeguard. It preserves the project and prefab local storage instead of requiring a full browser site-data reset.
+
+- Fixed PC Preview script shader generation: `once` guards now have their helper and persistent per-object flags in transform feedback, and preview passes the updated `onceFlags` argument to `updateObject`. Generated numeric constants now use GLSL float literals, preventing float/int operator overload failures. Script expression handling also covers nested `once`, comments, scalar integer math arguments, and negative odd-degree roots.
+
 - Added Music Studio with multi-track MML editing and Web Audio playback, `.abim` save/load, MIDI import/export, MP3/audio import, and mixed MP3 export via the bundled separately licensed lamejs encoder.
 
 - Procedural seeds now accept up to 65,536 `a-z0-9` characters and generate deterministic starter scripts, scenes, and ABIM soundtracks. Full-project seed export/import preserves the music graph and exact project content.

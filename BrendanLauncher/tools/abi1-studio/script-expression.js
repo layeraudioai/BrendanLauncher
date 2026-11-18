@@ -132,13 +132,13 @@
         const end = source.indexOf('\n', i + 2);
         const stop = end < 0 ? source.length : end;
         comments.push(source.slice(i, stop));
-        code += ' ';
+        code += `\u0001${comments.length - 1}\u0002`;
         i = stop;
       } else if (source.startsWith('/*', i)) {
         const end = source.indexOf('*/', i + 2);
         if (end < 0) throw new Error('Unclosed comment in math expression');
         comments.push(source.slice(i, end + 2));
-        code += ' ';
+        code += `\u0001${comments.length - 1}\u0002`;
         i = end + 2;
       } else code += source[i++];
     }
@@ -149,9 +149,10 @@
     const { code, comments } = extractComments(source);
     const leading = code.match(/^\s*/)[0];
     const trailing = code.match(/\s*$/)[0];
-    const result = render(parseExpression(code.trim()));
+    const cleanCode = code.replace(/\u0001\d+\u0002/g, ' ');
+    const result = render(parseExpression(cleanCode.trim()));
     const preserved = `${leading}${result}${trailing}`;
-    return comments.length ? `${comments.join('\n')}\n${preserved}` : preserved;
+    return comments.length ? `${preserved} ${comments.join('\n')}` : preserved;
   }
 
   function wrapOnceBlocks(source, allocateOnceSlot) {
@@ -198,6 +199,48 @@
     return result;
   }
 
+  function isFloatAssignmentTarget(left) {
+    const value = left.trim();
+    if (/^(?:(?:const|highp|mediump|lowp)\s+)*(?:float|vec[234])\s+[A-Za-z_][A-Za-z0-9_]*$/.test(value)) return true;
+    return /(?:^|[^A-Za-z0-9_])(?:position|rotation|scale)(?:\.[xyzw]{1,4})?(?:\[[^\]]+\])?\s*[+\-*/%]?$/.test(value) ||
+      /(?:^|[^A-Za-z0-9_])color(?:\.(?:[rgba]{1,4}))?\s*[+\-*/%]?$/.test(value);
+  }
+
+  function floatIntegerLiterals(source) {
+    let result = '', i = 0, state = 'code';
+    while (i < source.length) {
+      const ch = source[i], next = source[i + 1];
+      if (state === 'line-comment') { result += ch; if (ch === '\n') state = 'code'; i++; continue; }
+      if (state === 'block-comment') {
+        result += ch;
+        if (ch === '*' && next === '/') { result += next; i += 2; state = 'code'; } else i++;
+        continue;
+      }
+      if (state === 'string' || state === 'char') {
+        result += ch;
+        if (ch === '\\' && next) { result += next; i += 2; continue; }
+        if ((state === 'string' && ch === '"') || (state === 'char' && ch === "'")) state = 'code';
+        i++; continue;
+      }
+      if (ch === '/' && next === '/') { result += '//'; i += 2; state = 'line-comment'; continue; }
+      if (ch === '/' && next === '*') { result += '/*'; i += 2; state = 'block-comment'; continue; }
+      if (ch === '"') { result += ch; i++; state = 'string'; continue; }
+      if (ch === "'") { result += ch; i++; state = 'char'; continue; }
+      if (/\d/.test(ch) || (ch === '.' && /\d/.test(next || ''))) {
+        const match = source.slice(i).match(/^(?:0[xX][0-9a-fA-F]+|(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)(?:[uU])?/)[0];
+        const previous = source[i - 1] || '';
+        const isInteger = !/^0[xX]/.test(match) && !/[.eEuU]/.test(match) &&
+          !/[A-Za-z0-9_.]/.test(previous) && !/[A-Za-z_]/.test(source[i + match.length] || '');
+        result += isInteger ? `${match}.0` : match;
+        i += match.length;
+        continue;
+      }
+      result += ch;
+      i++;
+    }
+    return result;
+  }
+
   function transpileSource(source, options = {}) {
     let localSlot = 0;
     const allocate = options.allocateOnceSlot || (() => localSlot++);
@@ -240,7 +283,13 @@
       }
       if (end < source.length) {
         const rhs = source.slice(start, end);
-        if (SPECIAL.test(rhs)) assignments.push({ start, end, value: transpileExpression(rhs) });
+        const boundary = Math.max(source.lastIndexOf(';', i - 1), source.lastIndexOf('{', i - 1), source.lastIndexOf('}', i - 1));
+        const left = extractComments(source.slice(boundary + 1, i)).code;
+        if (SPECIAL.test(extractComments(rhs).code.replace(/\u0001\d+\u0002/g, ' '))) assignments.push({ start, end, value: transpileExpression(rhs) });
+        else if (isFloatAssignmentTarget(left)) {
+          const normalized = floatIntegerLiterals(rhs);
+          if (normalized !== rhs) assignments.push({ start, end, value: normalized });
+        }
         i = end + 1;
       } else i = start;
     }

@@ -3,7 +3,9 @@
 ABI-1 Studio is a client-side scene editor and ABI-1 package builder for
 BrendanLauncher. Open `index.html` in a current desktop browser; no local server,
 Node.js, network connection, or package installation is required. The GLSL
-compiler is bundled as WebAssembly and runs in the browser.
+compiler is bundled as WebAssembly and runs in the browser. If an old deployed copy
+keeps loading, use **Update Cache** in the top toolbar: it saves the current project,
+fetches fresh Studio files with a unique `?i=` URL, and reloads without erasing your saved project or prefab data. Each release also versions its CSS and JavaScript URLs so stale copies cannot be reused across updates; the button then explicitly reloads the page at the fresh URL.
 
 ## Project seeds
 

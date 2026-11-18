@@ -20,7 +20,8 @@ test('math expression transpiler preserves ordinary arithmetic and maps extended
   assert.equal(math.transpileSource('position.x = log(2, 8);'), 'position.x = (log(float(8)) / log(float(2)));');
   assert.equal(math.transpileSource('position.x = sqrt(4);'), 'position.x = sqrt(float(4));');
   assert.equal(math.transpileSource('position.x = abs(-2);'), 'position.x = abs(float((-2)));');
-  assert.match(math.transpileSource('position.x = x /* ^ comment */ + 1;'), /\/\* \^ comment \*\/[\s\S]*\+ \(1\)/);
+  assert.equal(math.transpileSource('position.x = x /* ^ comment */ + 1;'), 'position.x = x /* ^ comment */ + 1.0;');
+  assert.equal(math.transpileSource('position.x = 1 /* no operators */;'), 'position.x = 1.0 /* no operators */;');
 });
 
 test('math expression transpiler supports logarithms, roots, absolute values, and random', () => {
@@ -58,5 +59,8 @@ test('source compiler transforms extended syntax only in assignment right-hand s
   assert.match(result, /^\/\/ x = y \^ 2;/);
   assert.match(result, /position\.x =\s*\(\(abs\(float\(\(-2\)\)\)\) \+ \(pow\(float\(3\), float\(2\)\)\)\);/);
   assert.match(result, /if \(buttons == HB_A\) \{ position\.y \+= dt; \}/);
+  assert.equal(math.transpileSource('position.x += dt * 2;'), 'position.x += dt * 2.0;');
+  assert.equal(math.transpileSource('float velocity = dt * 2;'), 'float velocity = dt * 2.0;');
+  assert.equal(math.transpileSource('int index = 2;'), 'int index = 2;');
   assert.throws(() => math.transpileSource('position.x = random(1);'), /either no arguments or a minimum and maximum/);
 });

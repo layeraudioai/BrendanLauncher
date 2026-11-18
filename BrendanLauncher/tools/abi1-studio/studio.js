@@ -1387,6 +1387,74 @@ class Abi1StudioApp {
         setStatus(`Project downloaded; browser storage unavailable: ${error.message}`);
       }
     });
+    $('#updateCacheButton').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      setStatus('Saving your project and refreshing Studio files…');
+      try {
+        syncProjectFields();
+        commitMusicFields();
+        project.music = music.validateProject(musicProject);
+        localStorage.setItem(projectKey, JSON.stringify(project));
+      } catch (error) {
+        button.disabled = false;
+        message(`Update cancelled so your current work is not lost. Save or export the project first. Details: ${error.message}`);
+        return;
+      }
+
+      const updateToken = Date.now().toString(36);
+      const appBase = new URL('.', window.location.href);
+      const withUpdateToken = value => {
+        const url = new URL(value, window.location.href);
+        url.searchParams.set('i', updateToken);
+        return url.href;
+      };
+      const belongsToStudio = value => {
+        try {
+          const url = new URL(value, window.location.href);
+          return url.origin === appBase.origin && url.pathname.startsWith(appBase.pathname);
+        } catch { return false; }
+      };
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.filter(registration => belongsToStudio(registration.scope))
+            .map(registration => registration.unregister()));
+        }
+        if ('caches' in window) {
+          for (const name of await caches.keys()) {
+            const cache = await caches.open(name);
+            const requests = await cache.keys();
+            await Promise.all(requests.filter(request => belongsToStudio(request.url))
+              .map(request => cache.delete(request)));
+          }
+        }
+        const freshFiles = new Set([withUpdateToken(new URL(window.location.pathname, window.location.origin).href)]);
+        document.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(element => {
+          const url = element.src || element.href;
+          if (belongsToStudio(url)) freshFiles.add(withUpdateToken(url));
+        });
+        await Promise.all([...freshFiles].map(async url => {
+          try {
+            const response = await fetch(url, {
+              cache: 'no-store', credentials: 'same-origin',
+              headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+            });
+            if (!response.ok) console.warn(`Could not refresh ${url}: HTTP ${response.status}`);
+            else await response.arrayBuffer();
+          } catch (error) {
+            console.warn(`Could not pre-refresh ${url}; reloading with a fresh URL instead:`, error.message);
+          }
+        }));
+      } catch (error) {
+        console.warn('App cache cleanup was partially unavailable; continuing with a cache-busted reload:', error.message);
+      }
+
+      const reloadUrl = new URL(window.location.href);
+      reloadUrl.searchParams.set('i', updateToken);
+      window.history.replaceState(null, '', reloadUrl.href);
+      window.location.reload();
+    });
     const seedInput = $('#projectSeedInput');
     const seedStatus = $('#projectSeedStatus');
     const seedTools = window.Abi1ProjectSeeds;
