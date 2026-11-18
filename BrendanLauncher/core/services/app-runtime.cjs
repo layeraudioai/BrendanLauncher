@@ -47,7 +47,7 @@ async function create({rpc,menu,directory,prepareApp=prepare,prepareMenu=async()
    const folder=path.join(directory,'loaded-apps',app.id+'-'+app.fingerprint.slice(0,16));await fs.mkdir(folder,{recursive:true});
    for(const [id,bytes]of Object.entries(app.effectData)){const out=path.join(folder,id+'.pcm');await fs.writeFile(out,bytes);effects[id]=out;}
   }
-  await atomic(path.join(directory,'game-audio-source.json'),{session:rpc.a.session,mapped,package:app?{id:app.id,fingerprint:app.fingerprint,effects}:null});
+  await atomic(path.join(directory,'game-audio-source.json'),{session:rpc.a.session,mapped,package:app?{id:app.id,fingerprint:app.fingerprint,effects,stream:app.stream||[]}:null});
  }
  async function rescan(state,upload=true){
   const selected=catalog?.apps[state.readUInt32LE(80)]?.id;

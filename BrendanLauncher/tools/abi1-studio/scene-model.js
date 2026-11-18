@@ -416,79 +416,6 @@
     return bytes;
   }
 
-  function parseObjGeometry(source, name = 'OBJ asset') {
-    const positions = [];
-    const triangles = [];
-    for (const [lineIndex, original] of String(source).split(/\r?\n/).entries()) {
-      const line = original.replace(/#.*/, '').trim();
-      if (!line) continue;
-      const fields = line.split(/\s+/);
-      if (fields[0] === 'v') {
-        if (fields.length < 4) throw new Error(`${name}: vertex on line ${lineIndex + 1} needs x, y, z`);
-        const vertex = fields.slice(1, 4).map(Number);
-        if (!vertex.every(Number.isFinite)) throw new Error(`${name}: invalid vertex on line ${lineIndex + 1}`);
-        positions.push(vertex);
-        if (positions.length > 65536) throw new Error(`${name}: exceeds the 65,536-vertex limit`);
-      } else if (fields[0] === 'f') {
-        if (fields.length < 4) throw new Error(`${name}: face on line ${lineIndex + 1} needs at least three vertices`);
-        const face = fields.slice(1).map(token => {
-          const raw = Number.parseInt(token.split('/')[0], 10);
-          const index = raw > 0 ? raw - 1 : positions.length + raw;
-          if (!Number.isInteger(raw) || raw === 0 || index < 0 || index >= positions.length)
-            throw new Error(`${name}: invalid vertex reference on line ${lineIndex + 1}`);
-          return index;
-        });
-        for (let i = 1; i + 1 < face.length; i++) {
-          triangles.push([...positions[face[0]], ...positions[face[i]], ...positions[face[i + 1]]]);
-          if (triangles.length > 16384) throw new Error(`${name}: exceeds the 16,384-triangle per-mesh limit`);
-        }
-      }
-    }
-    if (!triangles.length) throw new Error(`${name}: no triangular faces were found`);
-
-    const boundsFor = indices => {
-      const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
-      let center = [0, 0, 0];
-      for (const index of indices) {
-        const triangle = triangles[index];
-        for (let vertex = 0; vertex < 3; vertex++) for (let axis = 0; axis < 3; axis++) {
-          const value = triangle[vertex * 3 + axis];
-          min[axis] = Math.min(min[axis], value); max[axis] = Math.max(max[axis], value);
-          center[axis] += value / (indices.length * 3);
-        }
-      }
-      return { min, max, center };
-    };
-    const nodes = [];
-    const ordered = [];
-    function build(indices) {
-      const bounds = boundsFor(indices), nodeIndex = nodes.length;
-      const node = { ...bounds, left: 0, right: 0, first: 0, count: 0 };
-      nodes.push(node);
-      if (indices.length <= 4) {
-        node.first = ordered.length; node.count = indices.length; ordered.push(...indices);
-        return nodeIndex;
-      }
-      const extent = bounds.max.map((value, axis) => value - bounds.min[axis]);
-      const axis = extent.indexOf(Math.max(...extent));
-      indices.sort((a, b) => {
-        const ca = (triangles[a][axis] + triangles[a][axis + 3] + triangles[a][axis + 6]) / 3;
-        const cb = (triangles[b][axis] + triangles[b][axis + 3] + triangles[b][axis + 6]) / 3;
-        return ca - cb;
-      });
-      const middle = indices.length >> 1;
-      node.left = build(indices.slice(0, middle)); node.right = build(indices.slice(middle));
-      return nodeIndex;
-    }
-    build(triangles.map((_, index) => index));
-    const orderedTriangles = ordered.flatMap(index => triangles[index]);
-    let radius = 0;
-    for (const vertex of positions) radius = Math.max(radius, Math.hypot(...vertex));
-    return { triangles: orderedTriangles, nodes: nodes.map(node => [
-      ...node.min, ...node.max, node.left, node.right, node.first, node.count
-    ]), radius };
-  }
-
   function encodeSceneData(project, includeImageData) {
     validateProject(project);
     const visible = flattenObjects(project);
@@ -499,15 +426,9 @@
     const recordsEnd = (sceneHeadersEnd +
       project.scenes.length * OBJECT_CAPACITY * recordWords) * 4;
     const imageAssets = [];
-    const meshGeometries = new Map();
     for (const { object } of visible) {
       const asset = project.assets.find(item => item.id === object.assetId && item.kind === 'image');
       if (asset) imageAssets.push({ object, asset });
-      const mesh = project.assets.find(item => item.id === object.assetId && item.kind === 'mesh');
-      if (mesh && !meshGeometries.has(mesh.id)) {
-        const raw = decodeBase64(mesh.data);
-        meshGeometries.set(mesh.id, parseObjGeometry(new TextDecoder().decode(raw), mesh.name || 'OBJ asset'));
-      }
     }
     const decoded = imageAssets.map(({ object, asset }) => {
       if (!Number.isInteger(asset.width) || !Number.isInteger(asset.height) ||
@@ -519,13 +440,6 @@
     });
     let cursor = recordsEnd;
     let externalCursor = 0;
-    const meshOffsets = new Map();
-    for (const [assetId, geometry] of meshGeometries) {
-      if (cursor & 3) cursor = (cursor + 3) & ~3;
-      meshOffsets.set(assetId, cursor / 4);
-      cursor += (5 + geometry.nodes.length * 10 + geometry.triangles.length) * 4;
-    }
-    const meshCursor = cursor;
     const offsets = new Map();
     const uniqueImages = new Map();
     for (const item of decoded) {
@@ -540,23 +454,8 @@
     }
     if (cursor > 7 * 1024 * 1024) throw new Error('Scene assets exceed the ABI-1 7 MiB data budget');
 
-    const output = new Uint8Array(includeImageData ? cursor : Math.max(recordsEnd, meshCursor));
+    const output = new Uint8Array(includeImageData ? cursor : recordsEnd);
     const view = new DataView(output.buffer);
-    for (const [assetId, geometry] of meshGeometries) {
-      const header = meshOffsets.get(assetId), nodeBase = header + 5;
-      const triangleBase = nodeBase + geometry.nodes.length * 10;
-      view.setUint32(header * 4, nodeBase, true);
-      view.setUint32((header + 1) * 4, triangleBase, true);
-      view.setUint32((header + 2) * 4, geometry.nodes.length, true);
-      view.setUint32((header + 3) * 4, geometry.triangles.length / 9, true);
-      view.setFloat32((header + 4) * 4, geometry.radius, true);
-      geometry.nodes.forEach((node, nodeIndex) => node.forEach((value, field) => {
-        const at = (nodeBase + nodeIndex * 10 + field) * 4;
-        if (field < 6) view.setFloat32(at, value, true);
-        else view.setUint32(at, value, true);
-      }));
-      geometry.triangles.forEach((value, index) => view.setFloat32((triangleBase * 4) + index * 4, value, true));
-    }
     view.setUint32(0, visible.length, true);
     view.setUint32(4, recordWords, true);
     view.setUint32(8, project.scenes.length, true);
@@ -592,10 +491,7 @@
         const [rx, ry, rz] = eulerFromQuaternion(world.rotation).map(value => value * Math.PI / 180);
         const color = parseColor(object.color);
         const shape = object.kind === 'audio' ? 0 : object.kind === 'sprite' ? 3 :
-          project.assets.some(item => item.id === object.assetId && item.kind === 'mesh') ? 5 :
           object.primitive === 'sphere' ? 2 : object.primitive === 'plane' ? 4 : 1;
-        const meshAsset = project.assets.find(item => item.id === object.assetId && item.kind === 'mesh');
-        const meshGeometry = meshAsset && meshGeometries.get(meshAsset.id);
         const imageAsset = project.assets.find(item =>
           item.id === object.assetId && item.kind === 'image');
         const imageOffset = imageAsset
@@ -604,13 +500,10 @@
           shape, ...color,
           ...world.position, rx, ry, rz, ...world.scale,
           object.audioEventId || 0, index,
-          meshAsset ? meshOffsets.get(meshAsset.id) : imageOffset || 0,
-          meshGeometry ? meshGeometry.triangles.length / 9 : 0,
-          meshGeometry ? meshGeometry.radius : 0, scene.id
+          imageOffset || 0, 0, 0, scene.id
         ];
         values.forEach((value, field) => {
-          if (field === 18 && meshGeometry) view.setFloat32(at + field * 4, value, true);
-          else if (field === 0 || field >= 15)
+          if (field === 0 || field >= 15)
             view.setUint32(at + field * 4, value >>> 0, true);
           else view.setFloat32(at + field * 4, value, true);
         });
@@ -678,6 +571,6 @@
   Object.assign(Abi1SceneModel, { createProject, createScene, createScript, createObject,
     normalizeProject, validateProject, flattenObjects, worldTransforms, worldDeltaToParentLocal,
     cameraPlaneDelta, cloneSubtree, toSceneData, toScenePackageData,
-    toPreviewSceneData, parseObjGeometry, parseColor, OBJECT_CAPACITY, SCENE_DESCRIPTOR_WORDS });
+    toPreviewSceneData, parseColor, OBJECT_CAPACITY, SCENE_DESCRIPTOR_WORDS });
   return Abi1SceneModel;
 });

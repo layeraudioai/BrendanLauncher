@@ -6,10 +6,26 @@
     "Single source of truth: assets.py emits shaders/text.glsl from this file and",
     "host/layout.cjs loads the same numbers at run time."
   ],
-  "buffer": { "bytes": 8388608, "appDataOffset": 1024, "sdkReservedOffset": 8323072 },
-  "atlas": { "offset": 1024, "width": 1024, "height": 1024 },
-  "band": { "offset": 1049600, "width": 1024, "height": 576, "scale": 1.875 },
-  "header": { "offset": 1639424, "size": 1024 },
+  "buffer": {
+    "bytes": 8388608,
+    "appDataOffset": 1024,
+    "sdkReservedOffset": 8323072
+  },
+  "atlas": {
+    "offset": 1024,
+    "width": 1024,
+    "height": 1024
+  },
+  "band": {
+    "offset": 1049600,
+    "width": 1024,
+    "height": 576,
+    "scale": 1.875
+  },
+  "header": {
+    "offset": 1639424,
+    "size": 1024
+  },
   "video": {
     "offset": 2097152,
     "width": 1280,
@@ -20,10 +36,11 @@
   "audio": {
     "sampleRate": 48000,
     "channels": 2,
-    "chunkMs": 120,
+    "chunkMs": 20,
     "clickEffect": 1,
     "errorEffect": 2,
-    "ringFirstSlot": 3,
-    "ringSlots": 6
+    "ringFirstSlot": 9,
+    "ringSlots": 6,
+    "leadChunks": 3
   }
 }

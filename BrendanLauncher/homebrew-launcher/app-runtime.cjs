@@ -18,9 +18,19 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
   let effects={};
   if(app){
    const folder=path.join(directory,'loaded-apps',app.id+'-'+app.fingerprint.slice(0,16));await fs.mkdir(folder,{recursive:true});
-   for(const [id,file]of Object.entries(app.effects)){effects[id]=file;}
+   const stream=new Set(app.stream||[]);
+   for(const [id,file]of Object.entries(app.effects)){
+    if(stream.has(Number(id))){
+     // Stream chunks are rewritten while the app runs, so the service must read a
+     // runtime copy: overwriting the packaged asset would change the fingerprint
+     // and force a reload on the next scan.
+     const target=path.join(folder,id+'.pcm');
+     await fs.copyFile(file,target);
+     effects[id]=target;
+    }else effects[id]=file;
+   }
   }
-  await atomic(path.join(directory,'game-audio-source.json'),{session:rpc.a.session,mapped,package:app?{id:app.id,fingerprint:app.fingerprint,effects,music:app.musicFile}:null});
+  await atomic(path.join(directory,'game-audio-source.json'),{session:rpc.a.session,mapped,package:app?{id:app.id,fingerprint:app.fingerprint,effects,stream:app.stream||[]}:null});
  }
  async function rescan(state,upload=true){
   const selected=catalog?.apps[state.readUInt32LE(80)]?.id;

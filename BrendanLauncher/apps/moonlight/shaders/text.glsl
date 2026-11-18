@@ -12,7 +12,8 @@ const uint VIDEO_WIDTH = 1280u;
 const uint VIDEO_HEIGHT = 720u;
 const int VIDEO_SLOTS = 2;
 const int AUDIO_RING_SLOTS = 6;
-const int AUDIO_RING_FIRST = 3;
+const int AUDIO_RING_FIRST = 9;
+const uint AUDIO_LEAD = 3u;
 // Header word indices (bytes are word * 4 inside the header block).
 const uint H_MAGIC = 0u;
 const uint H_VERSION = 1u;

@@ -21,7 +21,6 @@ void setHdrWord(uint index, uint value) { c.atlas[HDR_WORD + index] = value; }
 // App-owned scratch, documented in PROTOCOL.md:
 //   game.x  selection index        game.y  last observed scene
 //   game.z  pending command        game.w  pending command sequence
-//   bag[0]  last audio sequence played
 //   bag[1]  frames spent in the current scene (used to debounce A)
 //   bag[2]  last buttons word (edge helper for chords)
 void post(uint command, uint arg0, uint arg1) {
@@ -71,17 +70,29 @@ void main() {
     }
     setHdrWord(H_SELECTED, c.game.x);
 
-    // The bridge publishes a new audio sequence when a PCM chunk lands in a
-    // manifest effect slot. Trigger the newest one; skipping is preferred to
-    // queueing, because every trigger flushes the host's audio queue.
-    uint audioSequence = hdrWord(H_AUDIO_SEQ);
-    if (streaming && audioSequence != 0u && audioSequence != c.bag[0]) {
-        uint slot = hdrWord(H_AUDIO_SLOT);
-        if (slot >= uint(AUDIO_RING_FIRST) && slot < uint(AUDIO_RING_FIRST + AUDIO_RING_SLOTS)) {
-            hbSound(slot);
-            setHdrWord(H_AUDIO_CONSUMED, audioSequence);
+    // Streamed audio. The launcher's ABI `events` word is the only audio channel
+    // an app has: hbSound(id) bumps events.x and names the effect, and the
+    // launcher's audio service appends that chunk to the *live* queue without
+    // stopping the device (a package declares the ring ids as one stream).
+    //
+    //   events.x  chunks posted by this app
+    //   events.z  chunks the launcher has queued  (published back by the service)
+    //   H_AUDIO_SEQ  chunks the host has written into the ring
+    //
+    // Posting only while the launcher is less than AUDIO_LEAD chunks behind keeps
+    // latency at ~60 ms and, more importantly, never outruns the queue: an
+    // outrun chunk used to be dropped or force a restart, which is what clicked.
+    //
+    // The host and this shader both index the ring as chunk % AUDIO_RING_SLOTS,
+    // so the effect id follows from the chunk counter alone.
+    if (streaming) {
+        uint produced = hdrWord(H_AUDIO_SEQ);
+        uint posted = c.events.x;
+        uint queued = c.events.z;
+        uint inFlight = posted > queued ? posted - queued : 0u;
+        if (produced > posted && inFlight < AUDIO_LEAD) {
+            hbSound(uint(AUDIO_RING_FIRST) + posted % uint(AUDIO_RING_SLOTS));
         }
-        c.bag[0] = audioSequence;
     }
 
     // While streaming the bridge reads the raw pad state itself (see

@@ -73,7 +73,17 @@ async function readApp(directory,{validate=true}={}){
   check(/^(?:[1-9]|[12][0-9]|3[01])$/.test(id),'Sound event ids must be 1..31');
   const item=await asset(root,name,131072);check(item.bytes.length%4===0,'Invalid stereo PCM frame alignment');effects[id]=item.file;effectData[id]=item.bytes;hash.update(id).update(item.bytes);
  }
- return {id:m.id,name:m.name.trim(),version:m.version,description:m.description,root,manifest:m,files,effects,effectData,fingerprint:hash.digest('hex')};
+ const stream=streamIds(m,effects);
+ return {id:m.id,name:m.name.trim(),version:m.version,description:m.description,root,manifest:m,files,effects,effectData,stream,fingerprint:hash.digest('hex')};
+}
+/** Effect ids a package declares as one continuous stream (audio.stream). */
+function streamIds(m,effects){
+ const declared=m.audio?.stream;if(declared===undefined)return [];
+ check(Array.isArray(declared),'audio.stream must be a list of sound event ids');
+ const ids=declared.map(Number);
+ for(const id of ids)check(effects[String(id)],'audio.stream must only name declared effects');
+ check(new Set(ids).size===ids.length,'audio.stream must not repeat an id');
+ return ids;
 }
 async function scan(root=ROOT){
  root=path.resolve(root);let entries;try{entries=await fs.readdir(root,{withFileTypes:true});}catch(error){if(error.code==='ENOENT')return {root,apps:[],rejected:[]};throw error;}
@@ -98,4 +108,4 @@ async function raster(catalog,directory,label='catalog'){
  await run('python3',[path.join(__dirname,'catalog-assets.py'),input,output],{timeout:15000,maxBuffer:65536});
  const bytes=await fs.readFile(output);check(bytes.length===MAX_APPS*SLOT_BYTES,'Invalid catalog raster');return bytes;
 }
-module.exports={ROOT,MAX_APPS,SLOT_BYTES,ATLAS_BYTES,asset,readApp,scan,summary,raster};
+module.exports={ROOT,MAX_APPS,SLOT_BYTES,ATLAS_BYTES,asset,readApp,scan,summary,raster,streamIds};

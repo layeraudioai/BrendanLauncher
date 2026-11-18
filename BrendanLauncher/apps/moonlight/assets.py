@@ -198,23 +198,29 @@ def pcm_tone(milliseconds: int, frequency: float, level: float) -> bytes:
     return bytes(out)
 
 
-def build_audio() -> list[str]:
-    """Effect 1/2 are UI sounds; the ring slots start silent and are replaced by
-    the PC host with decoded game audio at run time."""
+def build_audio() -> dict:
+    """Effect 1/2 are UI sounds. Effect ids from `ringFirstSlot` upwards are the
+    stream ring: short silent chunks that the PC host overwrites with decoded
+    game audio as it arrives. The launcher's audio service appends them to the
+    live queue without restarting the device, so consecutive chunks are gapless.
+    """
     chunk = AUDIO["sampleRate"] * AUDIO["channels"] * 2 * AUDIO["chunkMs"] // 1000
     click = pcm_tone(28, 880.0, 0.16)
     error = pcm_tone(120, 220.0, 0.20)
-    effects = []
-    for slot in range(1, AUDIO["ringFirstSlot"] + AUDIO["ringSlots"]):
-        name = f"audio_{slot}.pcm"
-        if slot == AUDIO["clickEffect"]:
-            payload = click
-        elif slot == AUDIO["errorEffect"]:
-            payload = error
-        else:
-            payload = bytes(chunk)
+    effects = {
+        AUDIO["clickEffect"]: ("audio_1.pcm", click),
+        AUDIO["errorEffect"]: ("audio_2.pcm", error),
+    }
+    for index in range(AUDIO["ringSlots"]):
+        slot = AUDIO["ringFirstSlot"] + index
+        effects[slot] = (f"audio_{slot}.pcm", bytes(chunk))
+    for slot, (name, payload) in effects.items():
         (ASSETS / name).write_bytes(payload)
-        effects.append(name)
+    # Drop effects from an older ring layout so the package never ships stale PCM.
+    keep = {name for name, _ in effects.values()}
+    for stale in ASSETS.glob("audio_*.pcm"):
+        if stale.name not in keep:
+            stale.unlink()
     return effects
 
 
@@ -241,6 +247,7 @@ def emit_glsl(labels: list[str]) -> None:
         f"const int VIDEO_SLOTS = {VIDEO['slots']};",
         f"const int AUDIO_RING_SLOTS = {AUDIO['ringSlots']};",
         f"const int AUDIO_RING_FIRST = {AUDIO['ringFirstSlot']};",
+        f"const uint AUDIO_LEAD = {AUDIO['leadChunks']}u;",
         "// Header word indices (bytes are word * 4 inside the header block).",
         "const uint H_MAGIC = 0u;",
         "const uint H_VERSION = 1u;",
@@ -294,7 +301,7 @@ def emit_glsl(labels: list[str]) -> None:
     (SHADERS / "text.glsl").write_text("\n".join(lines))
 
 
-def write_manifest(effects: list[str]) -> None:
+def write_manifest(effects: dict) -> None:
     """Rewrite only the audio section; the rest of app.json is hand-authored."""
     path = ROOT / "app.json"
     manifest = json.loads(path.read_text())
@@ -302,8 +309,14 @@ def write_manifest(effects: list[str]) -> None:
         "sampleRate": AUDIO["sampleRate"],
         "channels": AUDIO["channels"],
         "format": "s16le",
-        "effects": {str(index + 1): f"assets/{name}" for index, name in enumerate(effects)},
+        "effects": {str(slot): f"assets/{name}" for slot, (name, _) in sorted(effects.items())},
+        # Ids the launcher must treat as one continuous stream instead of
+        # retriggered one-shot effects.
+        "stream": sorted(effects),
     }
+    manifest["audio"]["stream"] = [
+        slot for slot in sorted(effects) if slot >= AUDIO["ringFirstSlot"]
+    ]
     path.write_text(json.dumps(manifest, indent=2) + "\n")
 
 

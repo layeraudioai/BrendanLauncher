@@ -25,6 +25,9 @@ echo "== host lifecycle =="
 echo "== read-only mac2jb SD-browser adapter =="
 "$NODE" tests/sd-browser.test.cjs
 
+echo "== gapless game audio (stream chunks, pacing, underruns, wiring) =="
+"$NODE" --test core/console/audio/game-audio.test.cjs tests/host/game-audio-stream.test.cjs
+
 echo "== system monitor source and safety contract =="
 "$NODE" tests/system-monitor.test.cjs
 

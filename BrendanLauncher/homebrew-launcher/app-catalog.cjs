@@ -108,15 +108,18 @@ async function readApp(directory, { validate = true } = {}) {
         effects[id] = file; hash.update(id);
         for await (const chunk of require('node:fs').createReadStream(file)) hash.update(chunk);
     }
-    let musicFile = null;
-    if (m.music !== undefined) {
-        check(typeof m.music === 'string' && m.music.length > 0, 'Invalid ABIM music asset path');
-        const item = await asset(assetRoot, m.music, 40 * 1024 * 1024);
-        const api = require('../tools/abi1-studio/music-engine.js');
-        api.decodeAbim(item.bytes.toString('utf8'));
-        musicFile = item.file; hash.update('ABIM').update(item.bytes);
-    }
-    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, musicFile, streamedAssets, fingerprint: hash.digest('hex') };
+    const stream = streamIds(m, effects);
+    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, stream, streamedAssets, fingerprint: hash.digest('hex') };
+}
+/** Effect ids a package declares as one continuous stream (audio.stream). */
+function streamIds(m, effects) {
+    const declared = m.audio?.stream;
+    if (declared === undefined) return [];
+    check(Array.isArray(declared), 'audio.stream must be a list of sound event ids');
+    const ids = declared.map(Number);
+    for (const id of ids) check(effects[String(id)], 'audio.stream must only name declared effects');
+    check(new Set(ids).size === ids.length, 'audio.stream must not repeat an id');
+    return ids;
 }
 async function scan(root = ROOT) {
     root = path.resolve(root); let entries; try { entries = await fs.readdir(root, { withFileTypes: true }); } catch (error) { if (error.code === 'ENOENT') return { root, apps: [], rejected: [] }; throw error; }
@@ -157,5 +160,5 @@ async function raster(catalog, directory, label = 'catalog') {
 }
 module.exports = {
     ROOT, MAX_APPS, SLOT_BYTES, ATLAS_BYTES, STREAM_WINDOW_OFFSET,
-    asset, readApp, scan, summary, raster
+    asset, readApp, scan, summary, raster, streamIds
 };

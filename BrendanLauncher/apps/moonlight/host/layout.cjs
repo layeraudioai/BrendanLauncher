@@ -48,6 +48,12 @@ const HEADER = {
   words: 256,
 };
 
+// ABI `events` uvec4 (bytes 976..991): x sequence, y sound id, z chunks the
+// launcher's audio service has queued, w spare. `hbSound` writes x/y; z is
+// written back by the launcher so a stream can pace itself.
+const EVENTS_OFFSET = 976;
+const EVENTS_QUEUED = EVENTS_OFFSET + 8;
+
 const FLAG = { video: 1, streaming: 2, busy: 4 };
 const SCENE = { hosts: 0, games: 1, pair: 2, stream: 3, message: 4 };
 const CMD = {
@@ -74,6 +80,8 @@ const layout = {
     bytes: RAW.band.width * RAW.band.height,
   },
   header: { ...RAW.header, word: assertWord(RAW.header.offset) },
+  EVENTS_OFFSET,
+  EVENTS_QUEUED,
   video: {
     ...RAW.video,
     word: assertWord(RAW.video.offset),

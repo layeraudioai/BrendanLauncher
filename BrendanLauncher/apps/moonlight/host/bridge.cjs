@@ -55,6 +55,10 @@ class Bridge {
     this.audio = new AudioRing(this.header, {
       directory: path.join(__dirname, '..', 'assets'),
       logger,
+      // The launcher's audio service publishes how many chunks it has queued in
+      // the ABI `events.z` word (bytes 984..987 of the shared buffer). Reading it
+      // lets the ring stay a fixed distance ahead instead of dropping audio.
+      consumed: () => this._readQueuedAudio(),
     });
     this.screen = new Screen(this.band, this.font);
     this.closed = false;
@@ -88,6 +92,7 @@ class Bridge {
     this.header.setStatus(0);
     await this.header.flush();
     await this.frames.reset(0);
+    await this._bindAudioPaths();
     this._bindBackend();
     await this.refreshHosts();
     this._paint();
@@ -122,6 +127,24 @@ class Bridge {
   }
 
   // -- launcher hooks ------------------------------------------------------
+  /** Number of audio chunks the launcher's audio service has queued. */
+  async _readQueuedAudio() {
+    if (!this.rpc || !this.mapped) return 0;
+    const word = await this.rpc.read(this.mapped + layout.EVENTS_QUEUED, 4);
+    return word.readUInt32LE(0);
+  }
+
+  /** Point the ring at the chunk files inside the launcher's runtime folder. */
+  async _bindAudioPaths() {
+    const ids = [];
+    for (let index = 0; index < layout.audio.ringSlots; index++) {
+      ids.push(layout.audio.ringFirstSlot + index);
+    }
+    const paths = await AudioRing.resolvePaths(this.directory, ids);
+    if (paths.size === ids.length) this.audio.paths = paths;
+    else this.logger(`audio chunks stay in ${this.audio.directory} (no launcher paths)`);
+  }
+
   /** Called by the launcher between GPU batches. */
   async afterBatch() {
     await this._poll();
@@ -146,7 +169,7 @@ class Bridge {
     if (this.closed) return;
     if (this.state.scene === SCENE.stream) {
       await this.frames.flush();
-      await this.audio.publish();
+      await this.audio.pump();
       const now = Date.now();
       if (now - this.lastStatsAt > STATS_INTERVAL_MS) {
         this.lastStatsAt = now;

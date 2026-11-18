@@ -66,8 +66,7 @@ check(manifest.audio && manifest.audio.format === 's16le', 'audio format must be
 check(manifest.audio && manifest.audio.sampleRate === 48000, 'audio sample rate must be 48000');
 check(manifest.audio && manifest.audio.channels === 2, 'audio must be stereo');
 const ring = layout.audio.ringSlots;
-const expected = ring + 2; // two UI sounds in front of the ring
-check(effects.length >= expected, `expected at least ${expected} audio effects, found ${effects.length}`);
+check(effects.length === ring + 2, `expected ${ring + 2} audio effects (2 UI + ${ring} chunks), found ${effects.length}`);
 for (const [, file] of effects) {
   const target = path.join(APP, file);
   check(fs.existsSync(target), `missing audio effect ${file}`);
@@ -76,6 +75,48 @@ for (const [, file] of effects) {
   check(size > 0, `audio effect ${file} is empty`);
   check(size % 4 === 0, `audio effect ${file} is not whole 16-bit stereo frames`);
 }
+
+// The stream declaration is what makes playback gapless in the launcher: every
+// ring id must be declared, the ring must match layout.json, and every chunk must
+// be exactly one layout-sized chunk of PCM.
+const ringIds = [];
+for (let index = 0; index < layout.audio.ringSlots; index++) {
+  ringIds.push(layout.audio.ringFirstSlot + index);
+}
+const declaredStream = (manifest.audio && manifest.audio.stream) || [];
+check(Array.isArray(declaredStream), 'app.json audio.stream must be a list of effect ids');
+check(
+  declaredStream.length === ringIds.length && ringIds.every(id => declaredStream.includes(id)),
+  `audio.stream must be exactly ${ringIds.join(',')} (got ${declaredStream.join(',') || 'nothing'})`,
+);
+for (const id of declaredStream) {
+  const file = (manifest.audio.effects || {})[String(id)];
+  check(Boolean(file), `audio.stream id ${id} is not a declared effect`);
+  if (!file) continue;
+  const target = path.join(APP, file);
+  check(fs.existsSync(target), `missing stream chunk ${file}`);
+  if (!fs.existsSync(target)) continue;
+  const size = fs.statSync(target).size;
+  const expected = (layout.audio.sampleRate * layout.audio.channels * 2 * layout.audio.chunkMs) / 1000;
+  check(size === expected, `stream chunk ${file} is ${size} bytes, expected ${expected}`);
+}
+for (const id of [layout.audio.clickEffect, layout.audio.errorEffect]) {
+  const file = (manifest.audio.effects || {})[String(id)];
+  check(Boolean(file), `UI sound ${id} is missing from the manifest`);
+  if (!file) continue;
+  const target = path.join(APP, file);
+  check(fs.existsSync(target), `missing UI sound ${file}`);
+  if (fs.existsSync(target)) {
+    check(fs.statSync(target).size < 48000, `UI sound ${file} is longer than half a second`);
+  }
+}
+check(
+  layout.audio.leadChunks >= 1 && layout.audio.leadChunks < layout.audio.ringSlots,
+  'audio.leadChunks must be at least 1 and smaller than the ring',
+);
+const computeSource = fs.readFileSync(path.join(APP, 'shaders', 'app.comp'), 'utf8');
+check(computeSource.includes('AUDIO_LEAD'), 'app.comp must pace audio with AUDIO_LEAD');
+check(computeSource.includes('c.events.z'), 'app.comp must read the launcher audio ack');
 
 // Generated GLSL must exist and describe the same memory map as layout.json.
 check(textGlsl.includes('const uint HDR_WORD'), 'text.glsl is missing the header word offset');

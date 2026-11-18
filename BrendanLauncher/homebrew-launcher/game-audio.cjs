@@ -31,7 +31,7 @@ async function main(directory){
  if(stop) return;
  console.log('[AUDIO] Audio source session detected.');
 
- const file=path.join(directory,'game-audio.json'),report={session:rpc.a.session,started:new Date().toISOString(),functions:{},resourcesRetained:true,played:0,history:[]};
+ const file=path.join(directory,'game-audio.json'),report={session:rpc.a.session,started:new Date().toISOString(),functions:{},resourcesRetained:true,played:0,appended:0,skipped:0,underruns:0,droppedOneShots:0,history:[]};
  await fs.writeFile(file,'{}',{flag:'wx'});
  const save=()=>fs.writeFile(file,JSON.stringify(report,null,2));const sdkImage=require('../smilebasic/reference/sdk-checks.cjs');
  async function call(name,...args){
@@ -56,8 +56,40 @@ async function main(directory){
    check(Number(await call('GetAudioOutBufferCount',audio))===0,'Sound queue did not drain');
    free.clear();for(const descriptor of descriptors)free.add(descriptor);
   }
-  async function play(kind,myId,fileOverride=null){
-   const file=fileOverride||report.package?.effects?.[String(kind)];if(!file)return;
+  // A package may declare a ring of effect ids as one continuous stream (see
+  // `package.stream`). Those chunks are appended to the live queue instead of
+  // restarting the device, so consecutive chunks play gaplessly.
+  let stream=new Set(),streamMode=false,consumed=0,silentSince=0,lastChunkMs=20;
+  async function chainChunk(kind){
+   const sound=sounds[kind];
+   if(!sound){return;}
+   if(!free.size){report.skipped=(report.skipped||0)+1;return;}
+   const pcm=fsSync.readFileSync(sound.file);
+   check(pcm.length>0&&pcm.length<=bufferBytes&&pcm.length%4===0,'Invalid stream chunk PCM');
+   const descriptor=free.values().next().value,address=bufferAddress.get(descriptor);
+   await rpc.write(address,pcm);
+   await call('SetAudioOutBufferInfo',descriptor,address,bufferBytes,pcm.length);
+   check((await call('AppendAudioOutBuffer',audio,descriptor))===1n,'Sound buffer rejected');
+   free.delete(descriptor);
+   if(!started){check((await call('StartAudioOut',audio))===0n,'Sound playback failed');started=true;}
+   consumed++;report.appended=consumed;streamMode=true;
+   // A silence longer than the previous chunk means the device ran dry.
+   const now=Date.now();
+   if(silentSince&&now-silentSince>Math.max(20,lastChunkMs*1.5)){report.underruns=(report.underruns||0)+1;await save();}
+   silentSince=0;lastChunkMs=pcm.length/192;
+   // Tell the app how many chunks are queued so it can pace itself.
+   const word=Buffer.alloc(4);word.writeUInt32LE(consumed>>>0);await rpc.write(source.mapped+784+200,word);
+  }
+  function requestChunk(kind){
+   const myId=++streamCounter;
+   playbackTask=playbackTask.then(async()=>{
+    if(myId!==streamCounter||stop)return;
+    await release();
+    if(myId===streamCounter&&!stop)await chainChunk(kind);
+   }).catch(error=>{playbackError=error;report.error=error.stack||error.message;console.error(error);});
+  }
+  async function play(kind,myId){
+   const file=report.package?.effects?.[String(kind)];if(!file)return;
    const stat=await fs.stat(file);check(stat.isFile()&&stat.size>0&&stat.size%4===0,'Invalid stereo PCM asset');
    if(streamCounter!==myId||stop)return;
    const stream=fsSync.createReadStream(file,{highWaterMark:bufferBytes});currentStream=stream;
@@ -93,17 +125,15 @@ async function main(directory){
     stream.destroy();
    }
   }
-  async function playMusicLoop(file,myId){
-   while(myId===streamCounter&&!stop)await play(0,myId,file);
-  }
   function requestPlayback(kind){
+   if(stream.has(kind)){requestChunk(kind);return;}
+   if(streamMode&&kind!==0){report.droppedOneShots=(report.droppedOneShots||0)+1;return;}
+   streamMode=false;
    const myId=++streamCounter;if(currentStream)currentStream.destroy();
    playbackTask=playbackTask.then(async()=>{
     if(myId!==streamCounter)return;
     await stopOutput();
     if(kind!==0&&myId===streamCounter)await play(kind,myId);
-    const soundtrack=report.package?.music;
-    if(soundtrack&&myId===streamCounter)await playMusicLoop(soundtrack,myId);
    }).catch(error=>{playbackError=error;report.error=error.stack||error.message;console.error(error);});
   }
 
@@ -117,21 +147,23 @@ async function main(directory){
     const address=base+65536+(kind-1)*131072;
     sounds[kind]={address,file,size:stat.size};
    }
-   token=packageInfo?.fingerprint||null;sequence=-1;
-   let soundtrack=null;
-   if(packageInfo?.music)soundtrack=await require('./app-music.cjs').renderMusic(packageInfo.music,path.join(directory,'music-cache'),token);
-   report.package=packageInfo?{id:packageInfo.id,fingerprint:token,effects:Object.fromEntries(Object.entries(sounds).map(([kind,sound])=>[kind,sound.file])),music:soundtrack}:null;await save();
+   const declared=packageInfo?.stream,list=Array.isArray(declared)?declared:declared?.effects;
+   stream=new Set(Array.isArray(list)?list.map(Number).filter(kind=>Number.isInteger(kind)&&kind>=1&&kind<=31):[]);
+   streamMode=false;consumed=0;
+   token=packageInfo?.fingerprint||null;sequence=-1;report.package=packageInfo?{id:packageInfo.id,fingerprint:token,effects:Object.fromEntries(Object.entries(sounds).map(([kind,sound])=>[kind,sound.file]))}:null;await save();
   }
   while(!stop){
    if(playbackError)throw playbackError;
    const current=JSON.parse(await fs.readFile(path.join(directory,'game-audio-source.json')));check(current.session===rpc.a.session,'Sound source session changed');
    if((current.package?.fingerprint||null)!==token)await loadEffects(current.package||null);
+   await release();
+   if(!started||free.size<descriptors.size)silentSince=0;else if(!silentSince)silentSince=Date.now();
    const state=await rpc.read(source.mapped+784,208),next=state.readUInt32LE(192),kind=state.readUInt32LE(196);
    if (next !== sequence) {
     console.log(`[AUDIO POLL] Event detected! next: ${next}, sequence: ${sequence}, kind: ${kind}`);
    }
    if(next!==sequence){sequence=next;requestPlayback(kind);}
-   await new Promise(resolve=>setTimeout(resolve,50));
+   await new Promise(resolve=>setTimeout(resolve,10));
   }
  }catch(error){report.error=error.stack;console.error(error);process.exitCode=1;}
  finally{streamCounter++;if(currentStream)currentStream.destroy();await playbackTask;if(started)try{await call('StopAudioOut',audio);}catch(error){report.stopError=error.message;}report.completed=new Date().toISOString();await save();}

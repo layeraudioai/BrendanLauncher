@@ -1,1 +1,3 @@
 *.exe
+runs/
+data/app-links/

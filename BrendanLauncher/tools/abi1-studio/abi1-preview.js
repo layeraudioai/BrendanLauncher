@@ -192,7 +192,6 @@
       this.renderLocations = {
         sceneData: gl.getUniformLocation(this.renderProgram, 'uSceneData'),
         sceneWidth: gl.getUniformLocation(this.renderProgram, 'uSceneWidth'),
-        sceneWordCount: gl.getUniformLocation(this.renderProgram, 'uSceneWordCount'),
         transforms: gl.getUniformLocation(this.renderProgram, 'uTransforms'),
         resolution: gl.getUniformLocation(this.renderProgram, 'uResolution'),
         sceneId: gl.getUniformLocation(this.renderProgram, 'uSceneId'),
@@ -205,7 +204,6 @@
         [this.updateLocations.sceneId, 'active scene'],
         [this.renderLocations.sceneData, 'scene data'],
         [this.renderLocations.sceneWidth, 'scene texture width'],
-        [this.renderLocations.sceneWordCount, 'scene word count'],
         [this.renderLocations.transforms, 'scene transforms'],
         [this.renderLocations.resolution, 'preview resolution'],
         [this.renderLocations.sceneId, 'active scene'],
@@ -460,7 +458,6 @@ void main(){outColor=vec4(0.0);}
         throw new Error('Could not adapt the ABI-1 scene data for PC Preview');
       const previewAbi = `uniform highp usampler2D uSceneData;
 uniform int uSceneWidth;
-uniform int uSceneWordCount;
 uniform highp sampler2D uTransforms;
 uniform vec2 uResolution;
 uniform uint uSceneId;
@@ -475,7 +472,6 @@ uint atlasWord(uint wordIndex){
 `;
       source = source.slice(0, blockStart) + previewAbi + source.slice(blockEnd + 4);
       source = source
-        .replaceAll('uint(c.atlas.length())', 'uint(uSceneWordCount)')
         .replace('#version 450', '#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp usampler2D;\n')
         .replace(/^#extension GL_GOOGLE_include_directive : require\s*$/gm, '')
         .replace(/layout\(set=0,binding=1,std430\) readonly buffer ImageData \{ uint imageData\[\]; \} imageStore;/, '')
@@ -497,15 +493,6 @@ uint atlasWord(uint wordIndex){
         const adapted = source.replace(pattern, replacement);
         if (adapted === source) throw new Error('PC Preview could not adapt an ABI-1 object transform');
         source = adapted;
-      }
-      const meshStart = source.indexOf('bool traceMesh(');
-      const meshEnd = source.indexOf("\nvoid main()", meshStart);
-      if (meshStart >= 0 && meshEnd > meshStart) {
-        let meshSource = source.slice(meshStart, meshEnd);
-        meshSource = meshSource.replace(/vec3 position=.*;/, 'uint transformIndex=atlasWord(uint(record+14u));vec3 position=texelFetch(uTransforms,ivec2(int(transformIndex*4u),0),0).xyz;');
-        meshSource = meshSource.replace(/vec3 rotation=.*;/, 'vec3 rotation=texelFetch(uTransforms,ivec2(int(transformIndex*4u+1u),0),0).xyz;');
-        meshSource = meshSource.replace(/vec3 scale=.*;/, 'vec3 scale=texelFetch(uTransforms,ivec2(int(transformIndex*4u+2u),0),0).xyz;');
-        source = source.slice(0, meshStart) + meshSource + source.slice(meshEnd);
       }
       return source;
     }
@@ -808,7 +795,6 @@ uint atlasWord(uint wordIndex){
       gl.bindTexture(gl.TEXTURE_2D, this.sceneTexture);
       gl.uniform1i(this.renderLocations.sceneData, 1);
       gl.uniform1i(this.renderLocations.sceneWidth, this.sceneTextureWidth);
-      gl.uniform1i(this.renderLocations.sceneWordCount, Math.ceil(this.sceneData.byteLength / 4));
       gl.uniform2f(this.renderLocations.resolution, this.canvas.width, this.canvas.height);
       gl.uniform1ui(this.renderLocations.sceneId, this.activeSceneId >>> 0);
       gl.uniform1f(this.renderLocations.maxTravel, this.maxTravelDistance());

@@ -1,12 +1,6 @@
-# ABI-1 Studio Update Package — 1.6.0
+# ABI-1 Studio Update Package
 
 ## Highlights
-
-- ABI-1 apps now play packaged `.abim` music in the launcher runtime. The catalog validates and fingerprints `app.json`'s music asset; the audio worker renders shared MML arrangements to bounded 48 kHz stereo PCM and streams/loops them through the existing audio-out path. MML note playback needs no extra codec. Imported audio tracks embedded in ABIM require FFmpeg on the launcher host. Playback limits: five minutes, 100,000 notes, and 96 MiB rendered PCM/cache.
-
-- Imported OBJ geometry is now rendered in both PC Preview and generated ABI-1 apps. OBJ polygons are triangulated, bounded into a per-asset BVH, embedded in `assets/scene.bin`, and ray-intersected in the fragment shader. Supports negative vertex indices and `v/vt/vn` face tokens; limits each mesh to 65,536 vertices and 16,384 triangles. OBJ MTL materials and UV textures are not yet rendered; meshes use the object's color. Deploy the updated launcher runtime and rebuild apps to enable this.
-
-- Fixed generated ABI-1 apps booting to a permanently black screen: the compute shader now decreases the initial transition-fade value each frame, matching the launcher and hello-world app behavior. The renderer had been multiplying every pixel by zero indefinitely.
 
 - Added an **Update Cache** toolbar button that saves the current project locally, fetches the page and its CSS/JavaScript with a unique `?i=` URL, clears this app's Cache Storage entries/service-worker registration, and automatically reloads the page at that same unique URL. CSS and JavaScript URLs are versioned per release as an additional stale-cache safeguard. It preserves the project and prefab local storage instead of requiring a full browser site-data reset.
 
