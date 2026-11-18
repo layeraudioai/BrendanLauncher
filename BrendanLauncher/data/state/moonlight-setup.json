@@ -1,8 +1,8 @@
 {
-  "updated": "2026-11-18T03:18:54.480Z",
+  "updated": "2026-11-18T04:01:13.484Z",
   "mode": "check",
   "sunshine": null,
-  "app": null,
+  "app": "K:\\blaio-ra6\\BrendanLauncher\\BrendanLauncher\\apps\\moonlight",
   "env": {
     "MOONLIGHT_BACKEND": "sunshine",
     "MOONLIGHT_HOSTS": "127.0.0.1"
@@ -13,8 +13,8 @@
       "message": "Sunshine is not installed"
     },
     {
-      "kind": "warn",
-      "message": "apps/moonlight is not installed yet"
+      "kind": "ok",
+      "message": "Moonlight app package at K:\\blaio-ra6\\BrendanLauncher\\BrendanLauncher\\apps\\moonlight"
     }
   ]
 }

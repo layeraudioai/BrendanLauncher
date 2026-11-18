@@ -28,3 +28,4 @@ https://github.com/mhzsajan/ns2jb
 https://github.com/byizmysh/IZ2S-Platform
 https://github.com/ravensclawx/HBLauncher
 https://github.com/SebaaMG/ns2jb-modloader
+https://github.com/SunshineStream/Sunshine
