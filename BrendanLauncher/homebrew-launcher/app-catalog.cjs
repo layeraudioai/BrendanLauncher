@@ -108,7 +108,15 @@ async function readApp(directory, { validate = true } = {}) {
         effects[id] = file; hash.update(id);
         for await (const chunk of require('node:fs').createReadStream(file)) hash.update(chunk);
     }
-    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, streamedAssets, fingerprint: hash.digest('hex') };
+    let musicFile = null;
+    if (m.music !== undefined) {
+        check(typeof m.music === 'string' && m.music.length > 0, 'Invalid ABIM music asset path');
+        const item = await asset(assetRoot, m.music, 40 * 1024 * 1024);
+        const api = require('../tools/abi1-studio/music-engine.js');
+        api.decodeAbim(item.bytes.toString('utf8'));
+        musicFile = item.file; hash.update('ABIM').update(item.bytes);
+    }
+    return { id: m.id, name: m.name.trim(), version: m.version, description: m.description, root, manifest: m, files, effects, musicFile, streamedAssets, fingerprint: hash.digest('hex') };
 }
 async function scan(root = ROOT) {
     root = path.resolve(root); let entries; try { entries = await fs.readdir(root, { withFileTypes: true }); } catch (error) { if (error.code === 'ENOENT') return { root, apps: [], rejected: [] }; throw error; }

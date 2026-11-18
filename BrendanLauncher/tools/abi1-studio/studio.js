@@ -1105,7 +1105,7 @@ class Abi1StudioApp {
         object = addObject('mesh', null, file.name.replace(/\.[^.]+$/, ''));
         object.assetId = asset.id;
         object.primitive = 'box';
-        setStatus('OBJ retained in the project; target mesh import is a later runtime extension.');
+        setStatus('OBJ imported. Triangular geometry is rendered in the editor preview and exported ABI-1 apps.');
       } else throw new Error('Supported drops are PNG/JPG, OBJ, and audio files');
       object.assetId = asset.id;
       renderInspector();

@@ -152,6 +152,13 @@ test('prefab subtree cloning remaps IDs and retains parent links', () => {
   assert.equal(clone[1].transform.x, child.transform.x);
 });
 
+test('OBJ geometry parser triangulates polygons and resolves negative indices', () => {
+  const geometry = model.parseObjGeometry('v 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nf -4 -3 -2 -1');
+  assert.equal(geometry.triangles.length, 18);
+  assert.ok(geometry.nodes.length > 0);
+  assert.throws(() => model.parseObjGeometry('v 0 0 0\nf 1 2 3'), /invalid vertex reference/);
+});
+
 test('scene binary contains flattened transforms and sprite pixels', () => {
   const project = model.createProject();
   const parent = model.createObject('mesh', 'Parent');
@@ -492,6 +499,20 @@ test('multiple isolated scenes share GLSL classes and can request runtime transi
   assert.ok(built.entries.has('classes/1-Color-Helpers.glsl'));
 });
 
+test('PC Preview adapts BVH mesh tracing and live mesh transforms to WebGL2', () => {
+  const project = model.createProject();
+  const mesh = model.createObject('mesh', 'Preview OBJ'); mesh.assetId = 'mesh-test'; project.objects.push(mesh);
+  project.assets.push({ id: 'mesh-test', kind: 'mesh', name: 'triangle.obj', data: Buffer.from(['v 0 0 0', 'v 1 0 0', 'v 0 1 0', 'f 1 2 3'].join(String.fromCharCode(10))).toString('base64') });
+  const runtime = Object.create(Abi1PreviewRuntime.prototype);
+  runtime.model = model; runtime.builder = builder; runtime.project = project;
+  const source = runtime.previewFragmentSource();
+  assert.match(source, /bool traceMesh/);
+  assert.match(source, /int stack\[64\]/);
+  assert.ok(source.includes("transformIndex*4u"));
+  assert.match(source, /uSceneWordCount/);
+  assert.ok(!source.includes("c.atlas.length"));
+});
+
 test('PC preview raymarch range expands to include distant scene objects', () => {
   const preview = new Abi1PreviewRuntime({ model, builder, canvas: {} });
   preview.sceneCount = 1;
@@ -534,6 +555,8 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   assert.match(compiledSource, /for \(int i = 0; i < 3; i\+\+\)/);
   assert.match(compiledSource, /hbRunOnce\(onceFlags, 0u\)/);
   assert.match(compiledSource, /inout uint onceFlags/);
+  assert.match(compiledSource, /c\.transition\.x=max\(0\.0,c\.transition\.x-1\.0\/15\.0\)/);
+  assert.match(compiledSource, /if\(hbConnected\(\)&&\(buttons&\(HB_B\|HB_MINUS\)\)!=0u\)hbExit\(\)/);
   const sound = model.createObject('audio', 'Click');
   sound.audioEventId = 1;
   const rotation = model.createScript('Prompt rotation');
@@ -545,8 +568,12 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   project.objects.push(sound);
   project.assets.push({ id: 'sound-asset', kind: 'audio', eventId: 1, name: 'click.pcm',
     data: Buffer.from([0, 0, 0, 0]).toString('base64') });
+  const mesh = model.createObject('mesh', 'Imported OBJ');
+  mesh.assetId = 'mesh-asset';
+  project.objects.push(mesh);
+  const cubeObj = 'v -1 -1 -1\nv 1 -1 -1\nv 1 1 -1\nv -1 1 -1\nv -1 -1 1\nv 1 -1 1\nv 1 1 1\nv -1 1 1\nf 1 4 3 2\nf 5 6 7 8\nf 1 2 6 5\nf 2 3 7 6\nf 3 4 8 7\nf 4 1 5 8';
   project.assets.push({ id: 'mesh-asset', kind: 'mesh', name: 'model.obj',
-    data: Buffer.from('o model\n').toString('base64') });
+    data: Buffer.from(cubeObj).toString('base64') });
   const output = path.join(__dirname, 'exports', project.app.id);
   const zipPath = `${output}.zip`;
   t.after(() => {
@@ -554,8 +581,18 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
     fs.rmSync(zipPath, { force: true });
   });
   const result = await builder.build(project);
-  assert.equal(result.sceneObjects, 2);
-  assert.equal(uint32(result.entries.get('assets/scene.bin'), 0), 2);
+  assert.equal(result.sceneObjects, 3);
+  assert.equal(uint32(result.entries.get('assets/scene.bin'), 0), 3);
+  const sceneBytes = result.entries.get('assets/scene.bin');
+  const meshRecord = (4 + model.SCENE_DESCRIPTOR_WORDS + 2 * 20) * 4;
+  assert.equal(uint32(sceneBytes, meshRecord), 5);
+  const meshHeader = uint32(sceneBytes, meshRecord + 16 * 4);
+  assert.ok(uint32(sceneBytes, meshHeader * 4 + 3 * 4) >= 12);
+  assert.match(builder.shaderSources(project).fragment, /bool traceMesh/);
+  assert.match(builder.shaderSources(project).fragment, /int stack\[64\]/);
+  assert.equal(new DataView(result.entries.get('assets/state.bin').buffer,
+    result.entries.get('assets/state.bin').byteOffset,
+    result.entries.get('assets/state.bin').byteLength).getFloat32(960, true), 1);
   assert.ok(result.entries.has('assets/image-data.bin'));
   assert.ok(result.entries.has('assets/music.abim'));
   assert.equal(musicEngine.decodeAbim(new TextDecoder().decode(result.entries.get('assets/music.abim'))).patterns.length, 1);
@@ -563,8 +600,9 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   const packagedProjectJson = new TextDecoder().decode(result.entries.get('project.json'));
   assert.match(packagedProjectJson, /"musicFile": "assets\/music.abim"/);
   assert.doesNotMatch(packagedProjectJson, /"music": \{/);
-  assert.ok(result.entries.has('assets/stream/mesh_1.obj'));
-  assert.match(new TextDecoder().decode(result.entries.get('app.json')), /"streamedAssets"/);
+  assert.ok(!result.entries.has('assets/stream/mesh_1.obj'));
+  assert.doesNotMatch(new TextDecoder().decode(result.entries.get('app.json')), /"streamedAssets"/);
+  assert.equal(JSON.parse(packagedProjectJson).assets.find(item => item.kind === 'mesh').data, undefined);
   assert.equal(uint32(result.bytes, 0), 0x04034b50);
   assert.equal(uint32(result.bytes, result.bytes.length - 22), 0x06054b50);
   const zipped = readStoredZip(result.bytes);
@@ -581,8 +619,9 @@ test('browser builder compiles and packages a catalog-valid ABI-1 app', async t 
   const app = await require('../../homebrew-launcher/app-catalog.cjs').readApp(output);
   assert.equal(app.manifest.format, 'hblauncher.gpu-app');
   assert.equal(app.manifest.abi, 1);
+  assert.equal(path.basename(app.musicFile), 'music.abim');
   assert.equal(app.files.memory.bytes.length, 4096);
   assert.deepEqual(Object.keys(app.effects), ['1']);
-  assert.equal(app.streamedAssets.length, 1);
-  assert.equal(app.files.data.bytes.readUInt32LE(0), 2);
+  assert.equal(app.streamedAssets.length, 0);
+  assert.equal(app.files.data.bytes.readUInt32LE(0), 3);
 });

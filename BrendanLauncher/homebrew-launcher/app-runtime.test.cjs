@@ -6,7 +6,9 @@ test('Rescan, load, return, cache, removal and version reload use package data',
  await fs.cp(path.resolve(__dirname,'../apps/hello-world'),path.join(root,'hello-world'),{recursive:true});
  const appRoot=path.join(root,'hello-world'),manifestPath=path.join(appRoot,'app.json');
  const manifest=JSON.parse(await fs.readFile(manifestPath));manifest.streamedAssets=[{id:1,file:'assets/stream.bin'}];
+ const musicApi=require('../tools/abi1-studio/music-engine.js');manifest.music='assets/test.abim';
  await fs.mkdir(path.join(appRoot,'assets'),{recursive:true});await fs.writeFile(path.join(appRoot,'assets/stream.bin'),Buffer.from(Array.from({length:256},(_,i)=>i)));
+ await fs.writeFile(path.join(appRoot,'assets/test.abim'),musicApi.encodeAbim(musicApi.createSeededMusic('runtime test')));
  await fs.writeFile(manifestPath,JSON.stringify(manifest));
  const capacity=8*1024*1024,memory=Buffer.alloc(capacity+4096),mapped=0x100000;memory.writeUInt32LE(1,112);memory.writeUInt32LE(1,1020);
  const rpc={a:{session:'test-session'},async read(p,n){assert.ok(p>=mapped&&p+n<=mapped+memory.length);return Buffer.from(memory.subarray(p-mapped,p-mapped+n));},async write(p,b){assert.ok(p>=mapped&&p+b.length<=mapped+memory.length);b.copy(memory,p-mapped);}};
@@ -17,7 +19,7 @@ test('Rescan, load, return, cache, removal and version reload use package data',
  memory.writeUInt32LE(1,992);memory.writeUInt32LE(16,996);memory.writeUInt32LE(64,1000);memory.writeUInt32LE(1,1004);
  await runtime.afterBatch();assert.deepEqual(memory.subarray(1024+STREAM_WINDOW_OFFSET,1024+STREAM_WINDOW_OFFSET+64),Buffer.from(Array.from({length:64},(_,i)=>i+16)));
  assert.equal(memory.readUInt32LE(1012),1);assert.equal(memory.readUInt32LE(1020),1);
- let audio=JSON.parse(await fs.readFile(path.join(directory,'game-audio-source.json')));assert.equal(audio.package.id,'hello-world');
+ let audio=JSON.parse(await fs.readFile(path.join(directory,'game-audio-source.json')));assert.equal(audio.package.id,'hello-world');assert.equal(path.basename(audio.package.music),'test.abim');
  memory.writeUInt32LE(1,1016);assert.deepEqual(await runtime.afterBatch(),menu.commands[0]);assert.equal(runtime.active,null);assert.equal(memory.readFloatLE(964),0);
  memory.writeUInt32LE(1,1012);await runtime.afterBatch();assert.equal(prepared.length,1);memory.writeUInt32LE(1,1016);await runtime.afterBatch();
  const m=JSON.parse(await fs.readFile(manifestPath));m.version='1.0.1';m.name='Changed App';m.transition='none';await fs.writeFile(manifestPath,JSON.stringify(m));

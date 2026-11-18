@@ -1,0 +1,267 @@
+{
+  "format": "brendan-abi1-studio",
+  "version": 2,
+  "app": {
+    "id": "seed-1m32wdy79m6yk",
+    "name": "Nova Quest 1",
+    "description": "Procedurally generated from seed f4w9hi867bewv8i58i58i58i58i58i58i58i58i57cse8888888888888888e8e8e848st6854bvsac6c54c6754caaaaaaaaaaaaaaaaaaaa7btb49t4r4b6436b6b",
+    "version": "1.0.0"
+  },
+  "startupSceneId": 1,
+  "nextSceneId": 2,
+  "scenes": [
+    {
+      "id": 1,
+      "name": "Scene 1",
+      "camera": {
+        "yaw": -3.112000000000002,
+        "pitch": 0.4159999999999996,
+        "distance": 16.699999999999992,
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "transform": {
+          "x": 0,
+          "y": 0,
+          "z": 9,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0
+        }
+      },
+      "objects": [
+        {
+          "id": "seed-1m32wdy79m6yk-1",
+          "name": "Player",
+          "kind": "mesh",
+          "primitive": "box",
+          "parentId": null,
+          "transform": {
+            "x": -5.4,
+            "y": -0.157,
+            "z": 0.674,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.972,
+            "sy": 1.228,
+            "sz": 0.972
+          },
+          "color": "#52d6a4",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": [
+            "seed-1m32wdy79m6yk-s1",
+            "seed-1m32wdy79m6yk-s2",
+            "200ff6019eac453f"
+          ]
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-2",
+          "name": "Goal",
+          "kind": "mesh",
+          "primitive": "sphere",
+          "parentId": null,
+          "transform": {
+            "x": -4.05,
+            "y": 0.798,
+            "z": 0.715,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.58,
+            "sy": 0.651,
+            "sz": 0.58
+          },
+          "color": "#bb86fc",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": [
+            "seed-1m32wdy79m6yk-s3"
+          ]
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-3",
+          "name": "Object 3",
+          "kind": "sprite",
+          "primitive": "plane",
+          "parentId": null,
+          "transform": {
+            "x": -2.7,
+            "y": -0.39,
+            "z": 0.692,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.622,
+            "sy": 0.602,
+            "sz": 0.622
+          },
+          "color": "#62a7ff",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-4",
+          "name": "Object 4",
+          "kind": "sprite",
+          "primitive": "plane",
+          "parentId": null,
+          "transform": {
+            "x": -1.35,
+            "y": -0.221,
+            "z": 0.179,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 1.126,
+            "sy": 1.327,
+            "sz": 1.126
+          },
+          "color": "#f3f5ff",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-5",
+          "name": "Object 5",
+          "kind": "mesh",
+          "primitive": "sphere",
+          "parentId": null,
+          "transform": {
+            "x": 0,
+            "y": 0.713,
+            "z": -0.722,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.712,
+            "sy": 0.568,
+            "sz": 0.712
+          },
+          "color": "#52d6a4",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-6",
+          "name": "Object 6",
+          "kind": "mesh",
+          "primitive": "sphere",
+          "parentId": null,
+          "transform": {
+            "x": 1.35,
+            "y": -0.425,
+            "z": -0.261,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 1.279,
+            "sy": 1.122,
+            "sz": 1.279
+          },
+          "color": "#bb86fc",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-7",
+          "name": "Object 7",
+          "kind": "mesh",
+          "primitive": "sphere",
+          "parentId": null,
+          "transform": {
+            "x": 2.7,
+            "y": 0.652,
+            "z": -0.817,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.733,
+            "sy": 0.857,
+            "sz": 0.733
+          },
+          "color": "#52d6a4",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-8",
+          "name": "Object 8",
+          "kind": "mesh",
+          "primitive": "box",
+          "parentId": null,
+          "transform": {
+            "x": 4.05,
+            "y": -0.453,
+            "z": -0.047,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.845,
+            "sy": 1.087,
+            "sz": 0.845
+          },
+          "color": "#62a7ff",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        },
+        {
+          "id": "seed-1m32wdy79m6yk-9",
+          "name": "Object 9",
+          "kind": "mesh",
+          "primitive": "box",
+          "parentId": null,
+          "transform": {
+            "x": 5.4,
+            "y": -0.465,
+            "z": 0.523,
+            "rx": 0,
+            "ry": 0,
+            "rz": 0,
+            "sx": 0.889,
+            "sy": 0.739,
+            "sz": 0.889
+          },
+          "color": "#52d6a4",
+          "audioEventId": 0,
+          "assetId": null,
+          "scriptIds": []
+        }
+      ]
+    }
+  ],
+  "assets": [],
+  "scripts": [
+    {
+      "id": "seed-1m32wdy79m6yk-s1",
+      "name": "Seeded one-time setup",
+      "source": "once { position.y += 0.25; }"
+    },
+    {
+      "id": "seed-1m32wdy79m6yk-s2",
+      "name": "Move Right on A",
+      "source": "// Generated offline by ABI-1 Studio.\nif ((buttons & HB_A) != 0u) {\n    position.x += dt * 2.0;\n}"
+    },
+    {
+      "id": "seed-1m32wdy79m6yk-s3",
+      "name": "Rotate Y on B",
+      "source": "// Generated offline by ABI-1 Studio.\nif ((buttons & HB_B) != 0u) {\n    rotation.y += dt * 0.785398;\n}"
+    },
+    {
+      "id": "200ff6019eac453f",
+      "name": "Set random color",
+      "source": "// Generated offline by ABI-1 Studio.\ncolor.rgb = hbRandomColor(objectIndex);"
+    }
+  ],
+  "classes": [],
+  "musicFile": "assets/music.abim"
+}

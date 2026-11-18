@@ -56,8 +56,8 @@ async function main(directory){
    check(Number(await call('GetAudioOutBufferCount',audio))===0,'Sound queue did not drain');
    free.clear();for(const descriptor of descriptors)free.add(descriptor);
   }
-  async function play(kind,myId){
-   const file=report.package?.effects?.[String(kind)];if(!file)return;
+  async function play(kind,myId,fileOverride=null){
+   const file=fileOverride||report.package?.effects?.[String(kind)];if(!file)return;
    const stat=await fs.stat(file);check(stat.isFile()&&stat.size>0&&stat.size%4===0,'Invalid stereo PCM asset');
    if(streamCounter!==myId||stop)return;
    const stream=fsSync.createReadStream(file,{highWaterMark:bufferBytes});currentStream=stream;
@@ -93,12 +93,17 @@ async function main(directory){
     stream.destroy();
    }
   }
+  async function playMusicLoop(file,myId){
+   while(myId===streamCounter&&!stop)await play(0,myId,file);
+  }
   function requestPlayback(kind){
    const myId=++streamCounter;if(currentStream)currentStream.destroy();
    playbackTask=playbackTask.then(async()=>{
     if(myId!==streamCounter)return;
     await stopOutput();
     if(kind!==0&&myId===streamCounter)await play(kind,myId);
+    const soundtrack=report.package?.music;
+    if(soundtrack&&myId===streamCounter)await playMusicLoop(soundtrack,myId);
    }).catch(error=>{playbackError=error;report.error=error.stack||error.message;console.error(error);});
   }
 
@@ -112,7 +117,10 @@ async function main(directory){
     const address=base+65536+(kind-1)*131072;
     sounds[kind]={address,file,size:stat.size};
    }
-   token=packageInfo?.fingerprint||null;sequence=-1;report.package=packageInfo?{id:packageInfo.id,fingerprint:token,effects:Object.fromEntries(Object.entries(sounds).map(([kind,sound])=>[kind,sound.file]))}:null;await save();
+   token=packageInfo?.fingerprint||null;sequence=-1;
+   let soundtrack=null;
+   if(packageInfo?.music)soundtrack=await require('./app-music.cjs').renderMusic(packageInfo.music,path.join(directory,'music-cache'),token);
+   report.package=packageInfo?{id:packageInfo.id,fingerprint:token,effects:Object.fromEntries(Object.entries(sounds).map(([kind,sound])=>[kind,sound.file])),music:soundtrack}:null;await save();
   }
   while(!stop){
    if(playbackError)throw playbackError;

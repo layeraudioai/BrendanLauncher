@@ -1,0 +1,210 @@
+#version 450
+
+layout(local_size_x=1) in;
+// ABI-1 controls layout; app-owned atlas starts at byte 1024.
+#ifndef STATE_ACCESS
+#define STATE_ACCESS
+#endif
+layout(set=0,binding=0,std430) STATE_ACCESS buffer Controls {
+    uvec4 raw[4]; vec4 motion; uvec4 state;
+    vec4 refresh; uvec4 library; uint touch[164];
+    uvec4 game; ivec4 piece; vec4 flow; uvec4 bagMeta;
+    uint bag[8]; uint rows[20]; vec4 transition;
+    uvec4 events; uvec4 stats; uvec4 reserved; uint atlas[];
+} c;
+
+const uint HB_A=1u,HB_B=2u,HB_X=4u,HB_Y=8u,HB_L=64u,HB_R=128u,HB_PLUS=1024u,HB_MINUS=2048u;
+const uint HB_LEFT=4096u,HB_UP=8192u,HB_RIGHT=16384u,HB_DOWN=32768u;
+const uint HB_SHAPE_BOX=1u,HB_SHAPE_SPHERE=2u,HB_SHAPE_SPRITE=3u,HB_SHAPE_PLANE=4u;
+uint hbButtons(){return c.raw[0].z;}
+uint hbPressed(){return hbButtons()&~c.state.y;}
+bool hbConnected(){return (c.raw[2].x&1u)!=0u;}
+void hbEndFrame(){c.state.y=hbButtons();}
+void hbExit(){c.reserved.z=1u;}
+void hbSound(uint id){c.events.x++;c.events.y=id;}
+void hbStopSound(){hbSound(0u);}
+void hbSwitchSound(uint id){hbSound(id);}
+uint hbCurrentScene(){return c.reserved.x;}
+const uint HB_STREAM_WINDOW_WORD=1572864u,HB_STREAM_WINDOW_BYTES=65536u;
+bool hbStreamRequest(uint assetId,uint offset,uint length){
+    if(assetId==0u||length==0u||length>HB_STREAM_WINDOW_BYTES||
+       (c.stats.x!=0u&&c.stats.w!=c.reserved.y))return false;
+    uint sequence=c.stats.w+1u;if(sequence==0u)sequence=1u;
+    c.stats=uvec4(assetId,offset,length,sequence);c.reserved.w=0u;return true;
+}
+bool hbStreamReady(){return c.stats.w!=0u&&c.reserved.y==c.stats.w&&c.reserved.w==1u;}
+bool hbStreamFailed(){return c.stats.w!=0u&&c.reserved.y==c.stats.w&&c.reserved.w==2u;}
+uint hbStreamByte(uint index){
+    if(index>=c.stats.z)return 0u;
+    uint word=c.atlas[HB_STREAM_WINDOW_WORD+index/4u];
+    return (word>>((index&3u)*8u))&255u;
+}
+uint hbHash(uint value){
+    value^=value>>16u;value*=0x7feb352du;value^=value>>15u;
+    value*=0x846ca68bu;value^=value>>16u;return value;
+}
+float hbRandom(uint seed){return float(hbHash(seed^(c.state.z*0x9e3779b9u))>>8u)/16777215.0;}
+float hbRandom(){return hbRandom(c.state.z);}
+float hbRandomRange(float minimum,float maximum,uint seed){return mix(minimum,maximum,hbRandom(seed));}
+vec3 hbRandomColor(uint seed){return vec3(hbRandom(seed),hbRandom(seed+1u),hbRandom(seed+2u));}
+float hbFactorial(float inputValue){
+    if(inputValue<0.0||inputValue>32.0||abs(inputValue-floor(inputValue+0.5))>0.00001)return 0.0;
+    int n=int(floor(inputValue+0.5));
+    float value=1.0;
+    for(int i=1;i<=32;i++){if(i>n)break;value*=float(i);}
+    return value;
+}
+float hbRoot(float degree,float value){
+    if(degree==0.0)return 0.0;
+    float rounded=round(degree);
+    if(value<0.0&&abs(degree-rounded)<0.00001&&mod(abs(rounded),2.0)==1.0)
+        return -pow(-value,1.0/degree);
+    return pow(value,1.0/degree);
+}
+bool hbRunOnce(inout uint flags,uint slot){
+    if(slot>=23u)return false;
+    uint mask=1u<<slot;bool run=(flags&mask)==0u;flags|=mask;return run;
+}
+
+bool sceneRange(uint id, out uint firstObject, out uint objectCount, out uint firstRecord) {
+    for(uint s=0u;s<c.atlas[2];s++){
+        uint descriptor=4u+s*10u;
+        if(c.atlas[descriptor]==id){
+            firstObject=c.atlas[descriptor+1u];
+            objectCount=c.atlas[descriptor+2u];
+            firstRecord=c.atlas[descriptor+3u];
+            return true;
+        }
+    }
+    firstObject=0u;objectCount=0u;firstRecord=0u;
+    return false;
+}
+void hbLoadScene(uint id){if(id==1u)c.reserved.x=id;}
+uint hbSpawnObject(uint shape,vec3 position,vec3 scale,vec3 color){
+    if(shape<HB_SHAPE_BOX||shape>HB_SHAPE_PLANE)return 0xffffffffu;
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))return 0xffffffffu;
+    uint slot=objectCount;
+    for(uint i=0u;i<objectCount;i++){
+        uint candidate=firstRecord+i*20u;
+        if(c.atlas[candidate]==0u&&c.atlas[candidate+15u]==0xffffffffu){slot=i;break;}
+    }
+    if(slot==objectCount){
+        if(objectCount>=48u)return 0xffffffffu;
+        for(uint s=0u;s<c.atlas[2];s++){
+            uint descriptor=4u+s*10u;
+            if(c.atlas[descriptor]==c.reserved.x){c.atlas[descriptor+2u]=objectCount+1u;break;}
+        }
+    }
+    uint record=firstRecord+slot*20u;
+    c.atlas[record]=shape;
+    c.atlas[record+1u]=floatBitsToUint(clamp(color.r,0.0,1.0));
+    c.atlas[record+2u]=floatBitsToUint(clamp(color.g,0.0,1.0));
+    c.atlas[record+3u]=floatBitsToUint(clamp(color.b,0.0,1.0));
+    c.atlas[record+4u]=0u;
+    c.atlas[record+5u]=floatBitsToUint(position.x);
+    c.atlas[record+6u]=floatBitsToUint(position.y);
+    c.atlas[record+7u]=floatBitsToUint(position.z);
+    c.atlas[record+8u]=0u;c.atlas[record+9u]=0u;c.atlas[record+10u]=0u;
+    scale=max(abs(scale),vec3(.001));
+    c.atlas[record+11u]=floatBitsToUint(scale.x);
+    c.atlas[record+12u]=floatBitsToUint(scale.y);
+    c.atlas[record+13u]=floatBitsToUint(scale.z);
+    c.atlas[record+14u]=0u;c.atlas[record+15u]=0xffffffffu;
+    c.atlas[record+16u]=0u;c.atlas[record+17u]=0u;c.atlas[record+18u]=0u;
+    c.atlas[record+19u]=c.reserved.x;
+    return firstObject+slot;
+}
+bool hbRemoveObject(uint objectId){
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord)||objectId<firstObject)return false;
+    uint slot=objectId-firstObject;if(slot>=objectCount)return false;
+    uint record=firstRecord+slot*20u;
+    if(c.atlas[record+15u]!=0xffffffffu||c.atlas[record]==0u)return false;
+    c.atlas[record]=0u;return true;
+}
+uint hbSpawnOnce(uint objectIndex,uint shape,vec3 position,vec3 scale,vec3 color){
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))return 0xffffffffu;
+    for(uint i=0u;i<objectCount;i++){
+        uint record=firstRecord+i*20u;
+        if(c.atlas[record+15u]==objectIndex){
+            if((c.atlas[record+19u]&0x80000000u)!=0u)return 0xffffffffu;
+            uint spawned=hbSpawnObject(shape,position,scale,color);
+            if(spawned!=0xffffffffu)c.atlas[record+19u]|=0x80000000u;
+            return spawned;
+        }
+    }
+    return 0xffffffffu;
+}
+void hbPlayObjectAudio(uint objectIndex){
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))return;
+    for(uint i=0u;i<objectCount;i++){
+        uint record=firstRecord+i*20u;
+        if(c.atlas[record+15u]==objectIndex&&c.atlas[record]==0u){
+            uint eventId=c.atlas[record+14u];
+            if(eventId>0u&&eventId<=31u)hbSound(eventId);
+            return;
+        }
+    }
+}
+bool hbSetObjectAudio(uint objectIndex,uint eventId){
+    if(eventId>31u)return false;
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))return false;
+    for(uint i=0u;i<objectCount;i++){
+        uint record=firstRecord+i*20u;
+        if(c.atlas[record+15u]==objectIndex&&c.atlas[record]==0u){
+            c.atlas[record+14u]=eventId;
+            return true;
+        }
+    }
+    return false;
+}
+
+void updateObject(inout vec3 position,inout vec3 rotation,inout vec3 scale,inout vec4 color,
+                  uint objectIndex,float dt,uint buttons,inout uint onceFlags) {
+if (objectIndex == 0u) {
+if (hbRunOnce(onceFlags, 0u)) { position.y += 0.25; }
+}
+if (objectIndex == 0u) {
+// Generated offline by ABI-1 Studio.
+if ((buttons & HB_A) != 0u) {
+    position.x += dt * 2.0;
+}
+}
+if (objectIndex == 0u) {
+// Generated offline by ABI-1 Studio.
+color.rgb = hbRandomColor(objectIndex);
+}
+if (objectIndex == 1u) {
+// Generated offline by ABI-1 Studio.
+if ((buttons & HB_B) != 0u) {
+    rotation.y += dt * 0.785398;
+}
+}
+}
+void main(){
+    float dt=1.0/60.0;uint buttons=hbPressed();
+    c.motion.x+=dt;c.state.z++;
+    uint firstObject,objectCount,firstRecord;
+    if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))objectCount=0u;
+    for(uint localIndex=0u;localIndex<objectCount;localIndex++){
+        uint record=firstRecord+localIndex*20u;
+        uint objectIndex=c.atlas[record+15u];
+        vec3 position=vec3(uintBitsToFloat(c.atlas[record+5u]),uintBitsToFloat(c.atlas[record+6u]),uintBitsToFloat(c.atlas[record+7u]));
+        vec3 rotation=vec3(uintBitsToFloat(c.atlas[record+8u]),uintBitsToFloat(c.atlas[record+9u]),uintBitsToFloat(c.atlas[record+10u]));
+        vec3 scale=vec3(uintBitsToFloat(c.atlas[record+11u]),uintBitsToFloat(c.atlas[record+12u]),uintBitsToFloat(c.atlas[record+13u]));
+        vec4 color=vec4(uintBitsToFloat(c.atlas[record+1u]),uintBitsToFloat(c.atlas[record+2u]),uintBitsToFloat(c.atlas[record+3u]),1.0);
+        uint onceFlags=c.atlas[record+4u]&0x7fffffu;
+        updateObject(position,rotation,scale,color,objectIndex,dt,buttons,onceFlags);
+        c.atlas[record+4u]=(c.atlas[record+4u]&0xff800000u)|(onceFlags&0x7fffffu);
+        c.atlas[record+1u]=floatBitsToUint(color.r);c.atlas[record+2u]=floatBitsToUint(color.g);c.atlas[record+3u]=floatBitsToUint(color.b);
+        c.atlas[record+5u]=floatBitsToUint(position.x);c.atlas[record+6u]=floatBitsToUint(position.y);c.atlas[record+7u]=floatBitsToUint(position.z);
+        c.atlas[record+8u]=floatBitsToUint(rotation.x);c.atlas[record+9u]=floatBitsToUint(rotation.y);c.atlas[record+10u]=floatBitsToUint(rotation.z);
+        c.atlas[record+11u]=floatBitsToUint(scale.x);c.atlas[record+12u]=floatBitsToUint(scale.y);c.atlas[record+13u]=floatBitsToUint(scale.z);
+    }
+    if(hbConnected()&&(buttons&(HB_B|HB_MINUS))!=0u)hbExit();
+    hbEndFrame();
+}

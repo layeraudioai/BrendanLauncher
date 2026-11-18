@@ -1,0 +1,119 @@
+#version 450
+// Moonlight for BrendanLauncher, ABI-1 GPU app, control pass.
+//
+// One invocation, once per presented frame. It owns only what the console can
+// legitimately own without app code:
+//   * menu selection inside the host-published item list,
+//   * a small command queue the PC bridge executes (pair, open, start, stop),
+//   * the sound-event bridge (menu clicks and the streamed audio chunk ring),
+//   * exit.
+// Everything content-shaped (host names, titles, PIN, video, audio) is the
+// bridge's job; this pass never formats a string.
+#extension GL_GOOGLE_include_directive : require
+layout(local_size_x=1) in;
+#include "abi.glsl"
+#include "hb.glsl"
+#include "text.glsl"
+
+uint hdrWord(uint index) { return c.atlas[HDR_WORD + index]; }
+void setHdrWord(uint index, uint value) { c.atlas[HDR_WORD + index] = value; }
+
+// App-owned scratch, documented in PROTOCOL.md:
+//   game.x  selection index        game.y  last observed scene
+//   game.z  pending command        game.w  pending command sequence
+//   bag[0]  last audio sequence played
+//   bag[1]  frames spent in the current scene (used to debounce A)
+//   bag[2]  last buttons word (edge helper for chords)
+void post(uint command, uint arg0, uint arg1) {
+    uint sequence = hdrWord(H_CMD_SEQ) + 1u;
+    if (sequence == 0u) sequence = 1u;
+    setHdrWord(H_CMD, command);
+    setHdrWord(H_CMD_ARG0, arg0);
+    setHdrWord(H_CMD_ARG1, arg1);
+    setHdrWord(H_CMD_SEQ, sequence);
+    c.game.z = command;
+    c.game.w = sequence;
+    hbSound(1u); // Menu click: manifest effect 1 is a short blip.
+}
+
+void main() {
+    uint buttons = hbPressed();
+    uint held = hbButtons();
+    uint scene = hdrWord(H_SCENE);
+    uint flags = hdrWord(H_FLAGS);
+    uint items = min(hdrWord(H_ITEMS), 32u);
+    bool busy = (flags & FLAG_BUSY) != 0u;
+    bool streaming = (flags & FLAG_STREAMING) != 0u && (flags & FLAG_VIDEO) != 0u;
+
+    c.transition.x = max(0.0, c.transition.x - 1.0 / 15.0);
+    c.state.z += 1u;
+    c.motion.x += 1.0 / 60.0;
+
+    // A new scene resets the selection; the host is authoritative for content.
+    if (c.game.y != scene) {
+        c.game.y = scene;
+        c.game.x = 0u;
+        c.bag[1] = 0u;
+    }
+    c.bag[1] += 1u;
+    c.bag[2] = held;
+
+    if (items == 0u) {
+        c.game.x = 0u;
+    } else {
+        c.game.x = min(c.game.x, items - 1u);
+        if (!streaming) {
+            if ((buttons & HB_UP) != 0u) c.game.x = (c.game.x + items - 1u) % items;
+            if ((buttons & HB_DOWN) != 0u) c.game.x = (c.game.x + 1u) % items;
+            if ((buttons & HB_LEFT) != 0u) c.game.x = (c.game.x + items - 10u) % items;
+            if ((buttons & HB_RIGHT) != 0u) c.game.x = (c.game.x + 10u) % items;
+        }
+    }
+    setHdrWord(H_SELECTED, c.game.x);
+
+    // The bridge publishes a new audio sequence when a PCM chunk lands in a
+    // manifest effect slot. Trigger the newest one; skipping is preferred to
+    // queueing, because every trigger flushes the host's audio queue.
+    uint audioSequence = hdrWord(H_AUDIO_SEQ);
+    if (streaming && audioSequence != 0u && audioSequence != c.bag[0]) {
+        uint slot = hdrWord(H_AUDIO_SLOT);
+        if (slot >= uint(AUDIO_RING_FIRST) && slot < uint(AUDIO_RING_FIRST + AUDIO_RING_SLOTS)) {
+            hbSound(slot);
+            setHdrWord(H_AUDIO_CONSUMED, audioSequence);
+        }
+        c.bag[0] = audioSequence;
+    }
+
+    // While streaming the bridge reads the raw pad state itself (see
+    // PROTOCOL.md), so the only local chord is "stop" and "quit".
+    if (streaming) {
+        bool minusPlus = (held & HB_MINUS) != 0u && (held & HB_PLUS) != 0u;
+        if (minusPlus || (buttons & HB_B) != 0u) {
+            post(CMD_STOP, 0u, 0u);
+            hbStopSound();
+        }
+        if (busy && (buttons & HB_Y) != 0u) post(CMD_STOP, 1u, 0u); // terminate the PC app
+        hbEndFrame();
+        return;
+    }
+
+    // Global commands.
+    if ((buttons & HB_X) != 0u) post(CMD_REFRESH, 0u, 0u);
+    if ((buttons & HB_Y) != 0u) post(CMD_PAIR, 0u, 0u);
+
+    if ((buttons & HB_A) != 0u) {
+        if (scene == SCENE_HOSTS) post(CMD_OPEN_HOST, c.game.x, 0u);
+        else if (scene == SCENE_GAMES) post(CMD_START, c.game.x, 0u);
+        else if (scene == SCENE_PAIR) post(CMD_PAIR, 1u, 0u); // confirm PIN shown by the host
+        else if (scene == SCENE_MESSAGE) post(CMD_RETRY, c.game.x, 0u);
+        else post(CMD_REFRESH, 0u, 0u);
+    }
+
+    if ((buttons & HB_B) != 0u) {
+        if (scene == SCENE_HOSTS) hbExit();
+        else post(CMD_BACK, 0u, 0u);
+    }
+    if ((buttons & HB_MINUS) != 0u && (buttons & HB_PLUS) != 0u) hbExit();
+
+    hbEndFrame();
+}

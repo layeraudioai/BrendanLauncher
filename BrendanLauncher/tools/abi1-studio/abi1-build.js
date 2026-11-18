@@ -270,7 +270,7 @@ float objectDistance(vec3 point, uint i, uint record, out vec4 albedo, out vec2 
     vec3 color=vec3(uintBitsToFloat(c.atlas[record+1u]),uintBitsToFloat(c.atlas[record+2u]),uintBitsToFloat(c.atlas[record+3u]));
     albedo=vec4(color,1.0);uv=vec2(p.x*.5+.5,.5-p.y*.5);
     if(shape==2u) return (length(p)-1.0)*min(scale.x,min(scale.y,scale.z));
-    if(shape==0u) return 1e6;
+    if(shape==0u||shape==5u) return 1e6;
     if(shape==3u||shape==4u) return max(abs(p.z)-.02,max(abs(p.x)-1.0,abs(p.y)-1.0))*min(scale.x,min(scale.y,scale.z));
     vec3 q=abs(p)-vec3(1.0);
     return (length(max(q,0.0))+min(max(q.x,max(q.y,q.z)),0.0))*min(scale.x,min(scale.y,scale.z));
@@ -293,6 +293,55 @@ vec3 normalAt(vec3 p){
     float z=sceneDistance(p+vec3(0,0,e),c0,u0,r0).x-sceneDistance(p-vec3(0,0,e),c0,u0,r0).x;
     return normalize(vec3(x,y,z));
 }
+bool rayBounds(vec3 origin,vec3 direction,vec3 lower,vec3 upper,float maxTravel,out float nearTravel){
+    vec3 inverseDirection=vec3(abs(direction.x)<1e-8?1e8:1.0/direction.x,abs(direction.y)<1e-8?1e8:1.0/direction.y,abs(direction.z)<1e-8?1e8:1.0/direction.z);
+    vec3 a=(lower-origin)*inverseDirection,b=(upper-origin)*inverseDirection;
+    vec3 lo=min(a,b),hi=max(a,b);
+    float enter=max(max(lo.x,lo.y),max(lo.z,0.0));
+    float leave=min(min(hi.x,hi.y),min(hi.z,maxTravel));
+    nearTravel=enter;return leave>=enter;
+}
+bool rayTriangle(vec3 origin,vec3 direction,vec3 a,vec3 b,vec3 c0,out float travel){
+    vec3 e1=b-a,e2=c0-a,p=cross(direction,e2);float determinant=dot(e1,p);
+    if(abs(determinant)<1e-8){travel=0.0;return false;}
+    float inverseDeterminant=1.0/determinant;vec3 t=origin-a;
+    float u=dot(t,p)*inverseDeterminant;if(u<0.0||u>1.0){travel=0.0;return false;}
+    vec3 q=cross(t,e1);float v=dot(direction,q)*inverseDeterminant;
+    if(v<0.0||u+v>1.0){travel=0.0;return false;}
+    travel=dot(e2,q)*inverseDeterminant;return travel>=0.0;
+}
+bool traceMesh(uint record,vec3 origin,vec3 direction,inout float closest,inout vec4 albedo,inout vec3 normal){
+    if(c.atlas[record]!=5u)return false;
+    uint header=c.atlas[record+16u];if(header+5u>uint(c.atlas.length()))return false;
+    uint nodeBase=c.atlas[header],triangleBase=c.atlas[header+1u],nodeCount=c.atlas[header+2u],triangleCount=c.atlas[header+3u];
+    if(nodeCount==0u||triangleCount==0u||nodeBase+nodeCount*10u>uint(c.atlas.length())||triangleBase+triangleCount*9u>uint(c.atlas.length()))return false;
+    vec3 position=vec3(uintBitsToFloat(c.atlas[record+5u]),uintBitsToFloat(c.atlas[record+6u]),uintBitsToFloat(c.atlas[record+7u]));
+    vec3 rotation=vec3(uintBitsToFloat(c.atlas[record+8u]),uintBitsToFloat(c.atlas[record+9u]),uintBitsToFloat(c.atlas[record+10u]));
+    vec3 scale=vec3(uintBitsToFloat(c.atlas[record+11u]),uintBitsToFloat(c.atlas[record+12u]),uintBitsToFloat(c.atlas[record+13u]));
+    vec3 localOrigin=rotateXYZ(origin-position,-rotation)/scale,localDirection=rotateXYZ(direction,-rotation)/scale;
+    float radius=uintBitsToFloat(c.atlas[header+4u]);
+    float sphereT=dot(-localOrigin,localDirection)/max(dot(localDirection,localDirection),1e-12);
+    if(length(localOrigin+localDirection*sphereT)>radius+1e-4)return false;
+    int stack[64];int top=0;stack[top++]=0;bool hit=false;vec3 hitNormal=vec3(0);
+    while(top>0){
+        uint node=uint(stack[--top]);if(node>=nodeCount)continue;
+        uint at=nodeBase+node*10u;vec3 lower=vec3(uintBitsToFloat(c.atlas[at]),uintBitsToFloat(c.atlas[at+1u]),uintBitsToFloat(c.atlas[at+2u]));
+        vec3 upper=vec3(uintBitsToFloat(c.atlas[at+3u]),uintBitsToFloat(c.atlas[at+4u]),uintBitsToFloat(c.atlas[at+5u]));float nearT;
+        if(!rayBounds(localOrigin,localDirection,lower,upper,closest,nearT))continue;
+        uint count=c.atlas[at+9u];
+        if(count>0u){
+            uint first=c.atlas[at+8u];for(uint i=0u;i<count;i++){
+                uint tri=triangleBase+(first+i)*9u;
+                vec3 a=vec3(uintBitsToFloat(c.atlas[tri]),uintBitsToFloat(c.atlas[tri+1u]),uintBitsToFloat(c.atlas[tri+2u]));
+                vec3 b=vec3(uintBitsToFloat(c.atlas[tri+3u]),uintBitsToFloat(c.atlas[tri+4u]),uintBitsToFloat(c.atlas[tri+5u]));
+                vec3 c0=vec3(uintBitsToFloat(c.atlas[tri+6u]),uintBitsToFloat(c.atlas[tri+7u]),uintBitsToFloat(c.atlas[tri+8u]));float travel;
+                if(rayTriangle(localOrigin,localDirection,a,b,c0,travel)&&travel<closest){closest=travel;hitNormal=normalize(rotateXYZ(cross(b-a,c0-a)/scale,rotation));if(dot(hitNormal,direction)>0.0)hitNormal=-hitNormal;hit=true;}
+            }
+        }else if(top<62){stack[top++]=int(c.atlas[at+7u]);stack[top++]=int(c.atlas[at+6u]);}
+    }
+    if(hit){albedo=vec4(uintBitsToFloat(c.atlas[record+1u]),uintBitsToFloat(c.atlas[record+2u]),uintBitsToFloat(c.atlas[record+3u]),1.0);normal=hitNormal;}
+    return hit;
+}
 void main(){
     vec2 screen=(gl_FragCoord.xy-vec2(960.0,540.0))/1080.0;
     vec3 cameraPosition,cameraRotation;
@@ -310,6 +359,13 @@ void main(){
         }
         travel+=max(distance,.005);if(travel>60.0)break;
     }
+    uint firstObject,objectCount,firstRecord;sceneRange(c.reserved.x,firstObject,objectCount,firstRecord);
+    float meshClosest=record!=0u?travel:1e30;uint meshHitRecord=0u;vec4 meshAlbedo;vec3 meshNormal;
+    for(uint object=0u;object<objectCount;object++){
+        uint candidateRecord=firstRecord+object*20u;
+        if(traceMesh(candidateRecord,origin,direction,meshClosest,meshAlbedo,meshNormal))meshHitRecord=candidateRecord;
+    }
+    if(meshHitRecord!=0u){float light=.25+.75*max(dot(meshNormal,normalize(vec3(-.4,.8,.6))),0.0);color=vec4(meshAlbedo.rgb*light,1.0);record=meshHitRecord;}
     if(color.a>0.0 && record!=0u && c.atlas[record]==3u){
         uint width=c.atlas[record+17u],height=c.atlas[record+18u],offset=c.atlas[record+16u];
         if(width>0u&&height>0u){
@@ -431,6 +487,7 @@ ${objectScripts || '    // Attach GLSL statements to objects in the editor.'}
 void main(){
     float dt=1.0/60.0;uint buttons=hbPressed();
     c.motion.x+=dt;c.state.z++;
+    c.transition.x=max(0.0,c.transition.x-1.0/15.0);
     uint firstObject,objectCount,firstRecord;
     if(!sceneRange(c.reserved.x,firstObject,objectCount,firstRecord))objectCount=0u;
     for(uint localIndex=0u;localIndex<objectCount;localIndex++){
@@ -511,6 +568,8 @@ void main(){
       archive.add('shaders/hb.glsl', HB_GLSL);
 
       const scene = this.model.toScenePackageData(project);
+      if (scene.data.byteLength > 6 * 1024 * 1024)
+        throw new Error('Scene data including OBJ geometry exceeds the launcher 6 MiB inline data limit');
       const state = new Uint8Array(1024);
       const stateView = new DataView(state.buffer);
       stateView.setFloat32(960, 1, true);
@@ -527,7 +586,8 @@ void main(){
         imageData.set(scene.images);
         archive.add('assets/image-data.bin', imageData);
       }
-      const packagedProject = { ...project };
+      const packagedProject = JSON.parse(JSON.stringify(project));
+      for (const asset of packagedProject.assets) if (asset.kind === 'mesh') delete asset.data;
       if (project.music) {
         if (!musicApi) throw new Error('ABIM music support is unavailable to the package builder');
         archive.add('assets/music.abim', musicApi.encodeAbim(project.music));
@@ -554,13 +614,6 @@ void main(){
         archive.add(filename, bytes);
         effects[eventId] = filename;
       }
-      for (const asset of project.assets.filter(item => item.kind === 'mesh')) {
-        const bytes = bytesFromBase64(asset.data);
-        const filename = `assets/stream/mesh_${streamedAssets.length + 1}.obj`;
-        archive.add(filename, bytes);
-        streamedAssets.push({ id: streamedAssets.length + 1, file: filename });
-      }
-
       const manifest = {
         format: 'hblauncher.gpu-app',
         abi: 1,

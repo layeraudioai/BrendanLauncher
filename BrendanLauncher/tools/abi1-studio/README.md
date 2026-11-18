@@ -25,7 +25,7 @@ Open **Music Editor** from the top toolbar to compose and preview music with the
 - Save and load `.abim` files (up to 40 MiB), which preserve shared melody/pattern definitions, arrangement calls, tempo, and imported audio clips.
 - Import Standard MIDI `.mid`/`.midi`; note events become editable shared MML melody definitions arranged on sequence tracks. Export the same arrangement (including pattern calls and transpositions) as Standard MIDI.
 - Import MP3 and common browser-decodable audio files as audio tracks. They play in the editor and are retained in `.abim`; audio clips are mixed into MP3 export (they are not transcribed into MIDI notes).
-- Export the rendered song as MP3 using the bundled `lamejs` encoder and Web Audio offline rendering. The MP3 exporter supports renders up to five minutes. ABI app packages with project music include one `assets/music.abim` payload and reference it from `app.json`; this keeps the reusable music graph in its native format rather than duplicating melody text in tracks. The encoder's separate-file license and source link are in `licenses/LAMEJS-LICENSE.txt` (LGPL-3.0 text is included beside it).
+- Export the rendered song as MP3 using the bundled `lamejs` encoder and Web Audio offline rendering. The MP3 exporter supports renders up to five minutes. ABI app packages with project music include one `assets/music.abim` payload and reference it from `app.json`; the launcher validates the ABIM, renders notes to 48 kHz stereo PCM, and loops the soundtrack through the existing hardware audio path while the app runs. Imported audio tracks inside ABIM require `ffmpeg` on the launcher host; MML arrangements do not. Runtime rendering is bounded to five minutes, 100,000 notes, and 96 MiB of rendered/cache PCM. The encoder's separate-file license and source link are in `licenses/LAMEJS-LICENSE.txt` (LGPL-3.0 text is included beside it).
 
 MML example: `t120 o4 l8 [ceg] g e c`.
 
@@ -64,9 +64,15 @@ MML example: `t120 o4 l8 [ceg] g e c`.
 - Import `.glsl` class files from the GLSL Classes panel. GLSL has no `class`
   keyword; these files contain reusable structs, constants, and helper
   functions that are available to scripts in every scene.
-- Mesh objects currently render as box, sphere, or plane primitives. Dropped
-  OBJ files are packaged as local streamed assets, but arbitrary OBJ geometry
-  is not yet rendered by the ABI-1 target shaders.
+- Mesh objects support box, sphere, and plane primitives plus imported OBJ
+  geometry. OBJ vertices and polygon faces (including negative indices and
+  `v/vt/vn` face tokens) are triangulated into a bounded per-mesh BVH and
+  ray-intersected by both PC Preview and built ABI-1 fragment shaders. Mesh
+  data is embedded in `assets/scene.bin`, so it does not depend on streamed-file
+  support. Limits are 65,536 source vertices and 16,384 triangles per mesh;
+  each asset must contain valid triangular/polygon faces. OBJ texture/material
+  (`mtl`) files and UV textures are not applied; mesh material uses the scene
+  object's color.
 - PNG/JPG sprites are converted to packed RGBA data and used by the generated
   shader. Image imports are limited to one megapixel each; combined texture
   bytes are packaged in `assets/image-data.bin` and loaded into private GPU
@@ -115,7 +121,7 @@ MML example: `t120 o4 l8 [ceg] g e c`.
 ## Building
 
 Choose **Build ABI-1 App** to compile and validate the shaders in-browser, then
-Choose **Download ZIP** to save `<app-id>.zip`. Extract the ZIP into a new
+choose **Download ZIP** to save `<app-id>.zip`. Extract the ZIP into a new
 folder under `BrendanLauncher/apps/`; the ZIP contains `app.json`, assets, and
 the compiled SPIR-V shaders. It also includes `project.json` and imported GLSL
 class files for continued editing. Browser export is limited to 128 MiB.
@@ -134,12 +140,15 @@ discarded at a fixed range. PC GPU/driver and audio
 differences mean its output is not guaranteed to be pixel-identical to the NS2;
 WebGL 2 support is required.
 
-The target renderer is a small ray-marched primitive renderer: boxes, spheres,
-planes, and textured sprite planes are supported. The editor does not provide
-arbitrary native CPU code, arbitrary OBJ rendering, or a general-purpose
-physics/animation engine. Parent-child transforms are composed in the editor
-and flattened into the initial package data; dynamic runtime hierarchy
-transforms are not implemented.
+The target renderer combines ray-marched primitives (boxes, spheres, planes,
+and textured sprite planes) with BVH-accelerated ray-traced imported OBJ meshes.
+Mesh material uses the object's color; OBJ MTL/material libraries and UV texture
+maps are not yet applied. The editor does not provide arbitrary native CPU code
+or a general-purpose physics/animation engine. Parent-child transforms are
+composed in the editor and flattened into the initial package data; dynamic
+runtime hierarchy transforms are not implemented. Deploying mesh support to
+hardware requires an updated launcher runtime and rebuilding the ABI-1 app; the
+scene geometry is embedded in each rebuilt package.
 
 Generated shaders can request bounded 64 KiB chunks from OBJ or other declared
 local assets with `hbStreamRequest`, `hbStreamReady`, and `hbStreamByte`. The

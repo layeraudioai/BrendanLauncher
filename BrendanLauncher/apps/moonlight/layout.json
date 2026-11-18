@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "comment": [
+    "Absolute byte offsets inside the ABI-1 8 MiB storage buffer (binding 0).",
+    "Bytes 0..1023 are SDK-owned control/telemetry and are never addressed here.",
+    "Single source of truth: assets.py emits shaders/text.glsl from this file and",
+    "host/layout.cjs loads the same numbers at run time."
+  ],
+  "buffer": { "bytes": 8388608, "appDataOffset": 1024, "sdkReservedOffset": 8323072 },
+  "atlas": { "offset": 1024, "width": 1024, "height": 1024 },
+  "band": { "offset": 1049600, "width": 1024, "height": 576, "scale": 1.875 },
+  "header": { "offset": 1639424, "size": 1024 },
+  "video": {
+    "offset": 2097152,
+    "width": 1280,
+    "height": 720,
+    "slots": 2,
+    "bytesPerSlot": 1843200
+  },
+  "audio": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "chunkMs": 120,
+    "clickEffect": 1,
+    "errorEffect": 2,
+    "ringFirstSlot": 3,
+    "ringSlots": 6
+  }
+}

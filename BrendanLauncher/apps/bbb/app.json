@@ -1,0 +1,17 @@
+{
+  "format": "hblauncher.gpu-app",
+  "abi": 1,
+  "id": "seed-1m32wdy79m6yk",
+  "name": "Nova Quest 1",
+  "description": "Procedurally generated from seed f4w9hi867bewv8i58i58i58i58i58i58i58i58i57cse8888888888888888e8e8e848st6854bvsac6c54c6754caaaaaaaaaaaaaaaaaaaa7btb49t4r4b6436b6b",
+  "version": "1.0.0",
+  "icon": "assets/icon.png",
+  "initialState": "assets/state.bin",
+  "data": "assets/scene.bin",
+  "shaders": {
+    "vertex": "app.vert.spv",
+    "fragment": "app.frag.spv",
+    "compute": "app.comp.spv"
+  },
+  "music": "assets/music.abim"
+}
