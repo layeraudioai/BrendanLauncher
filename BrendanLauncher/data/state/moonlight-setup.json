@@ -1,0 +1,20 @@
+{
+  "updated": "2026-11-18T03:18:54.480Z",
+  "mode": "check",
+  "sunshine": null,
+  "app": null,
+  "env": {
+    "MOONLIGHT_BACKEND": "sunshine",
+    "MOONLIGHT_HOSTS": "127.0.0.1"
+  },
+  "report": [
+    {
+      "kind": "warn",
+      "message": "Sunshine is not installed"
+    },
+    {
+      "kind": "warn",
+      "message": "apps/moonlight is not installed yet"
+    }
+  ]
+}

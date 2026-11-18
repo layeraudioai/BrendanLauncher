@@ -9,6 +9,14 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
  const save=()=>atomic(path.join(directory,'app-runtime.json'),runtime.report);
  async function hostService(app){
    const spec=app.manifest.hostRuntime;if(!spec)return null;
+   if(spec.startsWith('app:')){
+    // The app ships its own host bridge next to its assets; no module registry,
+    // no signed .izm. The path must stay inside the app folder.
+    const relative=spec.slice(4);check(!path.isAbsolute(relative)&&!relative.split('/').includes('..'),'Invalid application host runtime path');
+    const file=path.join(app.root,relative);check(require('node:fs').existsSync(file),'Application host runtime is missing: '+relative);
+    const own=require(file);check(typeof own.create==='function','Application host runtime has no create()');
+    return own.create({rpc,mapped,directory,app});
+   }
    const parts=typeof spec==='string'&&spec.startsWith('module:')?spec.slice(7).split('/'):[];check(parts.length===2&&/^[a-z0-9-]+$/.test(parts[0])&&/^[A-Za-z0-9-]+$/.test(parts[1]),'Invalid module host runtime');
    const component=await require('../core/components.cjs').get(parts[0],parts[1]);
    check(typeof component.create==='function','Module host runtime has no create()');
@@ -115,12 +123,17 @@ async function create({rpc,menu,directory,prepareApp=prepare}){
    try{
     check(selected,'The selected app is no longer in the catalog');
     const app=await catalogTools.readApp(selected.root);check(app.fingerprint===selected.fingerprint,'App changed; tap Refresh before opening it');
-    const service=await hostService(app);
-    if(service){
+    // The app data must be in the buffer *before* the host runtime starts: a
+    // bridge publishes its header on start and would be overwritten here.
+    if(app.manifest.hostRuntime){
      const bytes=Buffer.alloc(menu.controls.bytes);app.files.state.bytes.copy(bytes);app.files.data.bytes.copy(bytes,1024);
      bytes.writeUInt32LE(0,1012);bytes.writeUInt32LE(0,1016);if(app.manifest.transition==='none')bytes.writeFloatLE(0,960);
-     await rpc.write(mapped,bytes);await audio(app);runtime.active={app,service,gpu:null,assetStream:app.streamedAssets?.length?require('../core/services/app-asset-stream.cjs').create({rpc,mapped,app}):null};
-     runtime.report.active={id:app.id,fingerprint:app.fingerprint};runtime.report.transitions.push({event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()});await save();return menu.commands[0];
+     await rpc.write(mapped,bytes);await audio(app);
+     const service=await hostService(app);
+     if(service){
+      runtime.active={app,service,gpu:null,assetStream:app.streamedAssets?.length?require('../core/services/app-asset-stream.cjs').create({rpc,mapped,app}):null};
+      runtime.report.active={id:app.id,fingerprint:app.fingerprint};runtime.report.transitions.push({event:'launch',id:app.id,fingerprint:app.fingerprint,time:new Date().toISOString()});await save();return menu.commands[0];
+     }
     }
     if(app.manifest.displayOnly===true)throw Error('This IZLauncher package contains metadata only and cannot be launched.');
     let gpu=cache.get(app.fingerprint);

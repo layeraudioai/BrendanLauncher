@@ -19,6 +19,9 @@ sh tests/abi/build.sh
 echo "== hardware probe (mock backend) =="
 "$NODE" host/probe.cjs --mock
 
+echo "== Moonlight session setup =="
+"$NODE" --test tests/moonlight-setup.test.cjs
+
 echo "== host lifecycle =="
 "$NODE" tests/host/lifecycle.test.cjs
 

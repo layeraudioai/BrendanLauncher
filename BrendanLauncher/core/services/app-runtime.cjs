@@ -97,10 +97,19 @@ async function create({rpc,menu,directory,prepareApp=prepare,prepareMenu=async()
     await require('./owned-buffer.cjs').initialize(rpc,mapped,menu.controls.bytes,bytes);await audio(app);
     let service;
     if(app.manifest.hostRuntime){
-      const match=/^module:([a-z0-9-]+)\/([A-Za-z0-9-]+)$/.exec(app.manifest.hostRuntime);
-      check(match,'Invalid application host runtime');
-      const component=await require('../components.cjs').get(match[1],match[2]);
-      service=await component.create({rpc,mapped,directory,app});
+      const spec=app.manifest.hostRuntime;
+      if(spec.startsWith('app:')){
+       // The app ships its own host bridge next to its assets; no module registry.
+       const relative=spec.slice(4);check(!require('node:path').isAbsolute(relative)&&!relative.split('/').includes('..'),'Invalid application host runtime path');
+       const file=require('node:path').join(app.root,relative);check(require('node:fs').existsSync(file),'Application host runtime is missing: '+relative);
+       const own=require(file);check(typeof own.create==='function','Application host runtime has no create()');
+       service=await own.create({rpc,mapped,directory,app});
+      }else{
+       const match=/^module:([a-z0-9-]+)\/([A-Za-z0-9-]+)$/.exec(spec);
+       check(match,'Invalid application host runtime');
+       const component=await require('../components.cjs').get(match[1],match[2]);
+       service=await component.create({rpc,mapped,directory,app});
+      }
     }
     const assetStream=app.streamedAssets?.length
       ? require('./app-asset-stream.cjs').create({rpc,mapped,app}) : null;

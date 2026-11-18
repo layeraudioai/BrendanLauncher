@@ -31,7 +31,7 @@ async function readApp(directory, { validate = true } = {}) {
     check((m.format === 'hblauncher.gpu-app' || m.format === 'izlauncher.app') && m.abi === 1, 'Unsupported app format/ABI');
     check(m.format !== 'izlauncher.app' || m.displayOnly === true || m.builtin === true || !!m.shaders, 'IZ metadata-only package; mark displayOnly or provide executable GPU shaders');
     check(m.displayOnly === undefined || typeof m.displayOnly === 'boolean', 'Invalid displayOnly flag');
-    check(m.hostRuntime === undefined || /^module:[a-z0-9-]+\/[A-Za-z0-9-]+$/.test(m.hostRuntime), 'Invalid module host runtime');
+    check(m.hostRuntime === undefined || /^(?:module:[a-z0-9-]+\/[A-Za-z0-9-]+|app:[A-Za-z0-9][A-Za-z0-9._/-]*\.cjs)$/.test(m.hostRuntime), 'Invalid module host runtime');
     check(m.builtin === undefined || (/^[a-z0-9][a-z0-9-]{0,47}$/.test(m.builtin) && Number.isInteger(m.shellContribution?.scene) && m.shellContribution.scene >= 2 && m.shellContribution.scene <= 8), 'Invalid shell contribution');
     check(typeof m.id === 'string' && /^[a-z0-9][a-z0-9-]{0,47}$/.test(m.id), 'Invalid app id');
     check(typeof m.name === 'string' && m.name.trim().length > 0 && m.name.length <= 64, 'Invalid app name');
@@ -137,7 +137,7 @@ async function scan(root = ROOT) {
     }
     return { root, apps, rejected };
 }
-function summary(catalog) { return { root: catalog.root, apps: catalog.apps.map(a => ({ id: a.id, name: a.name, version: a.version, description: a.description, root: a.root, fingerprint: a.fingerprint, effects: a.effects })), rejected: catalog.rejected }; }
+function summary(catalog) { return { root: catalog.root, apps: catalog.apps.map(a => ({ id: a.id, name: a.name, version: a.version, description: a.description, root: a.root, fingerprint: a.fingerprint, effects: a.effects, stream: a.stream || [] })), rejected: catalog.rejected }; }
 async function raster(catalog, directory, label = 'catalog') {
     const input = path.join(directory, label + '.json'), output = path.join(directory, label + '.bin');
     const labels = [];
